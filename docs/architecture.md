@@ -48,16 +48,22 @@ Main (Node2D, main.gd)        or, vies, essences, éléments débloqués, état 
 
 - `Main.try_build` paie la tour et crée une `Tower` en chantier (`build_progress` à 0, elle ne tire pas), puis la donne au bâtisseur (`Builder.order`).
 - `Builder` traite sa file : il marche jusqu'à `build_reach` du premier chantier, appelle `Tower.work(delta)` jusqu'à 1, puis passe au suivant. Les touches de déplacement ont la priorité sur la file.
+- `Main.try_upgrade` paie et rouvre le chantier (`Tower.upgrade()`, `is_upgrading()`), puis le donne aussi au bâtisseur. Durée = `build_time` × niveau visé.
 - Vitesse et portée dans `data/builder.tres` ; temps de construction dans chaque `TowerData.build_time`.
+
+## Vagues
+
+- `Main.next_wave_in` : compte à rebours (`GameRules.first_wave_delay`, puis `wave_gap` après la fin des apparitions). À 0, `_launch_wave()`. `start_next_wave()` lance plus tôt et donne `GameRules.early_call_bonus()`.
+- Plusieurs vagues peuvent être sur le terrain : chaque ennemi porte son numéro de vague (`meta "wave"`), `Main` compte les vivants par vague et donne les récompenses quand une vague est vaincue (`waves_cleared`).
 
 ## Éléments et essences
 
-- `Main.elements` : éléments débloqués ; `Main.buy_element()` dépense une essence. Une tour d'élément n'est disponible que si son élément est débloqué (`Main.is_unlocked()`).
+- `Main.elements` : éléments débloqués ; `Main.buy_element()` dépense une essence. L'interface les montre sur une roue (`scenes/ui/element_wheel.gd`) : flèche = « bat », clic = débloquer. Une tour d'élément n'est disponible que si son élément est débloqué (`Main.is_unlocked()`).
 - Fin de vague : intérêts (`GameRules.interest`), bonus, et une essence si `GameRules.gives_essence(n)`.
 
 ## Tests
 
 - `tests/test_board.gd` : chemin, cases constructibles, cycle des éléments.
-- `tests/test_input.gd` : souris et clavier simulés (commander une tour, attendre le bâtisseur, améliorer, vendre, débloquer un élément, déplacer le bâtisseur).
+- `tests/test_input.gd` : souris et clavier simulés (commander une tour, attendre le bâtisseur, améliorer avec chantier, vendre, débloquer un élément, déplacer le bâtisseur, lancer une vague en avance).
 - `tests/test_game.gd` : partie complète jouée par un joueur automatique (éléments dans un ordre fixe, tours aux cases qui couvrent le plus de chemin) ; `-- passive` ne construit rien et doit perdre. La ligne « Résultat » sert de repère d'équilibrage.
 - `Main` expose `try_build`, `try_upgrade`, `sell`, `buy_element`, `start_next_wave` pour que les tests jouent sans souris.

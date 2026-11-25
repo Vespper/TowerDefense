@@ -13,6 +13,8 @@ var _failures: int = 0
 var _checks: int = 0
 var _cell := Vector2i(6, 3)
 var _builder_start: Vector2
+var _gold_before_call: int = 0
+var _bonus_expected: int = 0
 
 
 func _initialize() -> void:
@@ -53,9 +55,15 @@ func _process(_delta: float) -> bool:
 				_step = 3
 		3:
 			var t: Tower = _main.towers()[0]
-			_check(t.level == 2, "U : tour améliorée au niveau 2")
-			_key(KEY_V)
-			_step = 4
+			_check(t.level == 2, "U : amélioration vers le niveau 2 payée")
+			_check(t.is_upgrading() and not t.is_built(), "la tour est hors service pendant l'amélioration")
+			_step = 30
+		30:
+			var t: Tower = _main.towers()[0]
+			if t.is_built():
+				_check(t.level == 2, "le bâtisseur a fini l'amélioration")
+				_key(KEY_V)
+				_step = 4
 		4:
 			_check(_main.towers().is_empty(), "V : tour vendue")
 			_check(_main.board.can_build(_cell), "case libérée")
@@ -74,10 +82,14 @@ func _process(_delta: float) -> bool:
 			if _main.builder.global_position.x > _builder_start.x + 40.0:
 				Input.action_release("move_right")
 				_check(true, "le bâtisseur se déplace au clavier")
+				_check(_main.wave_index == 0 and _main.next_wave_in > 1.0, "la première vague attend son compte à rebours")
+				_gold_before_call = _main.gold
+				_bonus_expected = _main.rules.early_call_bonus(_main.next_wave_in)
 				_key(KEY_SPACE)
 				_step = 6
 		6:
-			_check(_main.state == Main.State.WAVE, "Espace : vague lancée")
+			_check(_main.wave_index == 1 and _main.spawner.is_spawning(), "Espace : vague lancée en avance")
+			_check(_bonus_expected > 0 and _main.gold == _gold_before_call + _bonus_expected, "bonus d'or pour l'avance (+%d)" % _bonus_expected)
 			return _finish()
 	return false
 

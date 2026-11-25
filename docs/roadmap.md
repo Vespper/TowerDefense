@@ -19,15 +19,17 @@ Mise à jour à chaque fin de session (skill `fin-de-session`). Garder ce fichie
 - [x] Tours de base Flèche, Mortier, Magie + 6 tours d'éléments, amélioration ×3, revente 75 %
 - [x] 7 archétypes (dont volants, soigneurs, boss), 20 vagues, intérêts 3 %
 - [x] Circuit plus long (93 cases) et bâtisseur qui va construire les tours (temps de construction)
-- [ ] Session de test de Vespper : noter le ressenti dans `docs/decisions.md`
+- [x] Session de test de Vespper : victoire avec 14 vies, pas assez de difficulté
+- [x] Amélioration = chantier (tour hors service), vagues automatiques avec lancement anticipé, roue des éléments, difficulté relevée
 - [ ] Équilibrage après la session de test
 
 ## Prochaine étape
 
-Vespper joue le prototype (F5) et dit ce qu'il ressent : difficulté, choix des éléments, placement. Ensuite : niveaux d'élément et premières tours doubles.
+Vespper rejoue (difficulté, vagues automatiques, roue) et choisit parmi les pistes du GDD : arbres d'amélioration, tours mixtes, économie « idle ».
 
 ## Journal
 
+- 2026-11-25 — Amélioration avec chantier, vagues automatiques, roue des éléments, difficulté relevée (PR #4).
 - 2026-11-25 — Circuit plus long, bâtisseur qui construit les tours, vagues rééquilibrées (PR #3).
 - 2026-11-25 — Passage au chemin fixe, 6 éléments, tours de base Flèche / Mortier / Magie, essences, 20 vagues (PR #2).
 - 2026-11-25 — Création du projet : doc, conventions, scripts, CI, prototype à labyrinthe libre (PR #1).

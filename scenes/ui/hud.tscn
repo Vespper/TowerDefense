@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/hud.gd" id="1"]
+[ext_resource type="Script" path="res://scenes/ui/element_wheel.gd" id="2"]
 
 [node name="Hud" type="CanvasLayer"]
 script = ExtResource("1")
@@ -65,10 +66,12 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "Construire"
 
-[node name="BuildList" type="VBoxContainer" parent="SidePanel"]
+[node name="BuildList" type="GridContainer" parent="SidePanel"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 2
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+columns = 2
 
 [node name="EssenceLabel" type="Label" parent="SidePanel"]
 unique_name_in_owner = true
@@ -76,10 +79,11 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "Éléments"
 
-[node name="ElementGrid" type="GridContainer" parent="SidePanel"]
+[node name="ElementWheel" type="Control" parent="SidePanel"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
-columns = 3
+script = ExtResource("2")
 
 [node name="SelectionPanel" type="PanelContainer" parent="SidePanel"]
 unique_name_in_owner = true
@@ -125,7 +129,7 @@ offset_right = 1265.0
 offset_bottom = 712.0
 theme_override_colors/font_color = Color(0.7, 0.7, 0.75, 1)
 theme_override_font_sizes/font_size = 13
-text = "ZQSD / flèches : bâtisseur · 1-9 : tour · Clic : commander / choisir · Échap : annuler · U / V : améliorer / vendre · Espace : vague · F : vitesse    Lumière > Ténèbres > Eau > Feu > Nature > Terre > Lumière"
+text = "ZQSD / flèches : bâtisseur · 1-9 : tour · Clic : commander / choisir · Échap : annuler · U / V : améliorer / vendre · Espace : vague · F : vitesse"
 
 [node name="MessageLabel" type="Label" parent="."]
 unique_name_in_owner = true

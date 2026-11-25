@@ -5,7 +5,7 @@ extends Node2D
 
 signal game_ended(won: bool)
 
-enum State { BUILD, WAVE, WON, LOST }
+enum State { PLAYING, WON, LOST }
 
 const TOWER_SCENE := preload("res://scenes/towers/tower.tscn")
 const SPEEDS: Array[float] = [1.0, 2.0, 3.0]
@@ -16,15 +16,22 @@ const SPEEDS: Array[float] = [1.0, 2.0, 3.0]
 
 var gold: int = 0
 var lives: int = 0
-## Index de la prochaine vague (ou de la vague en cours).
+## Nombre de vagues déjà lancées (= index de la prochaine vague).
 var wave_index: int = 0
-var state: State = State.BUILD
+## Nombre de vagues entièrement vaincues.
+var waves_cleared: int = 0
+## Secondes avant le lancement automatique de la prochaine vague.
+var next_wave_in: float = 0.0
+var state: State = State.PLAYING
 ## Essences pas encore dépensées.
 var essences: int = 0
 ## Éléments débloqués (Element.Type -> true).
 var elements: Dictionary = {}
 
-var _alive: int = 0
+## Ennemis encore en vie par vague (index de vague -> nombre).
+var _alive_by_wave: Dictionary = {}
+## Vagues dont toutes les apparitions sont faites.
+var _spawn_done: Dictionary = {}
 var _build_index: int = -1
 var _selected: Tower
 var _towers_by_cell: Dictionary = {}
@@ -49,7 +56,9 @@ func _ready() -> void:
 	var board_rect := Rect2(board.global_position, Vector2(board.columns, board.rows) * board.cell_size)
 	builder.bounds = board_rect.grow(-12)
 	builder.global_position = board.cell_to_world(Vector2i(board.columns / 2, board.rows / 2))
+	next_wave_in = rules.first_wave_delay
 	spawner.enemy_spawned.connect(_on_enemy_spawned)
+	spawner.spawning_finished.connect(_on_spawning_finished)
 	hud.build_requested.connect(select_build)
 	hud.start_wave_requested.connect(start_next_wave)
 	hud.upgrade_requested.connect(func() -> void: try_upgrade(_selected))
@@ -58,6 +67,19 @@ func _ready() -> void:
 	hud.element_requested.connect(buy_element)
 	hud.set_tower_types(tower_types)
 	_refresh_hud()
+
+
+func _process(delta: float) -> void:
+	if is_finished():
+		return
+	if not spawner.is_spawning() and wave_index < waves.size():
+		next_wave_in -= delta
+		if next_wave_in <= 0.0:
+			_launch_wave()
+	_refresh_wave_hud()
+	# Avancement du chantier de la tour choisie
+	if _selected != null and not _selected.is_built():
+		hud.show_selection(_selected)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -152,6 +174,7 @@ func try_upgrade(tower: Tower) -> bool:
 		return false
 	gold -= tower.upgrade_cost()
 	tower.upgrade()
+	builder.order(tower)
 	_refresh_hud()
 	return true
 
@@ -168,13 +191,25 @@ func sell(tower: Tower) -> void:
 	_refresh_hud()
 
 
+## Le joueur lance la prochaine vague en avance : il gagne de l'or pour le temps gagné.
 func start_next_wave() -> bool:
-	if state != State.BUILD or wave_index >= waves.size():
+	if not can_call_wave():
 		return false
-	state = State.WAVE
-	spawner.start(waves[wave_index])
-	_refresh_hud()
+	gold += rules.early_call_bonus(next_wave_in)
+	_launch_wave()
 	return true
+
+
+## On peut lancer la prochaine vague si aucune n'est en train d'apparaître.
+func can_call_wave() -> bool:
+	return not is_finished() and not spawner.is_spawning() and wave_index < waves.size()
+
+
+func _launch_wave() -> void:
+	_alive_by_wave[wave_index] = 0
+	spawner.start(waves[wave_index])
+	wave_index += 1
+	_refresh_hud()
 
 
 func towers() -> Array[Tower]:
@@ -185,14 +220,16 @@ func towers() -> Array[Tower]:
 
 
 func _on_enemy_spawned(enemy: Enemy) -> void:
-	_alive += 1
+	var w := wave_index - 1
+	enemy.set_meta("wave", w)
+	_alive_by_wave[w] += 1
 	enemy.died.connect(_on_enemy_died)
 	enemy.reached_exit.connect(_on_enemy_reached_exit)
 
 
 func _on_enemy_died(enemy: Enemy) -> void:
 	gold += enemy.data.bounty
-	_on_enemy_removed()
+	_on_enemy_removed(enemy)
 
 
 func _on_enemy_reached_exit(enemy: Enemy) -> void:
@@ -200,21 +237,38 @@ func _on_enemy_reached_exit(enemy: Enemy) -> void:
 	if lives == 0 and state != State.LOST:
 		_end_game(false)
 		return
-	_on_enemy_removed()
+	_on_enemy_removed(enemy)
 
 
-func _on_enemy_removed() -> void:
-	_alive -= 1
-	if state == State.WAVE and _alive <= 0 and not spawner.is_spawning():
-		wave_index += 1
-		# Intérêts sur l'or gardé, puis bonus de fin de vague
-		gold += rules.interest(gold) + rules.wave_bonus(wave_index)
-		if rules.gives_essence(wave_index):
-			essences += 1
-		if wave_index >= waves.size():
-			_end_game(true)
-			return
-		state = State.BUILD
+func _on_spawning_finished() -> void:
+	var w := wave_index - 1
+	_spawn_done[w] = true
+	next_wave_in = rules.wave_gap
+	_check_wave_cleared(w)
+
+
+func _on_enemy_removed(enemy: Enemy) -> void:
+	var w: int = enemy.get_meta("wave")
+	_alive_by_wave[w] -= 1
+	_check_wave_cleared(w)
+	_refresh_hud()
+
+
+## Une vague est vaincue quand elle a fini d'apparaître et qu'il ne reste aucun de ses ennemis.
+func _check_wave_cleared(w: int) -> void:
+	if is_finished() or not _spawn_done.has(w) or _alive_by_wave[w] > 0:
+		return
+	_alive_by_wave.erase(w)
+	_spawn_done.erase(w)
+	waves_cleared += 1
+	var number := w + 1
+	# Intérêts sur l'or gardé, puis bonus de fin de vague
+	gold += rules.interest(gold) + rules.wave_bonus(number)
+	if rules.gives_essence(number):
+		essences += 1
+	if waves_cleared >= waves.size():
+		_end_game(true)
+		return
 	_refresh_hud()
 
 
@@ -272,8 +326,15 @@ func _refresh_hud() -> void:
 	hud.set_gold(gold, tower_types, unlocked)
 	hud.set_elements(essences, elements, not is_finished())
 	hud.set_lives(lives)
-	var shown := mini(wave_index, waves.size() - 1) if state == State.WAVE else wave_index
-	hud.set_wave(wave_index + 1, waves.size(), _wave_preview(shown), state == State.WAVE)
+	_refresh_wave_hud()
 	hud.show_selection(_selected)
 	if _selected != null:
 		hud.set_upgrade_affordable(_selected.upgrade_cost() <= gold)
+
+
+func _refresh_wave_hud() -> void:
+	if spawner.is_spawning():
+		hud.set_wave(wave_index, waves.size(), _wave_preview(wave_index - 1), true, 0.0, 0)
+	else:
+		hud.set_wave(wave_index + 1, waves.size(), _wave_preview(wave_index), false,
+				next_wave_in, rules.early_call_bonus(next_wave_in))

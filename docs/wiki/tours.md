@@ -1,6 +1,6 @@
 # Tours
 
-Stats au niveau 1. Construction par le bâtisseur : 1,5 s pour une tour de base, 2,5 s pour une tour d'élément. Chaque niveau (jusqu'à 3) multiplie dégâts et poison par 1,6. Amélioration vers le niveau N+1 : coût × 0,75 × N. Revente : 75 % du total dépensé. Portée en cases (40 px). Une zone touche sa cible, puis seulement les ennemis au sol autour.
+Stats au niveau 1. Construction par le bâtisseur : 1,5 s pour une tour de base, 2,5 s pour une tour d'élément. Une amélioration prend ce temps × le niveau visé (Flèche niv. 2 : 3 s), pendant lequel la tour ne tire pas. Chaque niveau (jusqu'à 3) multiplie dégâts et poison par 1,6. Amélioration vers le niveau N+1 : coût × 0,75 × N. Revente : 75 % du total dépensé. Portée en cases (40 px). Une zone touche sa cible, puis seulement les ennemis au sol autour.
 
 ## Tours de base (toujours disponibles)
 

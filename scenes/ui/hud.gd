@@ -15,7 +15,7 @@ signal element_requested(element: Element.Type)
 @onready var _wave_label: Label = %WaveLabel
 @onready var _start_button: Button = %StartButton
 @onready var _speed_button: Button = %SpeedButton
-@onready var _build_list: VBoxContainer = %BuildList
+@onready var _build_list: GridContainer = %BuildList
 @onready var _selection_panel: PanelContainer = %SelectionPanel
 @onready var _selection_title: Label = %SelectionTitle
 @onready var _selection_stats: Label = %SelectionStats
@@ -23,10 +23,9 @@ signal element_requested(element: Element.Type)
 @onready var _sell_button: Button = %SellButton
 @onready var _message_label: Label = %MessageLabel
 @onready var _essence_label: Label = %EssenceLabel
-@onready var _element_grid: GridContainer = %ElementGrid
+@onready var _element_wheel: ElementWheel = %ElementWheel
 
 var _build_buttons: Array[Button] = []
-var _element_buttons: Dictionary = {}
 
 
 func _ready() -> void:
@@ -36,17 +35,7 @@ func _ready() -> void:
 	_sell_button.pressed.connect(sell_requested.emit)
 	show_selection(null)
 	show_message("")
-	for element in Element.ALL:
-		var b := Button.new()
-		b.text = Element.display_name(element)
-		b.focus_mode = Control.FOCUS_NONE
-		b.custom_minimum_size = Vector2(84, 0)
-		b.add_theme_font_size_override("font_size", 14)
-		b.add_theme_color_override("font_color", Element.color(element))
-		b.add_theme_color_override("font_disabled_color", Element.color(element).darkened(0.55))
-		b.pressed.connect(element_requested.emit.bind(element))
-		_element_grid.add_child(b)
-		_element_buttons[element] = b
+	_element_wheel.element_pressed.connect(element_requested.emit)
 
 
 func set_tower_types(towers: Array[TowerData]) -> void:
@@ -56,8 +45,9 @@ func set_tower_types(towers: Array[TowerData]) -> void:
 	for i in towers.size():
 		var t := towers[i]
 		var b := Button.new()
-		b.text = "%d. %s (%d or)" % [i + 1, t.display_name, t.cost]
-		b.tooltip_text = "%s — %s\n%s" % [t.display_name, Element.display_name(t.element), t.description]
+		b.text = "%d %s" % [i + 1, t.display_name]
+		b.custom_minimum_size = Vector2(130, 0)
+		b.tooltip_text = "%s — %s, %d or\n%s" % [t.display_name, Element.display_name(t.element), t.cost, t.description]
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.add_theme_font_size_override("font_size", 14)
 		b.toggle_mode = true
@@ -80,34 +70,34 @@ func set_gold(gold: int, towers: Array[TowerData], unlocked: Array[bool]) -> voi
 		var t := towers[i]
 		_build_buttons[i].disabled = t.cost > gold or not unlocked[i]
 		if unlocked[i]:
-			_build_buttons[i].text = "%d. %s (%d or)" % [i + 1, t.display_name, t.cost]
+			_build_buttons[i].text = "%d %s · %d" % [i + 1, t.display_name, t.cost]
 		else:
-			_build_buttons[i].text = "%d. %s — à débloquer" % [i + 1, t.display_name]
+			_build_buttons[i].text = "%d %s" % [i + 1, t.display_name]
 
 
 ## Essences restantes et éléments débloqués (Element.Type -> true).
 func set_elements(essences: int, owned: Dictionary, can_buy: bool) -> void:
 	_essence_label.text = "Éléments — essences : %d" % essences
-	for element in _element_buttons:
-		var b: Button = _element_buttons[element]
-		var has: bool = owned.has(element)
-		b.text = ("✓ " if has else "") + Element.display_name(element)
-		b.disabled = has or essences <= 0 or not can_buy
-		b.tooltip_text = "Débloqué" if has else "Dépenser une essence pour débloquer la tour %s" % Element.display_name(element)
+	_element_wheel.set_state(owned, essences > 0 and can_buy)
 
 
 func set_lives(lives: int) -> void:
 	_lives_label.text = "Vies : %d" % lives
 
 
-func set_wave(number: int, total: int, preview: String, in_progress: bool) -> void:
-	if in_progress:
-		_wave_label.text = "Vague %d/%d en cours : %s" % [number, total, preview]
+## `spawning` : la vague `number` est en train d'apparaître ; sinon `number` est la prochaine,
+## lancée automatiquement dans `seconds_left` secondes (ou plus tôt, contre `early_bonus` or).
+func set_wave(number: int, total: int, preview: String, spawning: bool, seconds_left: float, early_bonus: int) -> void:
+	if spawning:
+		_wave_label.text = "Vague %d/%d : %s" % [number, total, preview]
+		_start_button.text = "Vague en cours"
 	elif number <= total:
-		_wave_label.text = "Prochaine vague %d/%d : %s" % [number, total, preview]
+		_wave_label.text = "Vague %d/%d dans %d s : %s" % [number, total, ceili(seconds_left), preview]
+		_start_button.text = "Lancer maintenant (+%d or)" % early_bonus
 	else:
-		_wave_label.text = "Toutes les vagues sont passées"
-	_start_button.disabled = in_progress or number > total
+		_wave_label.text = "Toutes les vagues sont lancées"
+		_start_button.text = "Dernière vague"
+	_start_button.disabled = spawning or number > total
 
 
 func set_speed(multiplier: float) -> void:
@@ -120,7 +110,9 @@ func show_selection(tower: Tower) -> void:
 		return
 	var d := tower.data
 	_selection_title.text = "%s niv. %d" % [d.display_name, tower.level]
-	if not tower.is_built():
+	if tower.is_upgrading():
+		_selection_title.text = "%s → niv. %d : %d %%" % [d.display_name, tower.level, roundi(tower.build_progress * 100.0)]
+	elif not tower.is_built():
 		_selection_title.text = "%s — chantier %d %%" % [d.display_name, roundi(tower.build_progress * 100.0)]
 	_selection_title.add_theme_color_override("font_color", Element.color(d.element))
 	var lines: PackedStringArray = [
@@ -144,7 +136,7 @@ func show_selection(tower: Tower) -> void:
 	else:
 		_upgrade_button.text = "Niveau max"
 		_upgrade_button.disabled = true
-	_sell_button.text = ("Annuler (V) : +%d or" if not tower.is_built() else "Vendre (V) : +%d or") % tower.sell_value()
+	_sell_button.text = ("Vendre (V) : +%d or" if tower.is_built() or tower.is_upgrading() else "Annuler (V) : +%d or") % tower.sell_value()
 
 
 func set_upgrade_affordable(affordable: bool) -> void:

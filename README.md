@@ -16,10 +16,10 @@ Les ennemis suivent un chemin fixe ; on pose des tours de base (Flèche, Mortier
 |---|---|
 | ZQSD / WASD / flèches | Déplacer le bâtisseur |
 | 1 à 9 | Choisir une tour à commander (reste active pour en commander plusieurs) |
-| Boutons « Éléments » | Dépenser une essence pour débloquer un élément |
+| Roue « Éléments » | Clic sur un élément : dépenser une essence pour le débloquer |
 | Clic gauche | Commander la tour (le bâtisseur va la construire), ou choisir une tour posée |
 | Clic droit, Échap | Annuler |
 | U / V (ou Suppr) | Améliorer / vendre la tour choisie (annuler un chantier rembourse tout) |
-| Espace, Entrée | Lancer la vague suivante |
+| Espace, Entrée | Lancer la vague suivante en avance (les vagues partent seules sinon), contre de l'or |
 | F | Vitesse x1, x2, x3 |
 | R | Rejouer après la fin |

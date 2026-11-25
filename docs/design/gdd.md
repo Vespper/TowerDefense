@@ -17,10 +17,10 @@ Ce projet est aussi un banc d'essai : ce qui marche ici sera repris dans le rogu
 
 ## Boucle de jeu
 
-1. Construction : on voit la prochaine vague, on commande des tours au bâtisseur, on améliore ou vend, on dépense ses essences.
-2. On lance la vague quand on est prêt (on peut continuer à construire pendant).
+1. Préparation : on voit la prochaine vague et un compte à rebours ; on commande des tours au bâtisseur, on améliore ou vend, on dépense ses essences.
+2. La vague part toute seule à la fin du compte à rebours (30 s avant la première, puis 30 s après la fin des apparitions de la précédente). On peut la lancer plus tôt : 0,5 or par seconde gagnée. Les vagues peuvent donc se chevaucher.
 3. Chaque ennemi tué rapporte de l'or ; chaque ennemi qui sort coûte des vies.
-4. Fin de vague : intérêts sur l'or gardé, bonus de fin de vague, parfois une essence. Retour en 1.
+4. Quand tous les ennemis d'une vague sont morts ou sortis : intérêts sur l'or gardé, bonus de fin de vague, parfois une essence.
 5. Victoire après la dernière vague ; défaite à 0 vie.
 
 ## Cartes
@@ -35,13 +35,18 @@ Un personnage, comme le builder des TD Warcraft 3, garde un pied vers le futur j
 - Il se déplace au clavier (ZQSD / WASD / flèches) et marche partout, chemin compris. Il ne peut pas être blessé.
 - Cliquer une case **commande** une tour : l'or est payé tout de suite, un chantier apparaît, et le bâtisseur y marche puis la construit (1,5 s pour une tour de base, 2,5 s pour une tour d'élément). Les commandes s'enchaînent dans une file.
 - Une tour en chantier ne tire pas. Annuler un chantier rembourse tout.
-- Ce que ça apporte : poser loin coûte du temps, il faut anticiper avant la vague. À venir : améliorer demande aussi le bâtisseur, objets ou talents qui accélèrent la construction.
+- **Améliorer** est aussi un chantier : l'or est payé, la tour est **hors service** jusqu'à ce que le bâtisseur vienne la finir (temps de construction × niveau visé). On améliore donc plutôt entre les vagues.
+- Ce que ça apporte : poser loin coûte du temps, il faut anticiper avant la vague. À venir : objets ou talents qui accélèrent la construction.
 
 ## Éléments
 
 Six éléments, en cycle comme dans Element TD :
 
 > **Lumière > Ténèbres > Eau > Feu > Nature > Terre > Lumière**
+
+![Roue des éléments](img/elements.svg)
+
+La même roue est dans l'interface (panneau « Éléments ») : un clic sur un élément sombre dépense une essence pour le débloquer.
 
 - Attaque forte (contre l'élément suivant) : dégâts × 2. Attaque faible (contre l'élément précédent) : × 0,5. Sinon × 1. Le Neutre n'a ni bonus ni malus.
 - Chaque vague a un élément (la couleur des ennemis). Le poison suit aussi le multiplicateur.
@@ -82,7 +87,7 @@ Le rôle vient de l'**archétype**, l'élément vient de la **vague**.
 
 - 20 vagues dans `data/waves/` : archétype, élément, nombre, intervalle, multiplicateur de PV.
 - La prochaine vague est annoncée dans la barre du haut.
-- Lancement à la main (Espace).
+- Lancement automatique avec compte à rebours ; Espace (ou le bouton) lance la suivante en avance contre de l'or.
 
 ## Économie
 
@@ -100,6 +105,11 @@ Formes simples dessinées en code, fond sombre, chemin en terre, éléments de j
 
 ## Questions ouvertes
 
-- Vagues lancées à la main, ou chronomètre avec bonus si on appelle la vague en avance ?
 - Combien de vagues pour une partie complète (Element TD en a 60) ?
 - Niveaux d'élément et tours doubles : avec les mêmes essences, ou une seconde monnaie ?
+
+## Pistes à l'étude (proposées le 2026-11-25)
+
+- **Arbres d'amélioration** : au niveau 2 puis 3, chaque tour choisit entre deux branches (ex. Flèche : « Perforante » qui traverse / « Rapide »). Oblige à choisir, se combine bien avec les tours d'éléments.
+- **Tours mixtes** (doubles, puis triples) : deux éléments débloqués ouvrent une tour combinée, comme dans Element TD. C'est la vraie profondeur du genre ; à faire après les arbres.
+- **Partie « idle » de l'économie** : plutôt une couche légère (bâtiments d'économie qui rapportent de l'or au fil du temps, recherche des tours mixtes qui avance pendant les vagues) qu'un vrai jeu idle hors ligne, pour ne pas casser la tension des vagues.

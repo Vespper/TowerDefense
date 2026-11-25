@@ -1,8 +1,9 @@
 extends SceneTree
 ## Partie complète jouée par un « joueur automatique » : il débloque les éléments dans un ordre fixe,
-## pose ses tours aux cases qui couvrent le plus de chemin, puis les améliore.
+## pose ses tours aux cases qui couvrent le plus de chemin, puis les améliore entre les vagues.
 ## Lancer : tools/test.sh tests/test_game.gd
 ## Options après « -- » : « passive » pour ne rien construire (doit mener à la défaite),
+## « rush » pour lancer chaque vague dès que possible (bonus d'avance, vagues qui se chevauchent),
 ## « shot=60 » pour enregistrer une capture d'écran à 60 s de jeu (tools/screenshot.sh, pas en headless).
 
 const MAIN_SCENE := preload("res://scenes/main/main.tscn")
@@ -28,6 +29,7 @@ var _cycle_step: int = 0
 var _element_turn: int = 0
 var _upgrade_next: bool = false
 var _ready_done: bool = false
+var _rush: bool = false
 
 
 func _initialize() -> void:
@@ -36,6 +38,8 @@ func _initialize() -> void:
 			_passive = true
 		elif arg.begins_with("shot="):
 			_shot_at = float(arg.trim_prefix("shot="))
+		elif arg == "rush":
+			_rush = true
 		elif arg.begins_with("out="):
 			_shot_path = arg.trim_prefix("out=")
 	_main = MAIN_SCENE.instantiate()
@@ -58,13 +62,14 @@ func _process(delta: float) -> bool:
 	if _main.is_finished() or _elapsed > MAX_SECONDS:
 		_report()
 		return true
-	if _main.wave_index != _last_wave:
-		_last_wave = _main.wave_index
+	if _main.waves_cleared != _last_wave:
+		_last_wave = _main.waves_cleared
 		print("  vague %d finie à %.0f s : vies %d, or %d, %d tours, éléments %d" % [
 			_last_wave, _elapsed, _main.lives, _main.gold, _main.towers().size(), _main.elements.size()])
 	if not _passive:
 		_play()
-	_main.start_next_wave()
+	if _rush:
+		_main.start_next_wave()
 	return false
 
 
@@ -73,7 +78,11 @@ func _play() -> void:
 		_main.buy_element(ELEMENT_ORDER[_element_turn])
 		_element_turn += 1
 	var count := _main.towers().size()
-	if count >= MAX_TOWERS or (count >= BUILD_ONLY_UNTIL and _upgrade_next):
+	# Améliorer met la tour hors service : seulement entre deux vagues, une à la fois
+	var can_upgrade_now := not _main.spawner.is_spawning() and _main.builder.pending_orders() == 0
+	if count >= MAX_TOWERS and not can_upgrade_now:
+		return
+	if can_upgrade_now and (count >= MAX_TOWERS or (count >= BUILD_ONLY_UNTIL and _upgrade_next)):
 		var best: Tower = null
 		for t in _main.towers():
 			if t.can_upgrade() and (best == null or t.upgrade_cost() < best.upgrade_cost()):
@@ -134,7 +143,7 @@ func _report() -> void:
 	var levels := 0
 	for t in _main.towers():
 		levels += t.level
-	print("Résultat : %s après %.0f s — vague %d/%d, vies %d/%d, or %d, %d tours (niveaux cumulés %d), %d éléments" % [
-		result, _elapsed, mini(_main.wave_index + 1, _main.waves.size()), _main.waves.size(),
+	print("Résultat : %s après %.0f s — %d vagues vaincues sur %d, vies %d/%d, or %d, %d tours (niveaux cumulés %d), %d éléments" % [
+		result, _elapsed, _main.waves_cleared, _main.waves.size(),
 		_main.lives, _main.rules.start_lives, _main.gold, _main.towers().size(), levels, _main.elements.size()
 	])
