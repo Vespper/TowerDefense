@@ -27,13 +27,13 @@ func _process(_delta: float) -> bool:
 	_check(continuous, "le chemin est continu, case par case (%d cases)" % cells.size())
 	_check(board.path_points().size() == MAP.waypoints.size() + 2, "points du chemin : bords + coins")
 
-	_check(not board.can_build(Vector2i(5, 2)), "interdit sur le chemin")
-	_check(board.can_build(Vector2i(5, 4)), "autorisé hors du chemin")
+	_check(not board.can_build(Vector2i(5, 1)), "interdit sur le chemin")
+	_check(board.can_build(Vector2i(5, 3)), "autorisé hors du chemin")
 	_check(not board.can_build(Vector2i(-1, 3)), "interdit hors du terrain")
-	board.set_occupied(Vector2i(5, 4), true)
-	_check(not board.can_build(Vector2i(5, 4)), "interdit sur une case prise")
-	board.set_occupied(Vector2i(5, 4), false)
-	_check(board.can_build(Vector2i(5, 4)), "case libérée après la vente")
+	board.set_occupied(Vector2i(5, 3), true)
+	_check(not board.can_build(Vector2i(5, 3)), "interdit sur une case prise")
+	board.set_occupied(Vector2i(5, 3), false)
+	_check(board.can_build(Vector2i(5, 3)), "case libérée après la vente")
 
 	# Cycle des éléments : chacun bat le suivant, et le dernier bat le premier
 	var rules := GameRules.new()

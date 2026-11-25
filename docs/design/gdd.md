@@ -17,7 +17,7 @@ Ce projet est aussi un banc d'essai : ce qui marche ici sera repris dans le rogu
 
 ## Boucle de jeu
 
-1. Construction : on voit la prochaine vague, on pose, améliore ou vend des tours, on dépense ses essences.
+1. Construction : on voit la prochaine vague, on commande des tours au bâtisseur, on améliore ou vend, on dépense ses essences.
 2. On lance la vague quand on est prêt (on peut continuer à construire pendant).
 3. Chaque ennemi tué rapporte de l'or ; chaque ennemi qui sort coûte des vies.
 4. Fin de vague : intérêts sur l'or gardé, bonus de fin de vague, parfois une essence. Retour en 1.
@@ -26,8 +26,16 @@ Ce projet est aussi un banc d'essai : ce qui marche ici sera repris dans le rogu
 ## Cartes
 
 - Grille de 24 × 15 cases, **chemin fixe** défini dans une `MapData` (`data/maps/`) par ses coins. Toutes les cases hors du chemin sont constructibles.
-- Première carte : « Serpent », un chemin en S qui repasse trois fois devant le centre (comme Flash Element TD).
+- Première carte : « Serpent », un chemin de 93 cases qui serpente quatre fois à travers la carte (comme Flash Element TD).
 - On ajoutera d'autres cartes au fur et à mesure. Les **cartes libres** (labyrinthe construit avec les tours, façon Element TD original ou Wintermaul) viendront plus tard sous forme de mode.
+
+## Bâtisseur
+
+Un personnage, comme le builder des TD Warcraft 3, garde un pied vers le futur jeu à personnage :
+- Il se déplace au clavier (ZQSD / WASD / flèches) et marche partout, chemin compris. Il ne peut pas être blessé.
+- Cliquer une case **commande** une tour : l'or est payé tout de suite, un chantier apparaît, et le bâtisseur y marche puis la construit (1,5 s pour une tour de base, 2,5 s pour une tour d'élément). Les commandes s'enchaînent dans une file.
+- Une tour en chantier ne tire pas. Annuler un chantier rembourse tout.
+- Ce que ça apporte : poser loin coûte du temps, il faut anticiper avant la vague. À venir : améliorer demande aussi le bâtisseur, objets ou talents qui accélèrent la construction.
 
 ## Éléments
 

@@ -8,6 +8,7 @@ display_name = "Feu"
 element = 4
 description = "Tir très rapide, grande zone, courte portée."
 cost = 40
+build_time = 2.5
 damage = 7.0
 fire_rate = 2.2
 attack_range = 100.0

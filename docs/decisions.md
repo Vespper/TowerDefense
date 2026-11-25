@@ -11,3 +11,5 @@ Une ligne par décision, la plus récente en bas. Ce qui est écrit ici n'est pl
 | 2026-11-25 | Éléments | Six éléments dès maintenant, cycle d'Element TD : Lumière > Ténèbres > Eau > Feu > Nature > Terre > Lumière. |
 | 2026-11-25 | Tours de base | Flèche, Mortier, Magie (neutres, toujours disponibles). |
 | 2026-11-25 | Référence | Reprendre vraiment le fonctionnement d'Element TD et des TD Warcraft 3 les plus connus. |
+| 2026-11-25 | Bâtisseur | Un personnage se déplace et construit les tours, avec un temps de construction (garder un pied dans le futur jeu à personnage). |
+| 2026-11-25 | Carte | Circuit plus long : la carte Serpent passe à 93 cases. |

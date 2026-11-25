@@ -38,6 +38,7 @@ var _mouse_world: Vector2 = Vector2(-1000, -1000)
 @onready var projectiles_root: Node2D = $Projectiles
 @onready var spawner: WaveSpawner = $WaveSpawner
 @onready var hud: Hud = $Hud
+@onready var builder: Builder = $Builder
 
 
 func _ready() -> void:
@@ -45,6 +46,9 @@ func _ready() -> void:
 	gold = rules.start_gold
 	lives = rules.start_lives
 	essences = rules.start_essences
+	var board_rect := Rect2(board.global_position, Vector2(board.columns, board.rows) * board.cell_size)
+	builder.bounds = board_rect.grow(-12)
+	builder.global_position = board.cell_to_world(Vector2i(board.columns / 2, board.rows / 2))
 	spawner.enemy_spawned.connect(_on_enemy_spawned)
 	hud.build_requested.connect(select_build)
 	hud.start_wave_requested.connect(start_next_wave)
@@ -136,6 +140,8 @@ func try_build(index: int, cell: Vector2i) -> Tower:
 	tower.global_position = board.cell_to_world(cell)
 	_towers_by_cell[cell] = tower
 	board.set_occupied(cell, true)
+	tower.built.connect(func(_t: Tower) -> void: _refresh_hud())
+	builder.order(tower)
 	_refresh_hud()
 	_update_ghost()
 	return tower

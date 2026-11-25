@@ -1,6 +1,9 @@
 class_name Tower
 extends Node2D
-## Tour posée sur une case. Vise l'ennemi le plus avancé à portée et tire un projectile.
+## Tour posée sur une case. Elle est d'abord un chantier que le bâtisseur doit construire ;
+## une fois construite, elle vise l'ennemi le plus avancé à portée et tire un projectile.
+
+signal built(tower: Tower)
 
 const PROJECTILE_SCENE := preload("res://scenes/towers/projectile.tscn")
 
@@ -14,6 +17,9 @@ var selected: bool = false:
 	set(value):
 		selected = value
 		queue_redraw()
+
+## Avancement du chantier, de 0 à 1 (1 = construite).
+var build_progress: float = 0.0
 
 var _projectiles_root: Node
 var _cooldown: float = 0.0
@@ -30,6 +36,8 @@ func setup(tower_data: TowerData, game_rules: GameRules, at_cell: Vector2i, cell
 
 
 func _process(delta: float) -> void:
+	if not is_built():
+		return
 	_cooldown -= delta
 	if _cooldown > 0.0:
 		return
@@ -46,6 +54,15 @@ func _process(delta: float) -> void:
 func _draw() -> void:
 	var col := Element.color(data.element)
 	var half := _size / 2.0
+	if not is_built():
+		# Chantier : contour pointillé de la tour, barre d'avancement
+		draw_rect(Rect2(-half, -half, _size, _size), Color(col, 0.25))
+		draw_rect(Rect2(-half, -half, _size, _size), Color(col, 0.8), false, 2.0)
+		draw_rect(Rect2(-half + 3, half - 8, (_size - 6), 5), Color(0, 0, 0, 0.6))
+		draw_rect(Rect2(-half + 3, half - 8, (_size - 6) * build_progress, 5), Color(1, 0.85, 0.35))
+		if selected:
+			draw_rect(Rect2(-half - 2, -half - 2, _size + 4, _size + 4), Color.WHITE, false, 2.0)
+		return
 	draw_rect(Rect2(-half, -half, _size, _size), Color(0.2, 0.2, 0.25))
 	draw_rect(Rect2(-half + 4, -half + 4, _size - 8, _size - 8), col)
 	# Les tours de base ont un symbole pour les distinguer (même couleur neutre)
@@ -63,6 +80,20 @@ func _draw() -> void:
 		draw_arc(Vector2.ZERO, data.attack_range, 0, TAU, 64, Color(1, 1, 1, 0.35), 1.5)
 
 
+func is_built() -> bool:
+	return build_progress >= 1.0
+
+
+## Fait avancer le chantier (appelé par le bâtisseur). `speed` multiplie la vitesse de construction.
+func work(delta: float, speed: float = 1.0) -> void:
+	if is_built():
+		return
+	build_progress = minf(build_progress + delta * speed / maxf(data.build_time, 0.01), 1.0)
+	queue_redraw()
+	if is_built():
+		built.emit(self)
+
+
 func damage() -> float:
 	return data.damage_at(level)
 
@@ -72,7 +103,7 @@ func poison_dps() -> float:
 
 
 func can_upgrade() -> bool:
-	return level < rules.max_tower_level
+	return is_built() and level < rules.max_tower_level
 
 
 func upgrade_cost() -> int:
@@ -85,7 +116,10 @@ func upgrade() -> void:
 	queue_redraw()
 
 
+## Un chantier annulé est remboursé en entier.
 func sell_value() -> int:
+	if not is_built():
+		return total_spent
 	return int(floor(total_spent * rules.sell_refund))
 
 

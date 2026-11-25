@@ -7,6 +7,8 @@ extends Resource
 @export var element: Element.Type = Element.Type.NONE
 @export_multiline var description: String = ""
 @export var cost: int = 10
+## Secondes de construction par le bâtisseur, une fois arrivé à côté de la case.
+@export var build_time: float = 1.5
 
 @export_group("Attaque")
 @export var damage: float = 5.0

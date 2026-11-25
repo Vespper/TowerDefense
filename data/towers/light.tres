@@ -8,6 +8,7 @@ display_name = "Lumière"
 element = 1
 description = "Très longue portée, une cible."
 cost = 40
+build_time = 2.5
 damage = 14.0
 fire_rate = 1.0
 attack_range = 220.0
