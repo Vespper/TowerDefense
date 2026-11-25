@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="TowerData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/tower_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+display_name = "Brasier"
+element = 1
+description = "Boule de feu qui touche une zone autour de l'impact."
+cost = 30
+damage = 9.0
+fire_rate = 0.8
+attack_range = 110.0
+splash_radius = 50.0
+projectile_speed = 320.0
