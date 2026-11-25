@@ -1,6 +1,21 @@
-[gd_resource type="Resource" script_class="TowerData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="TowerData" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/tower_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/tower_branch.gd" id="2"]
+
+[sub_resource type="Resource" id="branch_0"]
+script = ExtResource("2")
+display_name = "Perforante"
+description = "Flèches lourdes : gros dégâts, un peu plus de portée."
+damage_mult = 1.7
+range_mult = 1.1
+
+[sub_resource type="Resource" id="branch_1"]
+script = ExtResource("2")
+display_name = "Rafale"
+description = "Tire beaucoup plus vite."
+fire_rate_mult = 1.6
+damage_mult = 1.1
 
 [resource]
 script = ExtResource("1")
@@ -13,3 +28,4 @@ fire_rate = 1.4
 attack_range = 140.0
 strong_against = 1
 weak_against = 2
+branches = Array[ExtResource("2")]([SubResource("branch_0"), SubResource("branch_1")])

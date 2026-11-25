@@ -88,7 +88,8 @@ func _play() -> void:
 			if t.can_upgrade() and (best == null or t.upgrade_cost() < best.upgrade_cost()):
 				best = t
 		if best != null:
-			if _main.try_upgrade(best):
+			# Alterne les branches selon la case, pour jouer les deux côtés de l'arbre
+			if _main.try_upgrade(best, (best.cell.x + best.cell.y) % 2):
 				_upgrade_next = false
 			return
 	var index := _next_type()

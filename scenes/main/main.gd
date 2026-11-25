@@ -61,7 +61,7 @@ func _ready() -> void:
 	spawner.spawning_finished.connect(_on_spawning_finished)
 	hud.build_requested.connect(select_build)
 	hud.start_wave_requested.connect(start_next_wave)
-	hud.upgrade_requested.connect(func() -> void: try_upgrade(_selected))
+	hud.upgrade_requested.connect(func(branch_index: int) -> void: try_upgrade(_selected, branch_index))
 	hud.sell_requested.connect(func() -> void: sell(_selected))
 	hud.speed_toggled.connect(_toggle_speed)
 	hud.element_requested.connect(buy_element)
@@ -100,7 +100,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("start_wave"):
 		start_next_wave()
 	elif event.is_action_pressed("upgrade_tower"):
-		try_upgrade(_selected)
+		try_upgrade(_selected, 0)
+	elif event.is_action_pressed("upgrade_tower_alt"):
+		try_upgrade(_selected, 1)
 	elif event.is_action_pressed("sell_tower"):
 		sell(_selected)
 	elif event.is_action_pressed("toggle_speed"):
@@ -169,11 +171,13 @@ func try_build(index: int, cell: Vector2i) -> Tower:
 	return tower
 
 
-func try_upgrade(tower: Tower) -> bool:
+## Améliore la tour. Au niveau 1, `branch_index` (0 ou 1) choisit la branche de l'arbre ;
+## ensuite la tour reste sur sa branche et `branch_index` est ignoré.
+func try_upgrade(tower: Tower, branch_index: int = 0) -> bool:
 	if tower == null or is_finished() or not tower.can_upgrade() or tower.upgrade_cost() > gold:
 		return false
 	gold -= tower.upgrade_cost()
-	tower.upgrade()
+	tower.upgrade(branch_index)
 	builder.order(tower)
 	_refresh_hud()
 	return true

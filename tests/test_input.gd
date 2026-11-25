@@ -51,11 +51,13 @@ func _process(_delta: float) -> bool:
 				_check(_main.builder.global_position.distance_to(site.global_position) <= _main.builder.data.build_reach + 1.0, "le bâtisseur est allé à la case")
 				_check(_main.builder.pending_orders() == 0, "file de chantiers vide")
 				_click(_main.board.cell_to_world(_cell))
-				_key(KEY_U)
+				_key(KEY_I)
 				_step = 3
 		3:
 			var t: Tower = _main.towers()[0]
-			_check(t.level == 2, "U : amélioration vers le niveau 2 payée")
+			_check(t.level == 2, "I : amélioration vers le niveau 2 payée")
+			_check(t.branch == 1 and t.chosen_branch().display_name == "Rafale", "I : branche Rafale choisie")
+			_check(t.fire_rate() > t.data.fire_rate, "Rafale : la cadence augmente")
 			_check(t.is_upgrading() and not t.is_built(), "la tour est hors service pendant l'amélioration")
 			_step = 30
 		30:

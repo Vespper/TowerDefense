@@ -12,6 +12,8 @@ var data: TowerData
 var rules: GameRules
 var cell: Vector2i
 var level: int = 1
+## Branche d'amélioration choisie au niveau 2 (-1 = pas encore choisie).
+var branch: int = -1
 ## Or dépensé sur cette tour (pose + améliorations), pour la revente.
 var total_spent: int = 0
 var selected: bool = false:
@@ -48,7 +50,7 @@ func _process(delta: float) -> void:
 	var target := _find_target()
 	if target == null:
 		return
-	_cooldown = 1.0 / data.fire_rate
+	_cooldown = 1.0 / fire_rate()
 	var projectile: Projectile = PROJECTILE_SCENE.instantiate()
 	projectile.setup(self, target)
 	_projectiles_root.add_child(projectile)
@@ -86,7 +88,7 @@ func _draw() -> void:
 		_draw_progress(half)
 	if selected:
 		draw_rect(Rect2(-half - 2, -half - 2, _size + 4, _size + 4), Color.WHITE, false, 2.0)
-		draw_arc(Vector2.ZERO, data.attack_range, 0, TAU, 64, Color(1, 1, 1, 0.35), 1.5)
+		draw_arc(Vector2.ZERO, attack_range(), 0, TAU, 64, Color(1, 1, 1, 0.35), 1.5)
 
 
 func is_built() -> bool:
@@ -114,16 +116,64 @@ func work(delta: float, speed: float = 1.0) -> void:
 		built.emit(self)
 
 
+## Branche choisie, ou null.
+func chosen_branch() -> TowerBranch:
+	if branch < 0 or branch >= data.branches.size():
+		return null
+	return data.branches[branch]
+
+
+## Nombre de fois que les bonus de la branche s'appliquent (niveau - 1).
+func _branch_steps() -> int:
+	return level - 1 if chosen_branch() != null else 0
+
+
 func damage() -> float:
-	return data.damage_at(level)
+	var b := chosen_branch()
+	return data.damage * (pow(b.damage_mult, _branch_steps()) if b else 1.0)
+
+
+func fire_rate() -> float:
+	var b := chosen_branch()
+	return data.fire_rate * (pow(b.fire_rate_mult, _branch_steps()) if b else 1.0)
+
+
+func attack_range() -> float:
+	var b := chosen_branch()
+	return data.attack_range * (pow(b.range_mult, _branch_steps()) if b else 1.0)
 
 
 func poison_dps() -> float:
-	return data.poison_at(level)
+	var b := chosen_branch()
+	return data.poison_dps * (pow(b.poison_mult, _branch_steps()) if b else 1.0)
+
+
+func splash_radius() -> float:
+	if data.splash_radius <= 0.0:
+		return 0.0
+	var b := chosen_branch()
+	return data.splash_radius + (b.splash_bonus * _branch_steps() if b else 0.0)
+
+
+func chain_count() -> int:
+	var b := chosen_branch()
+	return data.chain_count + (b.chain_bonus * _branch_steps() if b else 0)
+
+
+func slow_factor() -> float:
+	if data.slow_factor >= 1.0:
+		return 1.0
+	var b := chosen_branch()
+	return maxf(data.slow_factor - (b.slow_bonus * _branch_steps() if b else 0.0), 0.1)
 
 
 func can_upgrade() -> bool:
 	return is_built() and level < rules.max_tower_level
+
+
+## Vrai si la prochaine amélioration demande de choisir une branche.
+func needs_branch_choice() -> bool:
+	return branch < 0 and not data.branches.is_empty()
 
 
 func upgrade_cost() -> int:
@@ -131,7 +181,10 @@ func upgrade_cost() -> int:
 
 
 ## Paie l'amélioration et ouvre le chantier : le bâtisseur doit venir la faire.
-func upgrade() -> void:
+## Au niveau 1, `branch_index` choisit la branche (ignoré ensuite : on reste sur la même).
+func upgrade(branch_index: int = 0) -> void:
+	if needs_branch_choice():
+		branch = clampi(branch_index, 0, data.branches.size() - 1)
 	_pending_cost = upgrade_cost()
 	total_spent += _pending_cost
 	level += 1
@@ -158,7 +211,7 @@ func _find_target() -> Enemy:
 			continue
 		if enemy.is_flying() and not data.hits_air:
 			continue
-		if enemy.global_position.distance_to(global_position) > data.attack_range:
+		if enemy.global_position.distance_to(global_position) > attack_range():
 			continue
 		var left := enemy.remaining_distance()
 		if left < best_left:

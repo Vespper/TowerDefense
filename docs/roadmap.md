@@ -23,15 +23,16 @@ Mise à jour à chaque fin de session (skill `fin-de-session`). Garder ce fichie
 - [x] Amélioration = chantier (tour hors service), vagues automatiques avec lancement anticipé, roue des éléments, difficulté relevée
 - [x] Deuxième session de test : victoire avec 10 vies
 - [x] Vagues neutres à armure (Flèche / Mortier / Magie), élites à élément, compte à rebours à 3 s quand le terrain est vide
-- [ ] Arbre d'améliorations : 2 branches par tour
+- [x] Arbre d'améliorations : 2 branches par tour, choisies au niveau 2 (U / I)
 - [ ] Équilibrage après la session de test
 
 ## Prochaine étape
 
-Arbre d'améliorations (2 branches par tour au niveau 2), puis nouvelle session de test.
+Session de test de Vespper sur les armures, les élites et l'arbre d'améliorations, puis équilibrage. Ensuite : tours mixtes (deux éléments).
 
 ## Journal
 
+- 2026-11-25 — Arbre d'améliorations : 2 branches par tour, touche I pour la branche B (PR #6).
 - 2026-11-25 — Armures des vagues neutres, élites à élément, 20 vagues refaites, compte à rebours à 3 s (PR #5).
 - 2026-11-25 — Amélioration avec chantier, vagues automatiques, roue des éléments, difficulté relevée (PR #4).
 - 2026-11-25 — Circuit plus long, bâtisseur qui construit les tours, vagues rééquilibrées (PR #3).

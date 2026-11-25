@@ -71,7 +71,7 @@ Les vagues sans élément ont une **armure**, en pierre-feuille-ciseaux avec les
   - **Magie** : éclair qui rebondit sur plusieurs ennemis, touche les volants.
 - **Tours d'éléments** (une par élément, il faut l'avoir débloqué), avec les rôles d'Element TD :
   - **Lumière** : très longue portée. **Ténèbres** : énormes dégâts, tir lent. **Eau** : tir très rapide, petite zone, ralentit. **Feu** : tir très rapide, grande zone, courte portée. **Nature** : poison. **Terre** : grosse zone, ne vise pas les volants.
-- **Amélioration** : 3 niveaux, dégâts × 1,6 par niveau. **Revente** : 75 % du total dépensé.
+- **Amélioration** : 3 niveaux, en **arbre** : au passage au niveau 2, on choisit l'une des deux branches de la tour (U ou I), puis le niveau 3 renforce la même branche. Chaque branche a son profil (dégâts, cadence, portée, zone, rebonds, ralentissement, poison) ; le choix est définitif. **Revente** : 75 % du total dépensé.
 
 À venir :
 - **Niveaux d'élément** : dépenser une essence de plus sur un élément déjà débloqué pour renforcer ses tours.
@@ -123,6 +123,5 @@ Formes simples dessinées en code, fond sombre, chemin en terre, éléments de j
 
 ## Pistes à l'étude (proposées le 2026-11-25)
 
-- **Arbres d'amélioration** : au niveau 2 puis 3, chaque tour choisit entre deux branches (ex. Flèche : « Perforante » qui traverse / « Rapide »). Oblige à choisir, se combine bien avec les tours d'éléments.
 - **Tours mixtes** (doubles, puis triples) : deux éléments débloqués ouvrent une tour combinée, comme dans Element TD. C'est la vraie profondeur du genre ; à faire après les arbres.
 - **Partie « idle » de l'économie** : plutôt une couche légère (bâtiments d'économie qui rapportent de l'or au fil du temps, recherche des tours mixtes qui avance pendant les vagues) qu'un vrai jeu idle hors ligne, pour ne pas casser la tension des vagues.

@@ -1,6 +1,21 @@
-[gd_resource type="Resource" script_class="TowerData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="TowerData" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/tower_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/tower_branch.gd" id="2"]
+
+[sub_resource type="Resource" id="branch_0"]
+script = ExtResource("2")
+display_name = "Brasier"
+description = "Zone d'explosion plus large."
+splash_bonus = 15.0
+damage_mult = 1.4
+
+[sub_resource type="Resource" id="branch_1"]
+script = ExtResource("2")
+display_name = "Fournaise"
+description = "Plus de dégâts et de cadence."
+damage_mult = 1.45
+fire_rate_mult = 1.15
 
 [resource]
 script = ExtResource("1")
@@ -13,3 +28,4 @@ damage = 7.0
 fire_rate = 2.2
 attack_range = 100.0
 splash_radius = 55.0
+branches = Array[ExtResource("2")]([SubResource("branch_0"), SubResource("branch_1")])

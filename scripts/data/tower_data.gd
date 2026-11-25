@@ -1,6 +1,6 @@
 class_name TowerData
 extends Resource
-## Un type de tour (niveau 1). Les améliorations multiplient les dégâts.
+## Un type de tour (niveau 1). Ses améliorations suivent l'une de ses deux branches (arbre d'améliorations).
 ## Une tour d'élément demande d'avoir débloqué cet élément ; une tour neutre est toujours disponible.
 
 @export var display_name: String = "Tour"
@@ -41,16 +41,8 @@ extends Resource
 @export_group("Améliorations")
 ## Coût de l'amélioration vers le niveau N+1 = coût × ratio × N.
 @export var upgrade_cost_ratio: float = 0.75
-## Multiplicateur des dégâts (et du poison) à chaque niveau.
-@export var upgrade_damage_multiplier: float = 1.6
-
-
-func damage_at(level: int) -> float:
-	return damage * pow(upgrade_damage_multiplier, level - 1)
-
-
-func poison_at(level: int) -> float:
-	return poison_dps * pow(upgrade_damage_multiplier, level - 1)
+## Les deux branches proposées au niveau 2.
+@export var branches: Array[TowerBranch] = []
 
 
 func upgrade_cost(from_level: int) -> int:
