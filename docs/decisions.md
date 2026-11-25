@@ -18,3 +18,4 @@ Une ligne par décision, la plus récente en bas. Ce qui est écrit ici n'est pl
 | 2026-11-25 | Éléments | Afficher les forces et faiblesses sous forme de roue (schéma façon pierre-feuille-ciseaux). |
 | 2026-11-25 | Vagues | Toutes les vagues ne sont pas élémentaires : vagues neutres avec armure en pierre-feuille-ciseaux contre Flèche / Mortier / Magie, élites à élément dans les vagues neutres, vagues d'éléments surtout en fin de partie, des volants. |
 | 2026-11-25 | Rythme | Quand une vague est entièrement vaincue, le compte à rebours de la suivante tombe à 3 s. |
+| 2026-11-25 | Améliorations | Arbre à 2 branches par tour : le choix se fait au passage au niveau 2 et il est définitif ; le niveau 3 renforce la même branche. |

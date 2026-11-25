@@ -1,6 +1,20 @@
-[gd_resource type="Resource" script_class="TowerData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="TowerData" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/tower_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/tower_branch.gd" id="2"]
+
+[sub_resource type="Resource" id="branch_0"]
+script = ExtResource("2")
+display_name = "Obus lourds"
+description = "Dégâts bruts très élevés."
+damage_mult = 1.75
+
+[sub_resource type="Resource" id="branch_1"]
+script = ExtResource("2")
+display_name = "Fragmentation"
+description = "Explosion bien plus large."
+splash_bonus = 25.0
+damage_mult = 1.3
 
 [resource]
 script = ExtResource("1")
@@ -16,3 +30,4 @@ projectile_speed = 260.0
 hits_air = false
 strong_against = 2
 weak_against = 3
+branches = Array[ExtResource("2")]([SubResource("branch_0"), SubResource("branch_1")])

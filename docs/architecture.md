@@ -11,7 +11,7 @@ scenes/builder/   bâtisseur (personnage qui construit les tours)
 scenes/towers/    tour, projectile, effets (zone, éclair)
 scenes/enemies/   ennemi
 scenes/ui/        HUD
-scripts/data/     Resources de données (GameRules, MapData, BuilderData, TowerData, EnemyData, WaveData), Element et Armor
+scripts/data/     Resources de données (GameRules, MapData, BuilderData, TowerData, TowerBranch, EnemyData, WaveData), Element et Armor
 data/             contenu de jeu en .tres : rules.tres, builder.tres, maps/, towers/, enemies/, waves/
 tests/            tests headless (tools/test.sh)
 tools/            scripts bash (check, test, run, screenshot)
@@ -32,7 +32,7 @@ Main (Node2D, main.gd)        or, vies, essences, éléments débloqués, état 
 
 ## Principes
 
-- **Données séparées du code** : `GameRules` (`data/rules.tres`) pour l'économie, les essences et les éléments, une `MapData` par carte (taille et coins du chemin), une `TowerData` par tour, une `EnemyData` par archétype, une `WaveData` par vague. Les listes de tours et de vagues sont des `@export` de `Main` (réglables dans l'inspecteur de `main.tscn`). Équilibrer = éditer un `.tres`.
+- **Données séparées du code** : `GameRules` (`data/rules.tres`) pour l'économie, les essences et les éléments, une `MapData` par carte (taille et coins du chemin), une `TowerData` par tour (avec ses deux `TowerBranch` en sous-ressources ; `Tower` calcule ses stats selon la branche et le niveau), une `EnemyData` par archétype, une `WaveData` par vague. Les listes de tours et de vagues sont des `@export` de `Main` (réglables dans l'inspecteur de `main.tscn`). Équilibrer = éditer un `.tres`.
 - **Élément** : `Element.Type` (enum, 6 éléments + Neutre) avec noms, couleurs et le cycle des forces dans `scripts/data/element.gd` ; les multiplicateurs sont dans `GameRules.element_multiplier()`.
 - **Signaux vers le haut, appels vers le bas** : `Enemy` émet `died` / `reached_exit`, `WaveSpawner` émet `enemy_spawned`, `Hud` émet `build_requested`, `start_wave_requested`… et `Main` décide.
 - **Pas d'autoload** pour l'instant : tout l'état d'une partie est dans `Main`. En créer un (`Events`, `GameState`) seulement quand plusieurs scènes en auront besoin (menus, plusieurs cartes).
@@ -66,6 +66,6 @@ Main (Node2D, main.gd)        or, vies, essences, éléments débloqués, état 
 ## Tests
 
 - `tests/test_board.gd` : chemin, cases constructibles, cycle des éléments.
-- `tests/test_input.gd` : souris et clavier simulés (commander une tour, attendre le bâtisseur, améliorer avec chantier, vendre, débloquer un élément, déplacer le bâtisseur, lancer une vague en avance).
+- `tests/test_input.gd` : souris et clavier simulés (commander une tour, attendre le bâtisseur, améliorer avec chantier et choisir la branche B avec I, vendre, débloquer un élément, déplacer le bâtisseur, lancer une vague en avance).
 - `tests/test_game.gd` : partie complète jouée par un joueur automatique (éléments dans un ordre fixe, tours aux cases qui couvrent le plus de chemin) ; `-- passive` ne construit rien et doit perdre. La ligne « Résultat » sert de repère d'équilibrage.
 - `Main` expose `try_build`, `try_upgrade`, `sell`, `buy_element`, `start_next_wave` pour que les tests jouent sans souris.

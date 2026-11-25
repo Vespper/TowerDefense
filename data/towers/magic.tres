@@ -1,6 +1,20 @@
-[gd_resource type="Resource" script_class="TowerData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="TowerData" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/tower_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/tower_branch.gd" id="2"]
+
+[sub_resource type="Resource" id="branch_0"]
+script = ExtResource("2")
+display_name = "Chaîne"
+description = "L'éclair rebondit sur 2 ennemis de plus."
+chain_bonus = 2
+damage_mult = 1.3
+
+[sub_resource type="Resource" id="branch_1"]
+script = ExtResource("2")
+display_name = "Arcane"
+description = "Éclair beaucoup plus puissant."
+damage_mult = 1.75
 
 [resource]
 script = ExtResource("1")
@@ -16,3 +30,4 @@ chain_range = 90.0
 projectile_speed = 600.0
 strong_against = 3
 weak_against = 1
+branches = Array[ExtResource("2")]([SubResource("branch_0"), SubResource("branch_1")])

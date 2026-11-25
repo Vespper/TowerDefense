@@ -1,6 +1,21 @@
-[gd_resource type="Resource" script_class="TowerData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="TowerData" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/tower_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/tower_branch.gd" id="2"]
+
+[sub_resource type="Resource" id="branch_0"]
+script = ExtResource("2")
+display_name = "Glace"
+description = "Ralentit davantage."
+slow_bonus = 0.1
+damage_mult = 1.35
+
+[sub_resource type="Resource" id="branch_1"]
+script = ExtResource("2")
+display_name = "Torrent"
+description = "Plus de dégâts et une zone plus large."
+damage_mult = 1.5
+splash_bonus = 10.0
 
 [resource]
 script = ExtResource("1")
@@ -15,3 +30,4 @@ attack_range = 130.0
 splash_radius = 40.0
 slow_factor = 0.7
 slow_duration = 1.0
+branches = Array[ExtResource("2")]([SubResource("branch_0"), SubResource("branch_1")])
