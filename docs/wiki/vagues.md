@@ -1,6 +1,6 @@
 # Vagues
 
-PV d'un ennemi = PV de l'archétype × multiplicateur. Fin de vague n : intérêts 3 % + bonus 10 + 2 × n ; une essence après les vagues 4, 8, 12, 16, 20.
+Les vagues partent seules : 30 s avant la première, puis 30 s après la fin des apparitions de la précédente (on peut les lancer plus tôt contre 0,5 or par seconde gagnée). PV d'un ennemi = PV de l'archétype × multiplicateur. Quand une vague n est vaincue : intérêts 3 % + bonus 10 + 2 × n ; une essence après les vagues 4, 8, 12, 16, 20.
 
 | # | Archétype | Élément | Nombre | Intervalle (s) | × PV | PV par ennemi | Fichier |
 |---|---|---|---|---|---|---|---|
@@ -18,11 +18,11 @@ PV d'un ennemi = PV de l'archétype × multiplicateur. Fin de vague n : intérê
 | 12 | Fantassin | Ténèbres | 18 | 0,6 | 10,03 | 401 | `wave_12.tres` |
 | 13 | Soigneur | Eau | 16 | 0,7 | 11,94 | 537 | `wave_13.tres` |
 | 14 | Volant | Feu | 18 | 0,6 | 11,94 | 358 | `wave_14.tres` |
-| 15 | Colosse | Lumière | 12 | 1,0 | 12,66 | 1519 | `wave_15.tres` |
-| 16 | Coureur | Terre | 22 | 0,45 | 14,75 | 369 | `wave_16.tres` |
-| 17 | Horde | Ténèbres | 44 | 0,22 | 17,55 | 246 | `wave_17.tres` |
-| 18 | Volant | Nature | 22 | 0,5 | 17,55 | 526 | `wave_18.tres` |
-| 19 | Fantassin | Eau | 24 | 0,5 | 22,83 | 913 | `wave_19.tres` |
+| 15 | Colosse | Lumière | 12 | 1,0 | 11,39 | 1367 | `wave_15.tres` |
+| 16 | Coureur | Terre | 22 | 0,45 | 13,28 | 332 | `wave_16.tres` |
+| 17 | Horde | Ténèbres | 44 | 0,22 | 15,8 | 221 | `wave_17.tres` |
+| 18 | Volant | Nature | 22 | 0,5 | 15,8 | 474 | `wave_18.tres` |
+| 19 | Fantassin | Eau | 24 | 0,5 | 20,55 | 822 | `wave_19.tres` |
 | 20 | Seigneur | Ténèbres | 1 | — | 7,92 | 7128 | `wave_20.tres` |
 
-Repère (`tools/test.sh`, joueur automatique) : victoire avec 9 vies sur 20, 30 tours. Sans rien construire : défaite à la vague 2.
+Repère (`tools/test.sh`, joueur automatique qui laisse partir les vagues seules) : victoire avec 6 vies sur 20, 30 tours. Sans rien construire : défaite à la vague 2.

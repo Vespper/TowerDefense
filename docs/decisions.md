@@ -13,3 +13,6 @@ Une ligne par décision, la plus récente en bas. Ce qui est écrit ici n'est pl
 | 2026-11-25 | Référence | Reprendre vraiment le fonctionnement d'Element TD et des TD Warcraft 3 les plus connus. |
 | 2026-11-25 | Bâtisseur | Un personnage se déplace et construit les tours, avec un temps de construction (garder un pied dans le futur jeu à personnage). |
 | 2026-11-25 | Carte | Circuit plus long : la carte Serpent passe à 93 cases. |
+| 2026-11-25 | Améliorations | Améliorer une tour prend du temps : la tour est hors service jusqu'à ce que le bâtisseur ait fini. |
+| 2026-11-25 | Vagues | Lancement automatique avec compte à rebours ; on peut lancer la vague suivante plus tôt. |
+| 2026-11-25 | Éléments | Afficher les forces et faiblesses sous forme de roue (schéma façon pierre-feuille-ciseaux). |

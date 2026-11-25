@@ -15,6 +15,14 @@ extends Resource
 ## Part du total dépensé (pose + améliorations) rendue à la revente.
 @export_range(0.0, 1.0) var sell_refund: float = 0.75
 
+@export_group("Vagues")
+## Secondes avant la première vague.
+@export var first_wave_delay: float = 30.0
+## Secondes entre la fin des apparitions d'une vague et le début de la suivante.
+@export var wave_gap: float = 30.0
+## Or gagné par seconde d'avance quand on lance la vague suivante soi-même.
+@export var early_call_gold_per_second: float = 0.5
+
 @export_group("Essences")
 ## Une essence débloque un élément (et ses tours). On en a au départ, puis on en gagne avec les vagues.
 @export var start_essences: int = 1
@@ -51,3 +59,8 @@ func interest(gold: int) -> int:
 ## Vrai si la fin de cette vague (1, 2, 3…) donne une essence.
 func gives_essence(wave_number: int) -> bool:
 	return essence_every_waves > 0 and wave_number % essence_every_waves == 0
+
+
+## Or gagné en lançant la vague avec `seconds_left` secondes d'avance.
+func early_call_bonus(seconds_left: float) -> int:
+	return int(floor(maxf(seconds_left, 0.0) * early_call_gold_per_second))
