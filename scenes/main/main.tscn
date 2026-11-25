@@ -1,0 +1,45 @@
+[gd_scene load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://scenes/main/main.gd" id="main"]
+[ext_resource type="Script" path="res://scenes/board/board.gd" id="board"]
+[ext_resource type="Script" path="res://scenes/main/wave_spawner.gd" id="spawner"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="hud"]
+[ext_resource type="Resource" path="res://data/rules.tres" id="rules"]
+[ext_resource type="Resource" path="res://data/towers/arrow.tres" id="t_arrow"]
+[ext_resource type="Resource" path="res://data/towers/fire.tres" id="t_fire"]
+[ext_resource type="Resource" path="res://data/towers/water.tres" id="t_water"]
+[ext_resource type="Resource" path="res://data/towers/nature.tres" id="t_nature"]
+[ext_resource type="Resource" path="res://data/towers/earth.tres" id="t_earth"]
+[ext_resource type="Resource" path="res://data/waves/wave_01.tres" id="w1"]
+[ext_resource type="Resource" path="res://data/waves/wave_02.tres" id="w2"]
+[ext_resource type="Resource" path="res://data/waves/wave_03.tres" id="w3"]
+[ext_resource type="Resource" path="res://data/waves/wave_04.tres" id="w4"]
+[ext_resource type="Resource" path="res://data/waves/wave_05.tres" id="w5"]
+[ext_resource type="Resource" path="res://data/waves/wave_06.tres" id="w6"]
+[ext_resource type="Resource" path="res://data/waves/wave_07.tres" id="w7"]
+[ext_resource type="Resource" path="res://data/waves/wave_08.tres" id="w8"]
+[ext_resource type="Resource" path="res://data/waves/wave_09.tres" id="w9"]
+[ext_resource type="Resource" path="res://data/waves/wave_10.tres" id="w10"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("main")
+rules = ExtResource("rules")
+tower_types = Array[Resource]([ExtResource("t_arrow"), ExtResource("t_fire"), ExtResource("t_water"), ExtResource("t_nature"), ExtResource("t_earth")])
+waves = Array[Resource]([ExtResource("w1"), ExtResource("w2"), ExtResource("w3"), ExtResource("w4"), ExtResource("w5"), ExtResource("w6"), ExtResource("w7"), ExtResource("w8"), ExtResource("w9"), ExtResource("w10")])
+
+[node name="Board" type="Node2D" parent="."]
+position = Vector2(20, 80)
+script = ExtResource("board")
+
+[node name="Towers" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Projectiles" type="Node2D" parent="."]
+
+[node name="WaveSpawner" type="Node" parent="." node_paths=PackedStringArray("board", "enemies_root")]
+script = ExtResource("spawner")
+board = NodePath("../Board")
+enemies_root = NodePath("../Enemies")
+
+[node name="Hud" parent="." instance=ExtResource("hud")]
