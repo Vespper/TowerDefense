@@ -1,50 +1,47 @@
 class_name Board
 extends Node2D
-## Terrain en grille où l'on construit le labyrinthe. Les tours bloquent leur case ;
-## les ennemis prennent le plus court chemin de l'entrée à la sortie (AStarGrid2D, sans diagonale).
-## Une tour ne peut jamais fermer complètement le passage.
+## Terrain en grille avec un chemin fixe (MapData). Les tours se posent sur toutes les cases hors du chemin.
 
-signal path_changed
-
-@export var columns: int = 24
-@export var rows: int = 15
+@export var map: MapData
 @export var cell_size: int = 40
-@export var spawn_cell: Vector2i = Vector2i(0, 7)
-@export var exit_cell: Vector2i = Vector2i(23, 7)
 
-var _astar := AStarGrid2D.new()
-var _main_path: PackedVector2Array = PackedVector2Array()
+var columns: int = 0
+var rows: int = 0
+
+var _path_cells: Array[Vector2i] = []
+var _path_lookup: Dictionary = {}
+var _path_points: PackedVector2Array = PackedVector2Array()
+var _occupied: Dictionary = {}
 var _ghost_cell: Vector2i = Vector2i(-1, -1)
 var _ghost_valid: bool = false
 var _ghost_range: float = 0.0
 
 
 func _ready() -> void:
-	_astar.region = Rect2i(0, 0, columns, rows)
-	_astar.cell_size = Vector2(cell_size, cell_size)
-	_astar.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
-	_astar.default_compute_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
-	_astar.default_estimate_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
-	_astar.update()
-	_refresh_main_path()
+	columns = map.columns
+	rows = map.rows
+	_path_cells = map.path_cells()
+	for c in _path_cells:
+		_path_lookup[c] = true
+	# Les ennemis entrent et sortent par le bord de la carte, pas au milieu de la première case
+	_path_points.append(_edge_point(_path_cells[0], _path_cells[1]))
+	for w in map.waypoints:
+		_path_points.append(cell_to_world(w))
+	_path_points.append(_edge_point(_path_cells[-1], _path_cells[-2]))
 
 
 func _draw() -> void:
 	var size := Vector2(columns, rows) * cell_size
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.11, 0.11, 0.14))
-	var line_color := Color(1, 1, 1, 0.05)
+	draw_rect(Rect2(Vector2.ZERO, size), Color(0.13, 0.15, 0.13))
+	var line_color := Color(1, 1, 1, 0.04)
 	for x in range(columns + 1):
 		draw_line(Vector2(x * cell_size, 0), Vector2(x * cell_size, size.y), line_color)
 	for y in range(rows + 1):
 		draw_line(Vector2(0, y * cell_size), Vector2(size.x, y * cell_size), line_color)
-	draw_rect(_cell_rect(spawn_cell), Color(0.3, 0.8, 0.4, 0.35))
-	draw_rect(_cell_rect(exit_cell), Color(0.9, 0.3, 0.3, 0.45))
-	# Chemin actuel des ennemis, en pointillés discrets
-	if _main_path.size() > 1:
-		var local := PackedVector2Array()
-		for p in _main_path:
-			local.append(to_local(p))
-		draw_polyline(local, Color(1, 0.85, 0.4, 0.18), 3.0)
+	for c in _path_cells:
+		draw_rect(_cell_rect(c), Color(0.36, 0.3, 0.22))
+	draw_rect(_cell_rect(_path_cells[0]), Color(0.3, 0.8, 0.4, 0.35))
+	draw_rect(_cell_rect(_path_cells[-1]), Color(0.9, 0.3, 0.3, 0.45))
 	if is_inside(_ghost_cell):
 		var c := Color(0.3, 1, 0.4, 0.35) if _ghost_valid else Color(1, 0.3, 0.3, 0.35)
 		draw_rect(_cell_rect(_ghost_cell), c)
@@ -56,8 +53,24 @@ func is_inside(cell: Vector2i) -> bool:
 	return cell.x >= 0 and cell.y >= 0 and cell.x < columns and cell.y < rows
 
 
-func is_blocked(cell: Vector2i) -> bool:
-	return is_inside(cell) and _astar.is_point_solid(cell)
+func is_path(cell: Vector2i) -> bool:
+	return _path_lookup.has(cell)
+
+
+func is_occupied(cell: Vector2i) -> bool:
+	return _occupied.has(cell)
+
+
+## Vrai si on peut poser une tour ici : dans la carte, hors du chemin, case libre.
+func can_build(cell: Vector2i) -> bool:
+	return is_inside(cell) and not is_path(cell) and not is_occupied(cell)
+
+
+func set_occupied(cell: Vector2i, occupied: bool) -> void:
+	if occupied:
+		_occupied[cell] = true
+	else:
+		_occupied.erase(cell)
 
 
 func world_to_cell(world: Vector2) -> Vector2i:
@@ -69,50 +82,13 @@ func cell_to_world(cell: Vector2i) -> Vector2:
 	return to_global(_cell_center_local(cell))
 
 
-## Vrai si on peut poser une tour sur cette case : libre, ni entrée ni sortie, aucun ennemi dessus,
-## et le passage reste ouvert depuis l'entrée et depuis chaque ennemi présent.
-func can_build(cell: Vector2i, enemy_positions: Array[Vector2] = []) -> bool:
-	if not is_inside(cell) or cell == spawn_cell or cell == exit_cell or is_blocked(cell):
-		return false
-	var center := cell_to_world(cell)
-	for pos in enemy_positions:
-		if pos.distance_to(center) < cell_size:
-			return false
-	_astar.set_point_solid(cell, true)
-	var open := not _astar.get_id_path(spawn_cell, exit_cell).is_empty()
-	if open:
-		for pos in enemy_positions:
-			var from := world_to_cell(pos)
-			if is_inside(from) and _astar.get_id_path(from, exit_cell).is_empty():
-				open = false
-				break
-	_astar.set_point_solid(cell, false)
-	return open
+## Points (monde) que suivent les ennemis, de l'entrée à la sortie.
+func path_points() -> PackedVector2Array:
+	return _path_points
 
 
-func set_blocked(cell: Vector2i, blocked: bool) -> void:
-	_astar.set_point_solid(cell, blocked)
-	_refresh_main_path()
-	path_changed.emit()
-
-
-## Chemin (positions monde) de la case la plus proche de `world` jusqu'au centre de la sortie.
-func path_from(world: Vector2) -> PackedVector2Array:
-	var from := world_to_cell(world)
-	from = Vector2i(clampi(from.x, 0, columns - 1), clampi(from.y, 0, rows - 1))
-	var result := PackedVector2Array()
-	for cell in _astar.get_id_path(from, exit_cell):
-		result.append(cell_to_world(cell))
-	return result
-
-
-## Longueur du chemin entrée → sortie, en cases (mesure du labyrinthe).
-func main_path_length() -> int:
-	return _main_path.size()
-
-
-func spawn_position() -> Vector2:
-	return cell_to_world(spawn_cell)
+func path_cells() -> Array[Vector2i]:
+	return _path_cells
 
 
 func set_ghost(cell: Vector2i, valid: bool, attack_range: float) -> void:
@@ -128,9 +104,10 @@ func clear_ghost() -> void:
 	set_ghost(Vector2i(-1, -1), false, 0.0)
 
 
-func _refresh_main_path() -> void:
-	_main_path = path_from(spawn_position())
-	queue_redraw()
+## Point sur le bord de la case `cell`, du côté opposé à `neighbor`.
+func _edge_point(cell: Vector2i, neighbor: Vector2i) -> Vector2:
+	var away := Vector2(cell - neighbor)
+	return cell_to_world(cell) + away * cell_size * 0.5
 
 
 func _cell_rect(cell: Vector2i) -> Rect2:

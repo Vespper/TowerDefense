@@ -1,6 +1,6 @@
 class_name Hud
 extends CanvasLayer
-## Interface : or, vies, vague, boutons de construction et panneau de la tour choisie.
+## Interface : or, vies, vague, essences et éléments, boutons de construction et panneau de la tour choisie.
 ## Ne contient pas de règle : il affiche ce que Main lui donne et lui renvoie les clics par signaux.
 
 signal build_requested(index: int)
@@ -8,6 +8,7 @@ signal start_wave_requested
 signal upgrade_requested
 signal sell_requested
 signal speed_toggled
+signal element_requested(element: Element.Type)
 
 @onready var _gold_label: Label = %GoldLabel
 @onready var _lives_label: Label = %LivesLabel
@@ -21,8 +22,11 @@ signal speed_toggled
 @onready var _upgrade_button: Button = %UpgradeButton
 @onready var _sell_button: Button = %SellButton
 @onready var _message_label: Label = %MessageLabel
+@onready var _essence_label: Label = %EssenceLabel
+@onready var _element_grid: GridContainer = %ElementGrid
 
 var _build_buttons: Array[Button] = []
+var _element_buttons: Dictionary = {}
 
 
 func _ready() -> void:
@@ -32,6 +36,17 @@ func _ready() -> void:
 	_sell_button.pressed.connect(sell_requested.emit)
 	show_selection(null)
 	show_message("")
+	for element in Element.ALL:
+		var b := Button.new()
+		b.text = Element.display_name(element)
+		b.focus_mode = Control.FOCUS_NONE
+		b.custom_minimum_size = Vector2(84, 0)
+		b.add_theme_font_size_override("font_size", 14)
+		b.add_theme_color_override("font_color", Element.color(element))
+		b.add_theme_color_override("font_disabled_color", Element.color(element).darkened(0.55))
+		b.pressed.connect(element_requested.emit.bind(element))
+		_element_grid.add_child(b)
+		_element_buttons[element] = b
 
 
 func set_tower_types(towers: Array[TowerData]) -> void:
@@ -44,6 +59,7 @@ func set_tower_types(towers: Array[TowerData]) -> void:
 		b.text = "%d. %s (%d or)" % [i + 1, t.display_name, t.cost]
 		b.tooltip_text = "%s — %s\n%s" % [t.display_name, Element.display_name(t.element), t.description]
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		b.add_theme_font_size_override("font_size", 14)
 		b.toggle_mode = true
 		b.focus_mode = Control.FOCUS_NONE
 		b.add_theme_color_override("font_color", Element.color(t.element))
@@ -57,10 +73,27 @@ func set_build_selection(index: int) -> void:
 		_build_buttons[i].set_pressed_no_signal(i == index)
 
 
-func set_gold(gold: int, towers: Array[TowerData]) -> void:
+## `unlocked[i]` : la tour i est disponible (élément débloqué).
+func set_gold(gold: int, towers: Array[TowerData], unlocked: Array[bool]) -> void:
 	_gold_label.text = "Or : %d" % gold
 	for i in mini(towers.size(), _build_buttons.size()):
-		_build_buttons[i].disabled = towers[i].cost > gold
+		var t := towers[i]
+		_build_buttons[i].disabled = t.cost > gold or not unlocked[i]
+		if unlocked[i]:
+			_build_buttons[i].text = "%d. %s (%d or)" % [i + 1, t.display_name, t.cost]
+		else:
+			_build_buttons[i].text = "%d. %s — à débloquer" % [i + 1, t.display_name]
+
+
+## Essences restantes et éléments débloqués (Element.Type -> true).
+func set_elements(essences: int, owned: Dictionary, can_buy: bool) -> void:
+	_essence_label.text = "Éléments — essences : %d" % essences
+	for element in _element_buttons:
+		var b: Button = _element_buttons[element]
+		var has: bool = owned.has(element)
+		b.text = ("✓ " if has else "") + Element.display_name(element)
+		b.disabled = has or essences <= 0 or not can_buy
+		b.tooltip_text = "Débloqué" if has else "Dépenser une essence pour débloquer la tour %s" % Element.display_name(element)
 
 
 func set_lives(lives: int) -> void:

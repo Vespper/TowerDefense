@@ -5,8 +5,7 @@
 [resource]
 script = ExtResource("1")
 display_name = "Fantassin"
-max_health = 30.0
+max_health = 40.0
 speed = 60.0
-bounty = 3
-lives_cost = 1
+bounty = 2
 radius = 10.0

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="TowerData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/tower_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+display_name = "Mortier"
+element = 0
+description = "Tour de base : obus lent qui touche une zone. Ne vise pas les volants."
+cost = 25
+damage = 16.0
+fire_rate = 0.5
+attack_range = 150.0
+splash_radius = 60.0
+projectile_speed = 260.0
+hits_air = false

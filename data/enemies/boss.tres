@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1")
 display_name = "Seigneur"
-max_health = 600.0
+max_health = 900.0
 speed = 35.0
-bounty = 40
+bounty = 50
 lives_cost = 10
 radius = 20.0

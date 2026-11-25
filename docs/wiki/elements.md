@@ -1,13 +1,16 @@
 # Éléments
 
-Cycle : **Eau > Feu > Nature > Terre > Eau**. Attaque forte × 1,5, faible × 0,75 (`data/rules.tres`). Le Neutre n'a ni bonus ni malus, en attaque comme en défense.
+Cycle d'Element TD : **Lumière > Ténèbres > Eau > Feu > Nature > Terre > Lumière**. Une attaque fait × 2 à l'élément qu'elle bat et × 0,5 à celui qui la bat (`data/rules.tres`). Le Neutre (tours de base) n'a ni bonus ni malus, en attaque comme en défense.
 
-| Élément | Couleur | Fort contre | Faible contre | Identité des tours |
+| Élément | Couleur | Fort contre | Faible contre | Tour |
 |---|---|---|---|---|
-| Neutre | gris clair | — | — | brique du labyrinthe |
-| Feu | rouge-orangé | Nature | Eau | dégâts de zone |
-| Eau | bleu | Feu | Terre | ralentissement |
-| Nature | vert | Terre | Feu | poison dans la durée |
-| Terre | ocre | Eau | Nature | gros coups lents, longue portée |
+| Lumière | jaune pâle | Ténèbres | Terre | très longue portée |
+| Ténèbres | violet | Eau | Lumière | énormes dégâts, tir lent |
+| Eau | bleu | Feu | Ténèbres | tir très rapide, petite zone, ralentit |
+| Feu | rouge-orangé | Nature | Eau | tir très rapide, grande zone, courte portée |
+| Nature | vert | Terre | Feu | poison |
+| Terre | ocre | Lumière | Nature | grosse zone, pas les volants |
 
-« Faible contre X » veut dire : les attaques de cet élément font × 0,75 aux ennemis X.
+« Faible contre X » veut dire : les attaques de cet élément font × 0,5 aux ennemis X.
+
+**Essences** : 1 au départ, +1 à la fin des vagues 4, 8, 12, 16 et 20. Une essence débloque un élément (bouton dans le panneau « Éléments »).

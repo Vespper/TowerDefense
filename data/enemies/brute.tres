@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1")
 display_name = "Colosse"
-max_health = 90.0
+max_health = 120.0
 speed = 40.0
-bounty = 6
+bounty = 5
 lives_cost = 2
 radius = 14.0

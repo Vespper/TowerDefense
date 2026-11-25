@@ -1,6 +1,6 @@
 class_name Enemy
 extends Node2D
-## Ennemi qui suit le chemin du labyrinthe jusqu'à la sortie. Recalcule son chemin quand une tour est posée.
+## Ennemi qui suit le chemin fixe de la carte jusqu'à la sortie.
 
 signal died(enemy: Enemy)
 signal reached_exit(enemy: Enemy)
@@ -10,7 +10,6 @@ var element: Element.Type = Element.Type.NONE
 var max_health: float = 1.0
 var health: float = 1.0
 
-var _board: Board
 var _path: PackedVector2Array = PackedVector2Array()
 var _index: int = 0
 ## Longueur restante après chaque point du chemin (pour savoir qui est le plus avancé).
@@ -27,10 +26,9 @@ func setup(enemy_data: EnemyData, wave_element: Element.Type, health_multiplier:
 	element = wave_element
 	max_health = enemy_data.max_health * health_multiplier
 	health = max_health
-	_board = board
-	global_position = board.spawn_position()
-	board.path_changed.connect(_repath)
-	_repath()
+	_set_path(board.path_points())
+	global_position = _path[0]
+	_index = 1
 
 
 func _process(delta: float) -> void:
@@ -59,8 +57,20 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	var col := Element.color(element)
-	draw_circle(Vector2.ZERO, data.radius, col)
-	draw_arc(Vector2.ZERO, data.radius, 0, TAU, 24, col.darkened(0.6), 2.0)
+	if data.flying:
+		# Volant : ombre au sol et triangle (forme différente des ennemis au sol)
+		draw_circle(Vector2(0, data.radius * 0.9), data.radius * 0.6, Color(0, 0, 0, 0.35))
+		var r := data.radius
+		var tri := PackedVector2Array([Vector2(0, -r), Vector2(r, r * 0.7), Vector2(-r, r * 0.7)])
+		draw_colored_polygon(tri, col)
+		tri.append(tri[0])
+		draw_polyline(tri, col.darkened(0.6), 2.0)
+	else:
+		draw_circle(Vector2.ZERO, data.radius, col)
+		draw_arc(Vector2.ZERO, data.radius, 0, TAU, 24, col.darkened(0.6), 2.0)
+	if data.heal_on_death > 0.0:
+		draw_line(Vector2(-4, 0), Vector2(4, 0), Color.WHITE, 2.0)
+		draw_line(Vector2(0, -4), Vector2(0, 4), Color.WHITE, 2.0)
 	if _slow_time > 0.0:
 		draw_arc(Vector2.ZERO, data.radius + 3, 0, TAU, 24, Color(0.6, 0.85, 1.0, 0.9), 2.0)
 	if _poison_time > 0.0:
@@ -76,6 +86,10 @@ func is_alive() -> bool:
 	return not _dead
 
 
+func is_flying() -> bool:
+	return data.flying
+
+
 ## Distance qu'il reste à parcourir jusqu'à la sortie (plus petit = plus dangereux).
 func remaining_distance() -> float:
 	if _index >= _path.size():
@@ -89,6 +103,8 @@ func take_damage(amount: float) -> void:
 	health -= amount
 	if health <= 0.0:
 		_dead = true
+		if data.heal_on_death > 0.0:
+			_heal_neighbors()
 		died.emit(self)
 		queue_free()
 	else:
@@ -119,9 +135,21 @@ func _update_effects(delta: float) -> void:
 		take_damage(_poison_dps * tick)
 
 
-func _repath() -> void:
-	_path = _board.path_from(global_position)
-	_index = 0
+func heal(amount: float) -> void:
+	if not _dead:
+		health = minf(health + amount, max_health)
+		queue_redraw()
+
+
+func _heal_neighbors() -> void:
+	for node in get_tree().get_nodes_in_group("enemies"):
+		var other := node as Enemy
+		if other != null and other != self and other.global_position.distance_to(global_position) <= data.heal_radius:
+			other.heal(other.max_health * data.heal_on_death)
+
+
+func _set_path(points: PackedVector2Array) -> void:
+	_path = points
 	_remaining_after.resize(_path.size())
 	var acc := 0.0
 	for i in range(_path.size() - 1, -1, -1):

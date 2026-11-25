@@ -4,26 +4,28 @@ Mise à jour à chaque fin de session (skill `fin-de-session`). Garder ce fichie
 
 ## Jalons
 
-1. ✱ **Prototype jouable** (en cours) — question : construire son labyrinthe et choisir ses éléments est-il amusant ?
-2. ⬜ Éléments à débloquer : essences, tours doubles — question : les choix d'éléments créent-ils des parties différentes ?
-3. ⬜ Contenu : 30 vagues, nouveaux archétypes (volants, immunisés), 2 ou 3 cartes, équilibrage
-4. ⬜ Habillage : style visuel, sons, menus, sauvegarde des meilleurs scores
-5. ⬜ Retour vers le roguelike : reprendre ce qui marche dans `Gameproject`
+1. ✱ **Prototype jouable** (en cours) — question : choisir ses éléments et placer ses tours le long du chemin est-il amusant ?
+2. ⬜ Profondeur Element TD : niveaux d'élément, tours doubles puis triples, tours de soutien, ennemis mécaniques / morts-vivants / immunisés
+3. ⬜ Contenu : 40 à 60 vagues, 3 à 5 cartes, équilibrage
+4. ⬜ Habillage : style visuel, sons, menus, choix de la carte, meilleurs scores
+5. ⬜ Mode cartes libres (labyrinthe construit avec les tours)
+6. ⬜ Retour vers le roguelike : reprendre ce qui marche dans `Gameproject`
 
 ## Jalon 1 — prototype jouable (formes simples)
 
-- [x] Terrain en grille, labyrinthe libre, chemin recalculé, interdiction de fermer le passage
-- [x] 10 vagues dans `data/waves/`, lancées à la main, victoire / défaite
-- [x] 5 tours (Flèche + 4 éléments), cycle des éléments, amélioration ×3, revente 75 %
-- [x] Interface : or, vies, prochaine vague, panneau de la tour, vitesse x1/x2/x3
-- [x] Tests headless (terrain, partie complète automatique) et CI GitHub
+- [x] Projet, doc, conventions, scripts, CI (PR #1)
+- [x] Carte à chemin fixe en données (`data/maps/serpent.tres`)
+- [x] 6 éléments, cycle × 2 / × 0,5, essences pour les débloquer
+- [x] Tours de base Flèche, Mortier, Magie + 6 tours d'éléments, amélioration ×3, revente 75 %
+- [x] 7 archétypes (dont volants, soigneurs, boss), 20 vagues, intérêts 3 %
 - [ ] Session de test de Vespper : noter le ressenti dans `docs/decisions.md`
 - [ ] Équilibrage après la session de test
 
 ## Prochaine étape
 
-Vespper joue le prototype (F5) et dit ce qu'il ressent : difficulté, envie de construire le labyrinthe, lisibilité des éléments. Ensuite : déblocage des éléments par essences.
+Vespper joue le prototype (F5) et dit ce qu'il ressent : difficulté, choix des éléments, placement. Ensuite : niveaux d'élément et premières tours doubles.
 
 ## Journal
 
-- 2026-11-25 — Création du projet : doc, conventions, scripts, CI, prototype jouable (PR #1).
+- 2026-11-25 — Passage au chemin fixe, 6 éléments, tours de base Flèche / Mortier / Magie, essences, 20 vagues (PR #2).
+- 2026-11-25 — Création du projet : doc, conventions, scripts, CI, prototype à labyrinthe libre (PR #1).
