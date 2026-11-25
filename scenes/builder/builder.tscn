@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/builder/builder.gd" id="1"]
+[ext_resource type="Resource" path="res://data/builder.tres" id="2"]
+
+[node name="Builder" type="Node2D"]
+z_index = 10
+script = ExtResource("1")
+data = ExtResource("2")

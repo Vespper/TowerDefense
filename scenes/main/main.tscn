@@ -1,9 +1,10 @@
-[gd_scene load_steps=36 format=3]
+[gd_scene load_steps=37 format=3]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="main"]
 [ext_resource type="Script" path="res://scenes/board/board.gd" id="board"]
 [ext_resource type="Script" path="res://scenes/main/wave_spawner.gd" id="spawner"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="hud"]
+[ext_resource type="PackedScene" path="res://scenes/builder/builder.tscn" id="builder"]
 [ext_resource type="Resource" path="res://data/rules.tres" id="rules"]
 [ext_resource type="Resource" path="res://data/maps/serpent.tres" id="map"]
 [ext_resource type="Resource" path="res://data/towers/arrow.tres" id="t_arrow"]
@@ -57,5 +58,7 @@ map = ExtResource("map")
 script = ExtResource("spawner")
 board = NodePath("../Board")
 enemies_root = NodePath("../Enemies")
+
+[node name="Builder" parent="." instance=ExtResource("builder")]
 
 [node name="Hud" parent="." instance=ExtResource("hud")]

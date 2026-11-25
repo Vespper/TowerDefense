@@ -120,6 +120,8 @@ func show_selection(tower: Tower) -> void:
 		return
 	var d := tower.data
 	_selection_title.text = "%s niv. %d" % [d.display_name, tower.level]
+	if not tower.is_built():
+		_selection_title.text = "%s — chantier %d %%" % [d.display_name, roundi(tower.build_progress * 100.0)]
 	_selection_title.add_theme_color_override("font_color", Element.color(d.element))
 	var lines: PackedStringArray = [
 		"Élément : %s" % Element.display_name(d.element),
@@ -133,17 +135,20 @@ func show_selection(tower: Tower) -> void:
 	if d.poison_dps > 0.0:
 		lines.append("Poison : %.0f/s pendant %.0f s" % [tower.poison_dps(), d.poison_duration])
 	_selection_stats.text = "\n".join(lines)
-	if tower.can_upgrade():
+	if not tower.is_built():
+		_upgrade_button.text = "En construction"
+		_upgrade_button.disabled = true
+	elif tower.can_upgrade():
 		_upgrade_button.text = "Améliorer (U) : %d or" % tower.upgrade_cost()
 		_upgrade_button.disabled = false
 	else:
 		_upgrade_button.text = "Niveau max"
 		_upgrade_button.disabled = true
-	_sell_button.text = "Vendre (S) : +%d or" % tower.sell_value()
+	_sell_button.text = ("Annuler (V) : +%d or" if not tower.is_built() else "Vendre (V) : +%d or") % tower.sell_value()
 
 
 func set_upgrade_affordable(affordable: bool) -> void:
-	if _upgrade_button.text != "Niveau max":
+	if _upgrade_button.text != "Niveau max" and _upgrade_button.text != "En construction":
 		_upgrade_button.disabled = not affordable
 
 

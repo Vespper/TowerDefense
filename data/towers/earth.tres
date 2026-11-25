@@ -8,6 +8,7 @@ display_name = "Terre"
 element = 6
 description = "Rochers lourds qui touchent une zone. Ne vise pas les volants."
 cost = 45
+build_time = 2.5
 damage = 20.0
 fire_rate = 0.8
 attack_range = 130.0

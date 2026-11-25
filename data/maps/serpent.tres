@@ -7,4 +7,4 @@ script = ExtResource("1")
 display_name = "Serpent"
 columns = 24
 rows = 15
-waypoints = Array[Vector2i]([Vector2i(0, 2), Vector2i(21, 2), Vector2i(21, 7), Vector2i(2, 7), Vector2i(2, 12), Vector2i(23, 12)])
+waypoints = Array[Vector2i]([Vector2i(0, 1), Vector2i(21, 1), Vector2i(21, 5), Vector2i(2, 5), Vector2i(2, 9), Vector2i(21, 9), Vector2i(21, 13), Vector2i(0, 13)])

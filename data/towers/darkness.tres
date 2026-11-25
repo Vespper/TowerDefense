@@ -8,6 +8,7 @@ display_name = "Ténèbres"
 element = 2
 description = "Énormes dégâts sur une cible, tir lent."
 cost = 45
+build_time = 2.5
 damage = 60.0
 fire_rate = 0.35
 attack_range = 150.0

@@ -9,4 +9,4 @@ enemy = ExtResource("2")
 element = 4
 count = 18
 spawn_interval = 0.6
-health_multiplier = 8.88
+health_multiplier = 11.94

@@ -7,11 +7,12 @@ Ne pas construire plus que l'étape en cours n'en demande.
 ```
 scenes/main/      partie (main.tscn, scène de démarrage) et apparition des vagues
 scenes/board/     terrain en grille et chemin fixe
+scenes/builder/   bâtisseur (personnage qui construit les tours)
 scenes/towers/    tour, projectile, effets (zone, éclair)
 scenes/enemies/   ennemi
 scenes/ui/        HUD
-scripts/data/     Resources de données (GameRules, MapData, TowerData, EnemyData, WaveData) et Element
-data/             contenu de jeu en .tres : rules.tres, maps/, towers/, enemies/, waves/
+scripts/data/     Resources de données (GameRules, MapData, BuilderData, TowerData, EnemyData, WaveData) et Element
+data/             contenu de jeu en .tres : rules.tres, builder.tres, maps/, towers/, enemies/, waves/
 tests/            tests headless (tools/test.sh)
 tools/            scripts bash (check, test, run, screenshot)
 ```
@@ -25,6 +26,7 @@ Main (Node2D, main.gd)        or, vies, essences, éléments débloqués, état 
 ├── Enemies                   ennemis vivants (Enemy, groupe « enemies »)
 ├── Projectiles               projectiles et effets de zone
 ├── WaveSpawner               fait apparaître les ennemis d'une WaveData
+├── Builder (builder.tscn)    bâtisseur : déplacement au clavier, file de chantiers
 └── Hud (hud.tscn)            interface ; renvoie les clics à Main par signaux
 ```
 
@@ -42,6 +44,12 @@ Main (Node2D, main.gd)        or, vies, essences, éléments débloqués, état 
 - Les ennemis suivent `Board.path_points()` (bord d'entrée, coins, bord de sortie). Le ciblage « le plus avancé » utilise la distance restante (`Enemy.remaining_distance()`).
 - Volants (`EnemyData.flying`) : visés seulement par les tours `hits_air` ; une zone touche sa cible volante mais pas les volants autour.
 
+## Bâtisseur et chantiers
+
+- `Main.try_build` paie la tour et crée une `Tower` en chantier (`build_progress` à 0, elle ne tire pas), puis la donne au bâtisseur (`Builder.order`).
+- `Builder` traite sa file : il marche jusqu'à `build_reach` du premier chantier, appelle `Tower.work(delta)` jusqu'à 1, puis passe au suivant. Les touches de déplacement ont la priorité sur la file.
+- Vitesse et portée dans `data/builder.tres` ; temps de construction dans chaque `TowerData.build_time`.
+
 ## Éléments et essences
 
 - `Main.elements` : éléments débloqués ; `Main.buy_element()` dépense une essence. Une tour d'élément n'est disponible que si son élément est débloqué (`Main.is_unlocked()`).
@@ -50,6 +58,6 @@ Main (Node2D, main.gd)        or, vies, essences, éléments débloqués, état 
 ## Tests
 
 - `tests/test_board.gd` : chemin, cases constructibles, cycle des éléments.
-- `tests/test_input.gd` : souris et clavier simulés (poser, améliorer, vendre, débloquer un élément).
+- `tests/test_input.gd` : souris et clavier simulés (commander une tour, attendre le bâtisseur, améliorer, vendre, débloquer un élément, déplacer le bâtisseur).
 - `tests/test_game.gd` : partie complète jouée par un joueur automatique (éléments dans un ordre fixe, tours aux cases qui couvrent le plus de chemin) ; `-- passive` ne construit rien et doit perdre. La ligne « Résultat » sert de repère d'équilibrage.
 - `Main` expose `try_build`, `try_upgrade`, `sell`, `buy_element`, `start_next_wave` pour que les tests jouent sans souris.

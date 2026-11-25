@@ -14,11 +14,12 @@ Les ennemis suivent un chemin fixe ; on pose des tours de base (Flèche, Mortier
 
 | Touche | Action |
 |---|---|
-| 1 à 9 | Choisir une tour à poser (reste active pour en poser plusieurs) |
+| ZQSD / WASD / flèches | Déplacer le bâtisseur |
+| 1 à 9 | Choisir une tour à commander (reste active pour en commander plusieurs) |
 | Boutons « Éléments » | Dépenser une essence pour débloquer un élément |
-| Clic gauche | Poser la tour, ou choisir une tour posée |
+| Clic gauche | Commander la tour (le bâtisseur va la construire), ou choisir une tour posée |
 | Clic droit, Échap | Annuler |
-| U / S (ou Suppr) | Améliorer / vendre la tour choisie |
+| U / V (ou Suppr) | Améliorer / vendre la tour choisie (annuler un chantier rembourse tout) |
 | Espace, Entrée | Lancer la vague suivante |
 | F | Vitesse x1, x2, x3 |
 | R | Rejouer après la fin |

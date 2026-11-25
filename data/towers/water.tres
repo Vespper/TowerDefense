@@ -8,6 +8,7 @@ display_name = "Eau"
 element = 3
 description = "Tir très rapide, petite zone qui ralentit."
 cost = 40
+build_time = 2.5
 damage = 6.0
 fire_rate = 2.0
 attack_range = 130.0

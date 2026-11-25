@@ -22,7 +22,7 @@ Ne lis pas tout `docs/` d'office. Ouvre le fichier utile à la tâche :
 
 - Itérer pas à pas : une petite étape jouable à la fois, une PR par étape.
 - Données de jeu dans `data/*.tres` (Resources), pas en dur dans le code.
-- Quand on ajoute ou change du contenu (tour, ennemi, vague, élément, carte), mettre à jour sa ligne dans `docs/wiki/` dans la même PR.
+- Quand on ajoute ou change du contenu (tour, ennemi, vague, élément, carte, bâtisseur), mettre à jour sa ligne dans `docs/wiki/` dans la même PR.
 - Une scène et son script dans le même dossier, fichiers en `snake_case`.
 - Ne jamais committer `.godot/` ni éditer `project.godot` à la main sans raison (les touches se règlent dans l'éditeur : Projet > Paramètres > Contrôles).
 - Après un changement d'équilibrage, lancer `tools/test.sh` et noter la ligne « Résultat » de `test_game.gd` dans la PR.
