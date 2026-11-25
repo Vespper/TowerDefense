@@ -32,6 +32,16 @@ extends Resource
 @export_group("Tours")
 @export var max_tower_level: int = 3
 
+@export_group("Armures")
+## Multiplicateur d'une tour de base contre l'armure qu'elle bat (ex. Flèche contre Léger).
+@export var armor_strong_multiplier: float = 1.5
+## Multiplicateur d'une tour de base contre l'armure qui lui résiste (ex. Flèche contre Blindé).
+@export var armor_weak_multiplier: float = 0.5
+
+@export_group("Vagues (suite)")
+## Quand toutes les vagues lancées sont vaincues, le compte à rebours de la suivante tombe à cette valeur.
+@export var cleared_wave_delay: float = 3.0
+
 @export_group("Éléments")
 ## Multiplicateur de dégâts d'une attaque forte (ex. Eau contre Feu).
 @export var strong_multiplier: float = 2.0
@@ -46,6 +56,21 @@ func element_multiplier(attack: Element.Type, defense: Element.Type) -> float:
 		-1:
 			return weak_multiplier
 	return 1.0
+
+
+func armor_multiplier(tower: TowerData, armor: Armor.Type) -> float:
+	if armor == Armor.Type.NONE:
+		return 1.0
+	if armor == tower.strong_against:
+		return armor_strong_multiplier
+	if armor == tower.weak_against:
+		return armor_weak_multiplier
+	return 1.0
+
+
+## Multiplicateur total d'un coup de cette tour sur cet ennemi (élément × armure).
+func damage_multiplier(tower: TowerData, element: Element.Type, armor: Armor.Type) -> float:
+	return element_multiplier(tower.element, element) * armor_multiplier(tower, armor)
 
 
 func wave_bonus(wave_number: int) -> int:

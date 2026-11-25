@@ -269,6 +269,9 @@ func _check_wave_cleared(w: int) -> void:
 	if waves_cleared >= waves.size():
 		_end_game(true)
 		return
+	# Plus aucun ennemi sur le terrain : la vague suivante arrive vite
+	if _alive_by_wave.is_empty() and not spawner.is_spawning():
+		next_wave_in = minf(next_wave_in, rules.cleared_wave_delay)
 	_refresh_hud()
 
 
@@ -313,9 +316,12 @@ func _wave_preview(index: int) -> String:
 	if index >= waves.size():
 		return ""
 	var w := waves[index]
-	var text := "%d × %s (%s)" % [w.count, w.enemy.display_name, Element.display_name(w.element)]
+	var kind := Element.display_name(w.element) if w.element != Element.Type.NONE else Armor.display_name(w.armor)
+	var text := "%d × %s (%s)" % [w.count, w.enemy.display_name, kind]
 	if w.enemy.flying:
-		text += " — volants"
+		text += ", volants"
+	if w.elite != null and w.elite_count > 0:
+		text += " + %d élite%s %s" % [w.elite_count, "s" if w.elite_count > 1 else "", Element.display_name(w.elite_element)]
 	return text
 
 

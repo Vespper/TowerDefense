@@ -18,7 +18,7 @@ Ce projet est aussi un banc d'essai : ce qui marche ici sera repris dans le rogu
 ## Boucle de jeu
 
 1. Préparation : on voit la prochaine vague et un compte à rebours ; on commande des tours au bâtisseur, on améliore ou vend, on dépense ses essences.
-2. La vague part toute seule à la fin du compte à rebours (30 s avant la première, puis 30 s après la fin des apparitions de la précédente). On peut la lancer plus tôt : 0,5 or par seconde gagnée. Les vagues peuvent donc se chevaucher.
+2. La vague part toute seule à la fin du compte à rebours (30 s avant la première, puis 30 s après la fin des apparitions de la précédente ; si plus aucun ennemi n'est sur le terrain, le compte à rebours tombe à 3 s). On peut la lancer plus tôt : 0,5 or par seconde gagnée. Les vagues peuvent donc se chevaucher.
 3. Chaque ennemi tué rapporte de l'or ; chaque ennemi qui sort coûte des vies.
 4. Quand tous les ennemis d'une vague sont morts ou sortis : intérêts sur l'or gardé, bonus de fin de vague, parfois une essence.
 5. Victoire après la dernière vague ; défaite à 0 vie.
@@ -52,6 +52,17 @@ La même roue est dans l'interface (panneau « Éléments ») : un clic sur un �
 - Chaque vague a un élément (la couleur des ennemis). Le poison suit aussi le multiplicateur.
 - **Essences** : on en a 1 au départ, puis 1 de plus toutes les 4 vagues (5 sur une partie de 20 vagues pour 6 éléments). Une essence débloque un élément et sa tour.
 
+## Armures (vagues neutres)
+
+Les vagues sans élément ont une **armure**, en pierre-feuille-ciseaux avec les tours de base :
+
+![Tours de base contre armures](img/armures.svg)
+
+- **Flèche** ×1,5 contre **Léger**, ×0,5 contre Blindé.
+- **Mortier** ×1,5 contre **Blindé**, ×0,5 contre Spectral.
+- **Magie** ×1,5 contre **Spectral**, ×0,5 contre Léger.
+- Les tours d'élément ignorent les armures. Signes : Léger = rond, Blindé = carré à plaques épaisses, Spectral = translucide avec un halo.
+
 ## Tours
 
 - **Tours de base** (neutres, toujours disponibles) :
@@ -80,12 +91,14 @@ Le rôle vient de l'**archétype**, l'élément vient de la **vague**.
 | Soigneur | en mourant, rend 25 % de leurs PV aux ennemis proches : il faut tuer le groupe d'un coup |
 | Colosse | lent et très résistant, coûte 2 vies |
 | Seigneur (boss) | une seule unité énorme aux vagues 10 et 20, coûte 10 vies |
+| Champion (élite) | glissé dans une vague neutre, il porte un **élément** (couronne dorée), coûte 2 vies : il faut la bonne tour d'élément |
 
 À venir (Element TD) : **mécanique** (invulnérable 3 s toutes les 12 s), **mort-vivant** (revient une fois à 33 % de PV), **immunisé** aux ralentissements.
 
 ## Vagues
 
-- 20 vagues dans `data/waves/` : archétype, élément, nombre, intervalle, multiplicateur de PV.
+- 20 vagues dans `data/waves/` : archétype, élément **ou** armure, nombre, intervalle, multiplicateur de PV, élites éventuelles.
+- Progression : vagues neutres à armure au début (on apprend Flèche / Mortier / Magie), élites à élément à partir de la vague 5, vagues entièrement élémentaires surtout en fin de partie (12, 14, 15, 17 à 20). Volants aux vagues 4, 9, 14, 18.
 - La prochaine vague est annoncée dans la barre du haut.
 - Lancement automatique avec compte à rebours ; Espace (ou le bouton) lance la suivante en avance contre de l'or.
 

@@ -11,7 +11,7 @@ scenes/builder/   bâtisseur (personnage qui construit les tours)
 scenes/towers/    tour, projectile, effets (zone, éclair)
 scenes/enemies/   ennemi
 scenes/ui/        HUD
-scripts/data/     Resources de données (GameRules, MapData, BuilderData, TowerData, EnemyData, WaveData) et Element
+scripts/data/     Resources de données (GameRules, MapData, BuilderData, TowerData, EnemyData, WaveData), Element et Armor
 data/             contenu de jeu en .tres : rules.tres, builder.tres, maps/, towers/, enemies/, waves/
 tests/            tests headless (tools/test.sh)
 tools/            scripts bash (check, test, run, screenshot)
@@ -54,7 +54,9 @@ Main (Node2D, main.gd)        or, vies, essences, éléments débloqués, état 
 ## Vagues
 
 - `Main.next_wave_in` : compte à rebours (`GameRules.first_wave_delay`, puis `wave_gap` après la fin des apparitions). À 0, `_launch_wave()`. `start_next_wave()` lance plus tôt et donne `GameRules.early_call_bonus()`.
-- Plusieurs vagues peuvent être sur le terrain : chaque ennemi porte son numéro de vague (`meta "wave"`), `Main` compte les vivants par vague et donne les récompenses quand une vague est vaincue (`waves_cleared`).
+- `WaveSpawner` prépare une file (normaux + élites réparties régulièrement) ; les normaux reçoivent l'élément **et** l'armure de la vague, les élites leur propre élément.
+- Dégâts : `GameRules.damage_multiplier(tour, élément, armure)` = multiplicateur d'élément × multiplicateur d'armure (`TowerData.strong_against` / `weak_against`).
+- Plusieurs vagues peuvent être sur le terrain : chaque ennemi porte son numéro de vague (`meta "wave"`), `Main` compte les vivants par vague et donne les récompenses quand une vague est vaincue (`waves_cleared`). Quand plus aucun ennemi n'est en vie, `next_wave_in` tombe à `GameRules.cleared_wave_delay`.
 
 ## Éléments et essences
 

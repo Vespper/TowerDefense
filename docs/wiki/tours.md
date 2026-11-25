@@ -4,11 +4,13 @@ Stats au niveau 1. Construction par le bâtisseur : 1,5 s pour une tour de base,
 
 ## Tours de base (toujours disponibles)
 
-| Tour | Coût | Dégâts | Tirs/s | Portée | Air | Effet | Fichier |
-|---|---|---|---|---|---|---|---|
-| Flèche | 12 | 8 | 1,4 | 3,5 | oui | — | `data/towers/arrow.tres` |
-| Mortier | 25 | 16 | 0,5 | 3,75 | non | zone 60 px | `data/towers/mortar.tres` |
-| Magie | 30 | 10 | 0,8 | 3,25 | oui | rebondit sur 3 ennemis (90 px) | `data/towers/magic.tres` |
+| Tour | Coût | Dégâts | Tirs/s | Portée | Air | Effet | Fort contre | Faible contre | Fichier |
+|---|---|---|---|---|---|---|---|---|---|
+| Flèche | 12 | 8 | 1,4 | 3,5 | oui | — | Léger | Blindé | `data/towers/arrow.tres` |
+| Mortier | 25 | 16 | 0,5 | 3,75 | non | zone 60 px | Blindé | Spectral | `data/towers/mortar.tres` |
+| Magie | 30 | 10 | 0,8 | 3,25 | oui | rebondit sur 3 ennemis (90 px) | Spectral | Léger | `data/towers/magic.tres` |
+
+Contre une armure : ×1,5 si la tour est forte, ×0,5 si elle est faible (`data/rules.tres`). Les tours d'élément ignorent les armures.
 
 ## Tours d'éléments (il faut avoir débloqué l'élément)
 

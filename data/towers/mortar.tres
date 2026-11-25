@@ -6,7 +6,7 @@
 script = ExtResource("1")
 display_name = "Mortier"
 element = 0
-description = "Tour de base : obus lent qui touche une zone. Ne vise pas les volants."
+description = "Tour de base : obus lent qui touche une zone, pas les volants. Fort contre Blindé, faible contre Spectral."
 cost = 25
 damage = 16.0
 fire_rate = 0.5
@@ -14,3 +14,5 @@ attack_range = 150.0
 splash_radius = 60.0
 projectile_speed = 260.0
 hits_air = false
+strong_against = 2
+weak_against = 3

@@ -17,3 +17,5 @@ extends Resource
 ## En mourant, soigne les ennemis proches de cette part de leurs PV max (0 = rien).
 @export_range(0.0, 1.0) var heal_on_death: float = 0.0
 @export var heal_radius: float = 100.0
+## Élite : dessinée plus grande, avec une couronne.
+@export var elite: bool = false

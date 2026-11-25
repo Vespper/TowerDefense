@@ -6,8 +6,10 @@
 script = ExtResource("1")
 display_name = "Flèche"
 element = 0
-description = "Tour de base : tir rapide sur une cible, touche les volants."
+description = "Tour de base : tir rapide sur une cible, touche les volants. Forte contre Léger, faible contre Blindé."
 cost = 12
 damage = 8.0
 fire_rate = 1.4
 attack_range = 140.0
+strong_against = 1
+weak_against = 2

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="300" viewBox="0 0 420 300" font-family="sans-serif">
+<rect width="420" height="300" rx="16" fill="#16161c"/>
+<text x="210" y="32" text-anchor="middle" font-size="17" font-weight="bold" fill="#e0e0e8">Tours de base contre armures</text>
+<text x="40" y="82" font-size="16" font-weight="bold" fill="#e8e8f0">Flèche</text>
+<rect x="140" y="60" width="120" height="34" rx="8" fill="#2e6b3a"/><text x="200" y="82" text-anchor="middle" font-size="14" fill="#ffffff">×1,5 Léger</text>
+<rect x="270" y="60" width="120" height="34" rx="8" fill="#7a2b2b"/><text x="330" y="82" text-anchor="middle" font-size="14" fill="#ffffff">×0,5 Blindé</text>
+<text x="40" y="142" font-size="16" font-weight="bold" fill="#e8e8f0">Mortier</text>
+<rect x="140" y="120" width="120" height="34" rx="8" fill="#2e6b3a"/><text x="200" y="142" text-anchor="middle" font-size="14" fill="#ffffff">×1,5 Blindé</text>
+<rect x="270" y="120" width="120" height="34" rx="8" fill="#7a2b2b"/><text x="330" y="142" text-anchor="middle" font-size="14" fill="#ffffff">×0,5 Spectral</text>
+<text x="40" y="202" font-size="16" font-weight="bold" fill="#e8e8f0">Magie</text>
+<rect x="140" y="180" width="120" height="34" rx="8" fill="#2e6b3a"/><text x="200" y="202" text-anchor="middle" font-size="14" fill="#ffffff">×1,5 Spectral</text>
+<rect x="270" y="180" width="120" height="34" rx="8" fill="#7a2b2b"/><text x="330" y="202" text-anchor="middle" font-size="14" fill="#ffffff">×0,5 Léger</text>
+<text x="210" y="270" text-anchor="middle" font-size="13" fill="#a0a0a8">Les tours d'élément ignorent les armures (×1).</text>
+</svg>
