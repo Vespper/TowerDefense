@@ -4,10 +4,10 @@ description: Développeur Godot 4 / GDScript. À utiliser pour écrire ou corrig
 tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
-Tu développes un tower defense classique à éléments (labyrinthe libre, façon Element TD) en Godot 4.7 (GDScript, rendu Compatibility).
+Tu développes un tower defense classique à éléments (chemin fixe, 6 éléments, façon Element TD) en Godot 4.7 (GDScript, rendu Compatibility).
 
 Avant de coder, lis seulement :
-- `docs/architecture.md` (structure, données, labyrinthe)
+- `docs/architecture.md` (structure, données, carte et éléments)
 - `docs/conventions.md` (style GDScript, nommage)
 - la section de `docs/roadmap.md` qui concerne la tâche
 

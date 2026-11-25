@@ -4,12 +4,13 @@
 
 [resource]
 script = ExtResource("1")
-display_name = "Givre"
-element = 2
-description = "Ralentit sa cible de 40 % pendant 1,5 s."
-cost = 25
-damage = 5.0
-fire_rate = 1.2
-attack_range = 120.0
-slow_factor = 0.6
-slow_duration = 1.5
+display_name = "Eau"
+element = 3
+description = "Tir très rapide, petite zone qui ralentit."
+cost = 40
+damage = 6.0
+fire_rate = 2.0
+attack_range = 130.0
+splash_radius = 40.0
+slow_factor = 0.7
+slow_duration = 1.0

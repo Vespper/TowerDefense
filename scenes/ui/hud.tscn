@@ -57,8 +57,8 @@ text = "Vitesse x1 (F)"
 offset_left = 1000.0
 offset_top = 80.0
 offset_right = 1265.0
-offset_bottom = 700.0
-theme_override_constants/separation = 12
+offset_bottom = 680.0
+theme_override_constants/separation = 8
 
 [node name="BuildTitle" type="Label" parent="SidePanel"]
 layout_mode = 2
@@ -68,6 +68,18 @@ text = "Construire"
 [node name="BuildList" type="VBoxContainer" parent="SidePanel"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="EssenceLabel" type="Label" parent="SidePanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Éléments"
+
+[node name="ElementGrid" type="GridContainer" parent="SidePanel"]
+unique_name_in_owner = true
+layout_mode = 2
+columns = 3
 
 [node name="SelectionPanel" type="PanelContainer" parent="SidePanel"]
 unique_name_in_owner = true
@@ -106,21 +118,14 @@ layout_mode = 2
 focus_mode = 0
 text = "Vendre"
 
-[node name="Spacer" type="Control" parent="SidePanel"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Help" type="Label" parent="SidePanel"]
-layout_mode = 2
+[node name="Help" type="Label" parent="."]
+offset_left = 20.0
+offset_top = 688.0
+offset_right = 1265.0
+offset_bottom = 712.0
 theme_override_colors/font_color = Color(0.7, 0.7, 0.75, 1)
 theme_override_font_sizes/font_size = 13
-text = "1-5 : choisir une tour
-Clic gauche : poser / choisir
-Clic droit, Échap : annuler
-Les tours forment le labyrinthe :
-le passage ne peut pas être fermé.
-Eau > Feu > Nature > Terre > Eau"
-autowrap_mode = 2
+text = "1-9 : choisir une tour · Clic gauche : poser / choisir · Clic droit, Échap : annuler · U / S : améliorer / vendre · Espace : vague · F : vitesse      Lumière > Ténèbres > Eau > Feu > Nature > Terre > Lumière"
 
 [node name="MessageLabel" type="Label" parent="."]
 unique_name_in_owner = true

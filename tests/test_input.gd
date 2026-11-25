@@ -1,5 +1,6 @@
 extends SceneTree
-## Contrôles à la souris et au clavier, simulés : choisir une tour, la poser, l'améliorer, la vendre.
+## Contrôles à la souris et au clavier, simulés : choisir une tour, la poser, l'améliorer, la vendre,
+## débloquer un élément.
 ## Lancer : tools/test.sh tests/test_input.gd
 
 const MAIN_SCENE := preload("res://scenes/main/main.tscn")
@@ -24,7 +25,7 @@ func _process(_delta: float) -> bool:
 			_click(_main.board.cell_to_world(_cell))
 		3:
 			_check(_main.towers().size() == 1, "clic gauche : une Flèche posée")
-			_check(_main.gold == _main.rules.start_gold - 10, "10 or dépensés")
+			_check(_main.gold == _main.rules.start_gold - _main.tower_types[0].cost, "coût de la Flèche dépensé")
 			_click(_main.board.cell_to_world(_cell))
 			_check(_main.towers().size() == 1, "pas de seconde tour sur la même case")
 			_key(KEY_ESCAPE)
@@ -37,7 +38,10 @@ func _process(_delta: float) -> bool:
 			_key(KEY_S)
 		6:
 			_check(_main.towers().is_empty(), "S : tour vendue")
-			_check(not _main.board.is_blocked(_cell), "case libérée")
+			_check(_main.board.can_build(_cell), "case libérée")
+			_check(not _main.is_unlocked(3), "tour de Lumière bloquée au départ")
+			_check(_main.buy_element(Element.Type.LIGHT), "essence dépensée pour la Lumière")
+			_check(_main.is_unlocked(3) and _main.essences == _main.rules.start_essences - 1, "tour de Lumière débloquée")
 			_key(KEY_SPACE)
 		7:
 			_check(_main.state == Main.State.WAVE, "Espace : vague lancée")

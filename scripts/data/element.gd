@@ -1,32 +1,42 @@
 class_name Element
 extends RefCounted
-## Éléments du jeu et cycle des forces. Les multiplicateurs (fort / faible) sont dans GameRules.
-## Cycle : l'Eau éteint le Feu, le Feu brûle la Nature, la Nature fend la Terre, la Terre boit l'Eau.
+## Les six éléments d'Element TD et leur cycle. Les multiplicateurs (fort / faible) sont dans GameRules.
+## Cycle : Lumière > Ténèbres > Eau > Feu > Nature > Terre > Lumière.
+## Chaque élément fait double dégâts à celui qu'il bat, et moitié à celui qui le bat.
 
-enum Type { NONE, FIRE, WATER, NATURE, EARTH }
+enum Type { NONE, LIGHT, DARKNESS, WATER, FIRE, NATURE, EARTH }
+
+## Les éléments jouables, dans l'ordre du cycle (pour l'interface).
+const ALL: Array[Type] = [Type.LIGHT, Type.DARKNESS, Type.WATER, Type.FIRE, Type.NATURE, Type.EARTH]
 
 const NAMES := {
 	Type.NONE: "Neutre",
-	Type.FIRE: "Feu",
+	Type.LIGHT: "Lumière",
+	Type.DARKNESS: "Ténèbres",
 	Type.WATER: "Eau",
+	Type.FIRE: "Feu",
 	Type.NATURE: "Nature",
 	Type.EARTH: "Terre",
 }
 
 const COLORS := {
 	Type.NONE: Color(0.78, 0.78, 0.82),
-	Type.FIRE: Color(0.95, 0.35, 0.2),
+	Type.LIGHT: Color(1.0, 0.95, 0.55),
+	Type.DARKNESS: Color(0.65, 0.35, 0.9),
 	Type.WATER: Color(0.3, 0.6, 1.0),
+	Type.FIRE: Color(0.95, 0.35, 0.2),
 	Type.NATURE: Color(0.35, 0.85, 0.35),
 	Type.EARTH: Color(0.8, 0.6, 0.3),
 }
 
 ## Élément battu par chaque élément (attaque forte).
 const BEATS := {
+	Type.LIGHT: Type.DARKNESS,
+	Type.DARKNESS: Type.WATER,
 	Type.WATER: Type.FIRE,
 	Type.FIRE: Type.NATURE,
 	Type.NATURE: Type.EARTH,
-	Type.EARTH: Type.WATER,
+	Type.EARTH: Type.LIGHT,
 }
 
 

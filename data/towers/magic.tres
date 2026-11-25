@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="TowerData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/tower_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+display_name = "Magie"
+element = 0
+description = "Tour de base : éclair qui rebondit sur 3 ennemis de plus."
+cost = 30
+damage = 10.0
+fire_rate = 0.8
+attack_range = 130.0
+chain_count = 3
+chain_range = 90.0
+projectile_speed = 600.0

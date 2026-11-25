@@ -1,6 +1,7 @@
 class_name Projectile
 extends Node2D
-## Projectile à tête chercheuse. À l'impact : dégâts (de zone si la tour en a), ralentissement, poison.
+## Projectile à tête chercheuse. À l'impact : dégâts (de zone ou en rebonds si la tour en a),
+## ralentissement, poison. La zone ne touche pas les volants.
 
 var _tower_data: TowerData
 var _rules: GameRules
@@ -40,13 +41,50 @@ func _draw() -> void:
 
 func _impact() -> void:
 	if _tower_data.splash_radius > 0.0:
+		# La cible est toujours touchée (même volante) ; la zone autour ne touche que le sol
+		if _target != null:
+			_hit(_target)
 		for node in get_tree().get_nodes_in_group("enemies"):
 			var enemy := node as Enemy
-			if enemy != null and enemy.is_alive() and enemy.global_position.distance_to(global_position) <= _tower_data.splash_radius:
+			if enemy != null and enemy != _target and enemy.is_alive() and not enemy.is_flying() \
+					and enemy.global_position.distance_to(global_position) <= _tower_data.splash_radius:
 				_hit(enemy)
 		_spawn_flash()
 	elif _target != null:
 		_hit(_target)
+		if _tower_data.chain_count > 0:
+			_chain(_target)
+
+
+## Rebondit vers l'ennemi le plus proche pas encore touché, chaque fois que possible.
+func _chain(first: Enemy) -> void:
+	var touched: Array[Enemy] = [first]
+	var from := first.global_position
+	var points := PackedVector2Array([from])
+	for i in _tower_data.chain_count:
+		var next: Enemy = null
+		var best := _tower_data.chain_range
+		for node in get_tree().get_nodes_in_group("enemies"):
+			var enemy := node as Enemy
+			if enemy == null or not enemy.is_alive() or touched.has(enemy):
+				continue
+			if enemy.is_flying() and not _tower_data.hits_air:
+				continue
+			var d := enemy.global_position.distance_to(from)
+			if d <= best:
+				best = d
+				next = enemy
+		if next == null:
+			break
+		touched.append(next)
+		from = next.global_position
+		points.append(from)
+		_hit(next)
+	if points.size() > 1:
+		var bolt := ChainBolt.new()
+		bolt.points = points
+		bolt.color = Element.color(_tower_data.element).lerp(Color(0.6, 0.5, 1.0), 0.6)
+		get_parent().add_child(bolt)
 
 
 func _hit(enemy: Enemy) -> void:

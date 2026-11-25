@@ -4,12 +4,12 @@
 
 [resource]
 script = ExtResource("1")
-display_name = "Ronce"
-element = 3
-description = "Empoisonne sa cible : 6 dégâts par seconde pendant 3 s."
-cost = 25
-damage = 3.0
-fire_rate = 1.0
-attack_range = 130.0
-poison_dps = 6.0
+display_name = "Nature"
+element = 5
+description = "Tir régulier qui empoisonne : 8 dégâts par seconde pendant 3 s."
+cost = 40
+damage = 6.0
+fire_rate = 1.5
+attack_range = 150.0
+poison_dps = 8.0
 poison_duration = 3.0

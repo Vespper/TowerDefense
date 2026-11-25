@@ -27,4 +27,4 @@
 ## Équilibrage
 
 - Les chiffres vivent dans `data/*.tres`, jamais en dur.
-- Après un changement, lancer `tools/test.sh` et recopier la ligne « Résultat » de `test_game.gd` dans la PR. Le joueur automatique construit un bon labyrinthe : s'il perd, le jeu est probablement trop dur pour un joueur moyen.
+- Après un changement, lancer `tools/test.sh` et recopier la ligne « Résultat » de `test_game.gd` dans la PR. Repère actuel : le joueur automatique gagne avec environ la moitié de ses vies. S'il gagne sans perdre de vie, c'est trop facile ; s'il perd tôt, trop dur.

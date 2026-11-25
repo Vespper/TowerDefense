@@ -48,6 +48,13 @@ func _draw() -> void:
 	var half := _size / 2.0
 	draw_rect(Rect2(-half, -half, _size, _size), Color(0.2, 0.2, 0.25))
 	draw_rect(Rect2(-half + 4, -half + 4, _size - 8, _size - 8), col)
+	# Les tours de base ont un symbole pour les distinguer (même couleur neutre)
+	if data.splash_radius > 0.0 and data.element == Element.Type.NONE:
+		draw_circle(Vector2.ZERO, 6.0, Color(0.25, 0.25, 0.3))
+	elif data.chain_count > 0 and data.element == Element.Type.NONE:
+		draw_line(Vector2(-6, -6), Vector2(2, 0), Color(0.4, 0.3, 0.8), 3.0)
+		draw_line(Vector2(2, 0), Vector2(-2, 2), Color(0.4, 0.3, 0.8), 3.0)
+		draw_line(Vector2(-2, 2), Vector2(6, 8), Color(0.4, 0.3, 0.8), 3.0)
 	# Un point par niveau
 	for i in range(level):
 		draw_circle(Vector2(-half + 7 + i * 8, half - 6), 2.5, Color.WHITE)
@@ -88,6 +95,8 @@ func _find_target() -> Enemy:
 	for node in get_tree().get_nodes_in_group("enemies"):
 		var enemy := node as Enemy
 		if enemy == null or not enemy.is_alive():
+			continue
+		if enemy.is_flying() and not data.hits_air:
 			continue
 		if enemy.global_position.distance_to(global_position) > data.attack_range:
 			continue

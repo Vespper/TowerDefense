@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="TowerData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/tower_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+display_name = "Lumière"
+element = 1
+description = "Très longue portée, une cible."
+cost = 40
+damage = 14.0
+fire_rate = 1.0
+attack_range = 220.0
+projectile_speed = 500.0

@@ -4,12 +4,11 @@
 
 [resource]
 script = ExtResource("1")
-display_name = "Brasier"
-element = 1
-description = "Boule de feu qui touche une zone autour de l'impact."
-cost = 30
-damage = 9.0
-fire_rate = 0.8
-attack_range = 110.0
-splash_radius = 50.0
-projectile_speed = 320.0
+display_name = "Feu"
+element = 4
+description = "Tir très rapide, grande zone, courte portée."
+cost = 40
+damage = 7.0
+fire_rate = 2.2
+attack_range = 100.0
+splash_radius = 55.0

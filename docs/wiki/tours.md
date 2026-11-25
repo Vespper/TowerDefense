@@ -1,13 +1,22 @@
 # Tours
 
-Stats au niveau 1. Chaque niveau (jusqu'à 3) multiplie dégâts et poison par 1,6. Amélioration vers le niveau N+1 : coût × 0,75 × N. Revente : 75 % du total dépensé. Portée en cases (40 px).
+Stats au niveau 1. Chaque niveau (jusqu'à 3) multiplie dégâts et poison par 1,6. Amélioration vers le niveau N+1 : coût × 0,75 × N. Revente : 75 % du total dépensé. Portée en cases (40 px). Une zone touche sa cible, puis seulement les ennemis au sol autour.
 
-| Tour | Élément | Coût | Dégâts | Tirs/s | DPS | Portée | Effet | Fichier |
-|---|---|---|---|---|---|---|---|---|
-| Flèche | Neutre | 10 | 6 | 1,5 | 9 | 3 | — | `data/towers/arrow.tres` |
-| Brasier | Feu | 30 | 9 | 0,8 | 7,2 par cible | 2,75 | zone de 50 px | `data/towers/fire.tres` |
-| Givre | Eau | 25 | 5 | 1,2 | 6 | 3 | ralentit de 40 % pendant 1,5 s | `data/towers/water.tres` |
-| Ronce | Nature | 25 | 3 | 1,0 | 3 + 6 poison | 3,25 | poison 6/s pendant 3 s | `data/towers/nature.tres` |
-| Rocher | Terre | 35 | 32 | 0,4 | 12,8 | 3,75 | — | `data/towers/earth.tres` |
+## Tours de base (toujours disponibles)
 
-Coûts d'amélioration : Flèche 8 puis 15 ; Brasier 23 puis 45 ; Givre et Ronce 19 puis 38 ; Rocher 26 puis 53.
+| Tour | Coût | Dégâts | Tirs/s | Portée | Air | Effet | Fichier |
+|---|---|---|---|---|---|---|---|
+| Flèche | 12 | 8 | 1,4 | 3,5 | oui | — | `data/towers/arrow.tres` |
+| Mortier | 25 | 16 | 0,5 | 3,75 | non | zone 60 px | `data/towers/mortar.tres` |
+| Magie | 30 | 10 | 0,8 | 3,25 | oui | rebondit sur 3 ennemis (90 px) | `data/towers/magic.tres` |
+
+## Tours d'éléments (il faut avoir débloqué l'élément)
+
+| Tour | Coût | Dégâts | Tirs/s | Portée | Air | Effet | Fichier |
+|---|---|---|---|---|---|---|---|
+| Lumière | 40 | 14 | 1,0 | 5,5 | oui | — | `data/towers/light.tres` |
+| Ténèbres | 45 | 60 | 0,35 | 3,75 | oui | — | `data/towers/darkness.tres` |
+| Eau | 40 | 6 | 2,0 | 3,25 | oui | zone 40 px, ralentit de 30 % pendant 1 s | `data/towers/water.tres` |
+| Feu | 40 | 7 | 2,2 | 2,5 | oui | zone 55 px | `data/towers/fire.tres` |
+| Nature | 40 | 6 | 1,5 | 3,75 | oui | poison 8/s pendant 3 s | `data/towers/nature.tres` |
+| Terre | 45 | 20 | 0,8 | 3,25 | non | zone 60 px | `data/towers/earth.tres` |

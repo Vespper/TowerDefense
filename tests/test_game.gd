@@ -1,25 +1,33 @@
 extends SceneTree
-## Partie complète jouée par un « joueur automatique » : il construit un labyrinthe en serpentin,
-## mêle des tours élémentaires aux Flèches, puis améliore ses tours avec l'or restant.
+## Partie complète jouée par un « joueur automatique » : il débloque les éléments dans un ordre fixe,
+## pose ses tours aux cases qui couvrent le plus de chemin, puis les améliore.
 ## Lancer : tools/test.sh tests/test_game.gd
 ## Options après « -- » : « passive » pour ne rien construire (doit mener à la défaite),
 ## « shot=60 » pour enregistrer une capture d'écran à 60 s de jeu (tools/screenshot.sh, pas en headless).
 
 const MAIN_SCENE := preload("res://scenes/main/main.tscn")
-const MAX_SECONDS := 1800.0
-## Colonnes des murs du serpentin ; le trou alterne en haut et en bas.
-const WALL_COLUMNS := [3, 6, 9, 12, 15, 18]
-## Une tour élémentaire toutes les N cases de mur (les autres sont des Flèches).
-const ELEMENT_EVERY := 4
+const MAX_SECONDS := 3600.0
+const ELEMENT_ORDER: Array[Element.Type] = [
+	Element.Type.FIRE, Element.Type.DARKNESS, Element.Type.LIGHT,
+	Element.Type.WATER, Element.Type.NATURE, Element.Type.EARTH,
+]
+## Ordre des achats : nom de tour de base, ou « element » pour la prochaine tour d'élément débloquée.
+const BUILD_CYCLE := ["arrow", "mortar", "element", "magic", "element", "arrow", "element"]
+## Au-delà de ce nombre de tours, on améliore une fois sur deux.
+const BUILD_ONLY_UNTIL := 10
+const MAX_TOWERS := 30
 
 var _main: Main
-var _plan: Array[Dictionary] = []
 var _passive: bool = false
 var _elapsed: float = 0.0
-var _element_turn: int = 0
 var _last_wave: int = 0
 var _shot_at: float = -1.0
 var _shot_path: String = "user://screenshot.png"
+var _spots: Array[Vector2i] = []
+var _cycle_step: int = 0
+var _element_turn: int = 0
+var _upgrade_next: bool = false
+var _ready_done: bool = false
 
 
 func _initialize() -> void:
@@ -36,9 +44,10 @@ func _initialize() -> void:
 
 
 func _process(delta: float) -> bool:
-	if _plan.is_empty():
+	if not _ready_done:
 		# Première image : la partie a fini son _ready
-		_build_plan()
+		_ready_done = true
+		_rank_spots()
 	_elapsed += delta
 	if _shot_at >= 0.0 and _elapsed >= _shot_at:
 		_shot_at = -1.0
@@ -51,8 +60,8 @@ func _process(delta: float) -> bool:
 		return true
 	if _main.wave_index != _last_wave:
 		_last_wave = _main.wave_index
-		print("  vague %d finie à %.0f s : vies %d, or %d, %d tours, chemin %d cases" % [
-			_last_wave, _elapsed, _main.lives, _main.gold, _main.towers().size(), _main.board.main_path_length()])
+		print("  vague %d finie à %.0f s : vies %d, or %d, %d tours, éléments %d" % [
+			_last_wave, _elapsed, _main.lives, _main.gold, _main.towers().size(), _main.elements.size()])
 	if not _passive:
 		_play()
 	_main.start_next_wave()
@@ -60,57 +69,72 @@ func _process(delta: float) -> bool:
 
 
 func _play() -> void:
-	# Construire le plan dans l'ordre ; une case momentanément impossible (ennemi dessus) est retentée plus tard.
-	for i in _plan.size():
-		var step: Dictionary = _plan[i]
-		if step.done:
-			continue
-		if _main.gold < _main.tower_types[step.type].cost:
+	while _main.essences > 0 and _element_turn < ELEMENT_ORDER.size():
+		_main.buy_element(ELEMENT_ORDER[_element_turn])
+		_element_turn += 1
+	var count := _main.towers().size()
+	if count >= MAX_TOWERS or (count >= BUILD_ONLY_UNTIL and _upgrade_next):
+		var best: Tower = null
+		for t in _main.towers():
+			if t.can_upgrade() and (best == null or t.upgrade_cost() < best.upgrade_cost()):
+				best = t
+		if best != null:
+			if _main.try_upgrade(best):
+				_upgrade_next = false
 			return
-		if _main.try_build(step.type, step.cell) != null:
-			step.done = true
-		return
-	# Plan terminé : améliorer la tour élémentaire la moins chère à améliorer
-	var best: Tower = null
-	for t in _main.towers():
-		if t.can_upgrade() and (best == null or t.upgrade_cost() < best.upgrade_cost()):
-			best = t
-	if best != null:
-		_main.try_upgrade(best)
+	var index := _next_type()
+	for cell in _spots:
+		if _main.board.can_build(cell):
+			if _main.can_build(index, cell) and _main.try_build(index, cell) != null:
+				_cycle_step += 1
+				_upgrade_next = true
+			return
 
 
-func _build_plan() -> void:
+## Type de tour du prochain achat (index dans tower_types).
+func _next_type() -> int:
+	var wanted: String = BUILD_CYCLE[_cycle_step % BUILD_CYCLE.size()]
+	if wanted == "element":
+		var owned: Array[int] = []
+		for i in _main.tower_types.size():
+			if _main.tower_types[i].element != Element.Type.NONE and _main.is_unlocked(i):
+				owned.append(i)
+		if owned.is_empty():
+			return 0
+		return owned[(_cycle_step / BUILD_CYCLE.size()) % owned.size()]
+	for i in _main.tower_types.size():
+		if _main.tower_types[i].resource_path.get_file().get_basename() == wanted:
+			return i
+	return 0
+
+
+## Cases constructibles, de celle qui couvre le plus de cases de chemin à celle qui en couvre le moins.
+func _rank_spots() -> void:
 	var board := _main.board
-	var center := board.spawn_cell.y
-	for w in WALL_COLUMNS.size():
-		var x: int = WALL_COLUMNS[w]
-		var gap: int = 0 if w % 2 == 0 else board.rows - 1
-		var rows: Array[int] = []
+	var path := board.path_cells()
+	var score := {}
+	for x in board.columns:
 		for y in board.rows:
-			if y != gap:
-				rows.append(y)
-		# Du centre vers les bords : chaque tour posée allonge déjà le détour
-		rows.sort_custom(func(a: int, b: int) -> bool: return absi(a - center) < absi(b - center))
-		for k in rows.size():
-			var type := 0
-			if k % ELEMENT_EVERY == 1:
-				type = 1 + (_element_turn % 4)
-				_element_turn += 1
-			_plan.append({"cell": Vector2i(x, rows[k]), "type": type, "done": false})
+			var cell := Vector2i(x, y)
+			if not board.can_build(cell):
+				continue
+			var n := 0
+			for p in path:
+				if Vector2(p - cell).length() <= 3.0:
+					n += 1
+			score[cell] = n
+			_spots.append(cell)
+	_spots.sort_custom(func(a: Vector2i, b: Vector2i) -> bool: return score[a] > score[b])
 
 
 func _report() -> void:
 	var result := "VICTOIRE" if _main.state == Main.State.WON else "DÉFAITE"
 	if not _main.is_finished():
 		result = "TEMPS ÉCOULÉ"
-	var built := 0
-	for s in _plan:
-		if s.done:
-			built += 1
 	var levels := 0
 	for t in _main.towers():
 		levels += t.level
-	print("Résultat : %s après %.0f s — vague %d/%d, vies %d/%d, or %d, %d tours (niveaux cumulés %d), chemin %d cases" % [
+	print("Résultat : %s après %.0f s — vague %d/%d, vies %d/%d, or %d, %d tours (niveaux cumulés %d), %d éléments" % [
 		result, _elapsed, mini(_main.wave_index + 1, _main.waves.size()), _main.waves.size(),
-		_main.lives, _main.rules.start_lives, _main.gold, built, levels, _main.board.main_path_length()
+		_main.lives, _main.rules.start_lives, _main.gold, _main.towers().size(), levels, _main.elements.size()
 	])
