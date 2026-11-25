@@ -1,0 +1,14 @@
+# Fins de ligne normalisées (recommandé par Godot, évite les faux changements Windows/Linux)
+* text=auto eol=lf
+
+# Fichiers binaires
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.wav binary
+*.ogg binary
+*.mp3 binary
+*.ttf binary
+*.otf binary
+*.res binary
