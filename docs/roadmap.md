@@ -21,14 +21,18 @@ Mise à jour à chaque fin de session (skill `fin-de-session`). Garder ce fichie
 - [x] Circuit plus long (93 cases) et bâtisseur qui va construire les tours (temps de construction)
 - [x] Session de test de Vespper : victoire avec 14 vies, pas assez de difficulté
 - [x] Amélioration = chantier (tour hors service), vagues automatiques avec lancement anticipé, roue des éléments, difficulté relevée
+- [x] Deuxième session de test : victoire avec 10 vies
+- [x] Vagues neutres à armure (Flèche / Mortier / Magie), élites à élément, compte à rebours à 3 s quand le terrain est vide
+- [ ] Arbre d'améliorations : 2 branches par tour
 - [ ] Équilibrage après la session de test
 
 ## Prochaine étape
 
-Vespper rejoue (difficulté, vagues automatiques, roue) et choisit parmi les pistes du GDD : arbres d'amélioration, tours mixtes, économie « idle ».
+Arbre d'améliorations (2 branches par tour au niveau 2), puis nouvelle session de test.
 
 ## Journal
 
+- 2026-11-25 — Armures des vagues neutres, élites à élément, 20 vagues refaites, compte à rebours à 3 s (PR #5).
 - 2026-11-25 — Amélioration avec chantier, vagues automatiques, roue des éléments, difficulté relevée (PR #4).
 - 2026-11-25 — Circuit plus long, bâtisseur qui construit les tours, vagues rééquilibrées (PR #3).
 - 2026-11-25 — Passage au chemin fixe, 6 éléments, tours de base Flèche / Mortier / Magie, essences, 20 vagues (PR #2).

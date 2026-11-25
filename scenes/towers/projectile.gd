@@ -88,7 +88,7 @@ func _chain(first: Enemy) -> void:
 
 
 func _hit(enemy: Enemy) -> void:
-	var mult := _rules.element_multiplier(_tower_data.element, enemy.element)
+	var mult := _rules.damage_multiplier(_tower_data, enemy.element, enemy.armor)
 	if _tower_data.slow_factor < 1.0:
 		enemy.apply_slow(_tower_data.slow_factor, _tower_data.slow_duration)
 	if _poison > 0.0:

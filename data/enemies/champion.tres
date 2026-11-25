@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+display_name = "Champion"
+max_health = 50.0
+speed = 50.0
+bounty = 8
+lives_cost = 2
+radius = 14.0
+elite = true

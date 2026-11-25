@@ -19,6 +19,10 @@ extends Resource
 @export var projectile_speed: float = 420.0
 ## Peut viser les ennemis volants.
 @export var hits_air: bool = true
+## Armure contre laquelle la tour fait plus de dégâts (tours de base : pierre-feuille-ciseaux).
+@export var strong_against: Armor.Type = Armor.Type.NONE
+## Armure qui résiste à la tour.
+@export var weak_against: Armor.Type = Armor.Type.NONE
 
 @export_group("Effets")
 ## Rayon des dégâts de zone autour de l'impact (0 = cible seule). La zone ne touche pas les volants.

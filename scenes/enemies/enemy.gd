@@ -7,6 +7,7 @@ signal reached_exit(enemy: Enemy)
 
 var data: EnemyData
 var element: Element.Type = Element.Type.NONE
+var armor: Armor.Type = Armor.Type.NONE
 var max_health: float = 1.0
 var health: float = 1.0
 
@@ -21,9 +22,11 @@ var _poison_time: float = 0.0
 var _dead: bool = false
 
 
-func setup(enemy_data: EnemyData, wave_element: Element.Type, health_multiplier: float, board: Board) -> void:
+func setup(enemy_data: EnemyData, wave_element: Element.Type, health_multiplier: float, board: Board,
+		wave_armor: Armor.Type = Armor.Type.NONE) -> void:
 	data = enemy_data
 	element = wave_element
+	armor = wave_armor
 	max_health = enemy_data.max_health * health_multiplier
 	health = max_health
 	_set_path(board.path_points())
@@ -57,6 +60,8 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	var col := Element.color(element)
+	if armor == Armor.Type.SPECTRAL:
+		col = Color(col, 0.45)
 	if data.flying:
 		# Volant : ombre au sol et triangle (forme différente des ennemis au sol)
 		draw_circle(Vector2(0, data.radius * 0.9), data.radius * 0.6, Color(0, 0, 0, 0.35))
@@ -65,9 +70,22 @@ func _draw() -> void:
 		draw_colored_polygon(tri, col)
 		tri.append(tri[0])
 		draw_polyline(tri, col.darkened(0.6), 2.0)
+	elif armor == Armor.Type.HEAVY:
+		# Blindé : carré à plaques épaisses
+		var r := data.radius * 0.9
+		draw_rect(Rect2(-r, -r, r * 2, r * 2), col)
+		draw_rect(Rect2(-r, -r, r * 2, r * 2), Color(0.2, 0.2, 0.25), false, 3.5)
 	else:
 		draw_circle(Vector2.ZERO, data.radius, col)
 		draw_arc(Vector2.ZERO, data.radius, 0, TAU, 24, col.darkened(0.6), 2.0)
+	if armor == Armor.Type.SPECTRAL:
+		draw_arc(Vector2.ZERO, data.radius + 2, 0, TAU, 24, Color(0.85, 0.8, 1.0, 0.9), 1.5)
+	if data.elite:
+		# Couronne dorée
+		var r := data.radius
+		var crown := PackedVector2Array([Vector2(-7, -r - 1), Vector2(-7, -r - 8), Vector2(-3.5, -r - 4),
+				Vector2(0, -r - 9), Vector2(3.5, -r - 4), Vector2(7, -r - 8), Vector2(7, -r - 1)])
+		draw_colored_polygon(crown, Color(1, 0.8, 0.2))
 	if data.heal_on_death > 0.0:
 		draw_line(Vector2(-4, 0), Vector2(4, 0), Color.WHITE, 2.0)
 		draw_line(Vector2(0, -4), Vector2(0, 4), Color.WHITE, 2.0)
