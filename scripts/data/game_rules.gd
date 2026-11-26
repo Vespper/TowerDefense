@@ -23,8 +23,8 @@ extends Resource
 ## Or gagné par seconde d'avance quand on lance la vague suivante soi-même.
 @export var early_call_gold_per_second: float = 0.5
 
-@export_group("Essences")
-## Une essence débloque un élément (et ses tours). On en a au départ, puis on en gagne avec les vagues.
+@export_group("Stigmates")
+## Une essence (« stigmate » en jeu) débloque une corruption (et ses tours). On en a au départ, puis on en gagne avec les vagues.
 @export var start_essences: int = 1
 ## Une essence de plus à la fin de chaque vague multiple de ce nombre.
 @export var essence_every_waves: int = 4
@@ -33,16 +33,16 @@ extends Resource
 @export var max_tower_level: int = 3
 
 @export_group("Armures")
-## Multiplicateur d'une tour de base contre l'armure qu'elle bat (ex. Flèche contre Léger).
+## Multiplicateur d'une tour de base contre l'armure qu'elle bat (ex. Arbalète contre Chair).
 @export var armor_strong_multiplier: float = 1.5
-## Multiplicateur d'une tour de base contre l'armure qui lui résiste (ex. Flèche contre Blindé).
+## Multiplicateur d'une tour de base contre l'armure qui lui résiste (ex. Arbalète contre Carapace).
 @export var armor_weak_multiplier: float = 0.5
 
 @export_group("Vagues (suite)")
 ## Quand toutes les vagues lancées sont vaincues, le compte à rebours de la suivante tombe à cette valeur.
 @export var cleared_wave_delay: float = 3.0
 
-@export_group("Éléments")
+@export_group("Corruptions")
 ## Multiplicateur de dégâts d'une attaque forte (ex. Eau contre Feu).
 @export var strong_multiplier: float = 2.0
 ## Multiplicateur de dégâts d'une attaque faible (ex. Feu contre Eau).

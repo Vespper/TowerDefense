@@ -35,8 +35,8 @@ func _process(_delta: float) -> bool:
 			_click(_main.board.cell_to_world(_cell))
 			_step = 1
 		1:
-			_check(_main.towers().size() == 1, "clic gauche : chantier de Flèche posé")
-			_check(_main.gold == _main.rules.start_gold - _main.tower_types[0].cost, "coût de la Flèche dépensé")
+			_check(_main.towers().size() == 1, "clic gauche : chantier d'Arbalète posé")
+			_check(_main.gold == _main.rules.start_gold - _main.tower_types[0].cost, "coût de l'Arbalète dépensé")
 			var site: Tower = _main.towers()[0]
 			_check(not site.is_built(), "la tour n'est pas construite tout de suite")
 			_check(not site.can_upgrade(), "pas d'amélioration pendant le chantier")
@@ -70,7 +70,7 @@ func _process(_delta: float) -> bool:
 			_check(_main.towers().is_empty(), "V : tour vendue")
 			_check(_main.board.can_build(_cell), "case libérée")
 			_check(not _main.is_unlocked(3), "tour de Lumière bloquée au départ")
-			_check(_main.buy_element(Element.Type.LIGHT), "essence dépensée pour la Lumière")
+			_check(_main.buy_element(Element.Type.FERVOR), "stigmate dépensé pour la Ferveur")
 			_check(_main.is_unlocked(3) and _main.essences == _main.rules.start_essences - 1, "tour de Lumière débloquée")
 			# Un chantier vendu avant la fin est remboursé en entier
 			var gold := _main.gold

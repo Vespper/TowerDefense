@@ -5,8 +5,8 @@
 
 [sub_resource type="Resource" id="branch_0"]
 script = ExtResource("2")
-display_name = "Perforante"
-description = "Flèches lourdes : gros dégâts, un peu plus de portée."
+display_name = "Carreaux lourds"
+description = "Carreaux lourds : gros dégâts, un peu plus de portée."
 damage_mult = 1.7
 range_mult = 1.1
 
@@ -19,9 +19,9 @@ damage_mult = 1.1
 
 [resource]
 script = ExtResource("1")
-display_name = "Flèche"
+display_name = "Arbalète"
 element = 0
-description = "Tour de base : tir rapide sur une cible, touche les volants. Forte contre Léger, faible contre Blindé."
+description = "Tour de base : carreaux rapides sur une cible, touche les volants. Forte contre Chair, faible contre Carapace."
 cost = 12
 damage = 8.0
 fire_rate = 1.4

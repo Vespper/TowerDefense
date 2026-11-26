@@ -5,26 +5,27 @@
 
 [sub_resource type="Resource" id="branch_0"]
 script = ExtResource("2")
-display_name = "Néant"
-description = "Dégâts énormes sur une cible."
-damage_mult = 1.8
+display_name = "Bûcher"
+description = "Zone d'explosion plus large."
+splash_bonus = 15.0
+damage_mult = 1.4
 
 [sub_resource type="Resource" id="branch_1"]
 script = ExtResource("2")
-display_name = "Ombres"
-description = "Tire plus vite."
-fire_rate_mult = 1.4
-damage_mult = 1.2
+display_name = "Braises"
+description = "Plus de dégâts et de cadence."
+damage_mult = 1.45
+fire_rate_mult = 1.15
 
 [resource]
 script = ExtResource("1")
-display_name = "Ténèbres"
-element = 2
-description = "Énormes dégâts sur une cible, tir lent."
-cost = 45
+display_name = "Cendre"
+element = 4
+description = "Bûcher et braises : tir très rapide, grande zone, courte portée."
+cost = 40
 build_time = 2.5
-damage = 60.0
-fire_rate = 0.35
-attack_range = 150.0
-projectile_speed = 380.0
+damage = 7.0
+fire_rate = 2.2
+attack_range = 100.0
+splash_radius = 55.0
 branches = Array[ExtResource("2")]([SubResource("branch_0"), SubResource("branch_1")])

@@ -1,17 +1,17 @@
 class_name ElementWheel
 extends Control
-## Roue des six éléments : chaque flèche va d'un élément vers celui qu'il bat (×2).
-## Un élément pas encore débloqué est sombre ; un clic dessus dépense une essence pour le débloquer.
+## Roue des six corruptions : chaque flèche va d'une corruption vers celle qu'elle bat (×2).
+## Une corruption pas encore débloquée est sombre ; un clic dessus dépense un stigmate pour la débloquer.
 
 signal element_pressed(element: Element.Type)
 
 const SHORT_NAMES := {
-	Element.Type.LIGHT: "Lum",
-	Element.Type.DARKNESS: "Tén",
-	Element.Type.WATER: "Eau",
-	Element.Type.FIRE: "Feu",
-	Element.Type.NATURE: "Nat",
-	Element.Type.EARTH: "Ter",
+	Element.Type.FERVOR: "Fer",
+	Element.Type.MADNESS: "Dém",
+	Element.Type.ABYSS: "Abî",
+	Element.Type.ASH: "Cen",
+	Element.Type.ROT: "Pou",
+	Element.Type.BONE: "Os",
 }
 const NODE_RADIUS := 17.0
 
@@ -80,7 +80,7 @@ func _gui_input(event: InputEvent) -> void:
 func _get_tooltip(at_position: Vector2) -> String:
 	var i := _node_at(at_position)
 	if i < 0:
-		return "Chaque flèche va vers l'élément battu : dégâts ×2 (et ×0,5 dans l'autre sens)."
+		return "Chaque flèche va vers la corruption battue : dégâts ×2 (et ×0,5 dans l'autre sens)."
 	var all := Element.ALL
 	var element: Element.Type = all[i]
 	var beats: Element.Type = all[(i + 1) % all.size()]
@@ -88,11 +88,11 @@ func _get_tooltip(at_position: Vector2) -> String:
 	var text := "%s : ×2 contre %s, ×0,5 contre %s" % [
 		Element.display_name(element), Element.display_name(beats), Element.display_name(feared)]
 	if _owned.has(element):
-		text += "\nDébloqué"
+		text += "\nDébloquée"
 	elif _can_buy:
-		text += "\nClic : dépenser une essence pour le débloquer"
+		text += "\nClic : dépenser un stigmate pour la débloquer"
 	else:
-		text += "\nIl faut une essence pour le débloquer"
+		text += "\nIl faut un stigmate pour la débloquer"
 	return text
 
 

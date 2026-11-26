@@ -7,15 +7,15 @@
 [ext_resource type="PackedScene" path="res://scenes/builder/builder.tscn" id="builder"]
 [ext_resource type="Resource" path="res://data/rules.tres" id="rules"]
 [ext_resource type="Resource" path="res://data/maps/serpent.tres" id="map"]
-[ext_resource type="Resource" path="res://data/towers/arrow.tres" id="t_arrow"]
-[ext_resource type="Resource" path="res://data/towers/mortar.tres" id="t_mortar"]
-[ext_resource type="Resource" path="res://data/towers/magic.tres" id="t_magic"]
-[ext_resource type="Resource" path="res://data/towers/light.tres" id="t_light"]
-[ext_resource type="Resource" path="res://data/towers/darkness.tres" id="t_darkness"]
-[ext_resource type="Resource" path="res://data/towers/water.tres" id="t_water"]
-[ext_resource type="Resource" path="res://data/towers/fire.tres" id="t_fire"]
-[ext_resource type="Resource" path="res://data/towers/nature.tres" id="t_nature"]
-[ext_resource type="Resource" path="res://data/towers/earth.tres" id="t_earth"]
+[ext_resource type="Resource" path="res://data/towers/crossbow.tres" id="t_crossbow"]
+[ext_resource type="Resource" path="res://data/towers/trebuchet.tres" id="t_trebuchet"]
+[ext_resource type="Resource" path="res://data/towers/censer.tres" id="t_censer"]
+[ext_resource type="Resource" path="res://data/towers/fervor.tres" id="t_fervor"]
+[ext_resource type="Resource" path="res://data/towers/madness.tres" id="t_madness"]
+[ext_resource type="Resource" path="res://data/towers/abyss.tres" id="t_abyss"]
+[ext_resource type="Resource" path="res://data/towers/ash.tres" id="t_ash"]
+[ext_resource type="Resource" path="res://data/towers/rot.tres" id="t_rot"]
+[ext_resource type="Resource" path="res://data/towers/bone.tres" id="t_bone"]
 [ext_resource type="Resource" path="res://data/waves/wave_01.tres" id="w1"]
 [ext_resource type="Resource" path="res://data/waves/wave_02.tres" id="w2"]
 [ext_resource type="Resource" path="res://data/waves/wave_03.tres" id="w3"]
@@ -40,7 +40,7 @@
 [node name="Main" type="Node2D"]
 script = ExtResource("main")
 rules = ExtResource("rules")
-tower_types = Array[Resource]([ExtResource("t_arrow"), ExtResource("t_mortar"), ExtResource("t_magic"), ExtResource("t_light"), ExtResource("t_darkness"), ExtResource("t_water"), ExtResource("t_fire"), ExtResource("t_nature"), ExtResource("t_earth")])
+tower_types = Array[Resource]([ExtResource("t_crossbow"), ExtResource("t_trebuchet"), ExtResource("t_censer"), ExtResource("t_fervor"), ExtResource("t_madness"), ExtResource("t_abyss"), ExtResource("t_ash"), ExtResource("t_bone"), ExtResource("t_rot")])
 waves = Array[Resource]([ExtResource("w1"), ExtResource("w2"), ExtResource("w3"), ExtResource("w4"), ExtResource("w5"), ExtResource("w6"), ExtResource("w7"), ExtResource("w8"), ExtResource("w9"), ExtResource("w10"), ExtResource("w11"), ExtResource("w12"), ExtResource("w13"), ExtResource("w14"), ExtResource("w15"), ExtResource("w16"), ExtResource("w17"), ExtResource("w18"), ExtResource("w19"), ExtResource("w20")])
 
 [node name="Board" type="Node2D" parent="."]

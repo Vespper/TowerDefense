@@ -79,7 +79,7 @@ func set_gold(gold: int, towers: Array[TowerData], unlocked: Array[bool]) -> voi
 
 ## Essences restantes et éléments débloqués (Element.Type -> true).
 func set_elements(essences: int, owned: Dictionary, can_buy: bool) -> void:
-	_essence_label.text = "Éléments — essences : %d" % essences
+	_essence_label.text = "Corruptions — stigmates : %d" % essences
 	_element_wheel.set_state(owned, essences > 0 and can_buy)
 
 
@@ -120,7 +120,7 @@ func show_selection(tower: Tower) -> void:
 		_selection_title.text = "%s — chantier %d %%" % [d.display_name, roundi(tower.build_progress * 100.0)]
 	_selection_title.add_theme_color_override("font_color", Element.color(d.element))
 	var lines: PackedStringArray = [
-		"Élément : %s" % Element.display_name(d.element),
+		"Corruption : %s" % Element.display_name(d.element),
 		"Dégâts : %.0f  ·  %.1f tirs/s" % [tower.damage(), tower.fire_rate()],
 		"Portée : %.1f cases" % (tower.attack_range() / 40.0),
 	]

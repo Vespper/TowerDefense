@@ -1,8 +1,8 @@
 # TowerDefense
 
-Tower defense classique à éléments, qui reprend le fonctionnement d'Element TD (Warcraft 3), fait avec Godot 4.7.
+Tower defense classique à corruptions, qui reprend le fonctionnement d'Element TD (Warcraft 3), fait avec Godot 4.7.
 
-Les ennemis suivent un chemin fixe ; on pose des tours de base (Flèche, Mortier, Magie) et, en dépensant des essences, on débloque les tours des six éléments. Chaque vague a un élément : Lumière > Ténèbres > Eau > Feu > Nature > Terre > Lumière (× 2 contre l'élément suivant, × 0,5 contre le précédent).
+Les ennemis suivent un chemin fixe ; on pose des tours de base (Arbalète, Trébuchet, Encensoir) et, en dépensant des stigmates, on débloque les tours des six corruptions. Chaque vague a une corruption : Ferveur > Démence > Abîme > Cendre > Os > Pourriture > Ferveur (× 2 contre la corruption suivante, × 0,5 contre la précédente).
 
 - Lancer : ouvrir le dossier dans Godot 4.7 puis **F5**, ou `tools/run.sh`.
 - Règles et vision : [`docs/design/gdd.md`](docs/design/gdd.md)
@@ -16,7 +16,7 @@ Les ennemis suivent un chemin fixe ; on pose des tours de base (Flèche, Mortier
 |---|---|
 | ZQSD / WASD / flèches | Déplacer le bâtisseur |
 | 1 à 9 | Choisir une tour à commander (reste active pour en commander plusieurs) |
-| Roue « Éléments » | Clic sur un élément : dépenser une essence pour le débloquer |
+| Roue « Corruptions » | Clic sur une corruption : dépenser un stigmate pour la débloquer |
 | Clic gauche | Commander la tour (le bâtisseur va la construire), ou choisir une tour posée |
 | Clic droit, Échap | Annuler |
 | U / I | Améliorer la tour choisie : au niveau 1, U prend la branche A et I la branche B |
