@@ -20,8 +20,8 @@ Contre une armure : ×1,5 si la tour est forte, ×0,5 si elle est faible (`data/
 | Démence | 45 | 60 | 0,35 | 3,75 | oui | — | `data/towers/madness.tres` |
 | Abîme | 40 | 6 | 2,0 | 3,25 | oui | zone 40 px, ralentit de 30 % pendant 1 s | `data/towers/abyss.tres` |
 | Cendre | 40 | 7 | 2,2 | 2,5 | oui | zone 55 px | `data/towers/ash.tres` |
-| Pourriture | 40 | 6 | 1,5 | 3,75 | oui | poison 8/s pendant 3 s | `data/towers/rot.tres` |
 | Os | 45 | 20 | 0,8 | 3,25 | non | zone 60 px | `data/towers/bone.tres` |
+| Pourriture | 40 | 6 | 1,5 | 3,75 | oui | poison 8/s pendant 3 s | `data/towers/rot.tres` |
 
 ## Arbre d'améliorations
 
@@ -36,5 +36,5 @@ Au passage au niveau 2, **U** choisit la branche A et **I** la branche B ; le ni
 | Démence | Hurlement : dégâts × 1,8 | Murmures : cadence × 1,4, dégâts × 1,2 |
 | Abîme | Étreinte : ralentit de 10 % de plus, dégâts × 1,35 | Marée noire : dégâts × 1,5, zone + 10 px |
 | Cendre | Bûcher : zone + 15 px, dégâts × 1,4 | Braises : dégâts × 1,45, cadence × 1,15 |
-| Pourriture | Spores : poison × 1,9, dégâts × 1,2 | Vermine : dégâts × 1,5, cadence × 1,2 |
 | Os | Charnier : zone + 20 px, dégâts × 1,35 | Crâne : dégâts × 1,75, portée × 1,1 |
+| Pourriture | Spores : poison × 1,9, dégâts × 1,2 | Vermine : dégâts × 1,5, cadence × 1,2 |

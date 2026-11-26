@@ -40,7 +40,7 @@
 [node name="Main" type="Node2D"]
 script = ExtResource("main")
 rules = ExtResource("rules")
-tower_types = Array[Resource]([ExtResource("t_crossbow"), ExtResource("t_trebuchet"), ExtResource("t_censer"), ExtResource("t_fervor"), ExtResource("t_madness"), ExtResource("t_abyss"), ExtResource("t_ash"), ExtResource("t_rot"), ExtResource("t_bone")])
+tower_types = Array[Resource]([ExtResource("t_crossbow"), ExtResource("t_trebuchet"), ExtResource("t_censer"), ExtResource("t_fervor"), ExtResource("t_madness"), ExtResource("t_abyss"), ExtResource("t_ash"), ExtResource("t_bone"), ExtResource("t_rot")])
 waves = Array[Resource]([ExtResource("w1"), ExtResource("w2"), ExtResource("w3"), ExtResource("w4"), ExtResource("w5"), ExtResource("w6"), ExtResource("w7"), ExtResource("w8"), ExtResource("w9"), ExtResource("w10"), ExtResource("w11"), ExtResource("w12"), ExtResource("w13"), ExtResource("w14"), ExtResource("w15"), ExtResource("w16"), ExtResource("w17"), ExtResource("w18"), ExtResource("w19"), ExtResource("w20")])
 
 [node name="Board" type="Node2D" parent="."]
