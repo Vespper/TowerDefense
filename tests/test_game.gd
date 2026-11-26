@@ -9,11 +9,11 @@ extends SceneTree
 const MAIN_SCENE := preload("res://scenes/main/main.tscn")
 const MAX_SECONDS := 3600.0
 const ELEMENT_ORDER: Array[Element.Type] = [
-	Element.Type.FIRE, Element.Type.DARKNESS, Element.Type.LIGHT,
-	Element.Type.WATER, Element.Type.NATURE, Element.Type.EARTH,
+	Element.Type.ASH, Element.Type.MADNESS, Element.Type.FERVOR,
+	Element.Type.ABYSS, Element.Type.ROT, Element.Type.BONE,
 ]
 ## Ordre des achats : nom de tour de base, ou « element » pour la prochaine tour d'élément débloquée.
-const BUILD_CYCLE := ["arrow", "mortar", "element", "magic", "element", "arrow", "element"]
+const BUILD_CYCLE := ["crossbow", "trebuchet", "element", "censer", "element", "crossbow", "element"]
 ## Au-delà de ce nombre de tours, on améliore une fois sur deux.
 const BUILD_ONLY_UNTIL := 10
 const MAX_TOWERS := 30
@@ -64,7 +64,7 @@ func _process(delta: float) -> bool:
 		return true
 	if _main.waves_cleared != _last_wave:
 		_last_wave = _main.waves_cleared
-		print("  vague %d finie à %.0f s : vies %d, or %d, %d tours, éléments %d" % [
+		print("  vague %d finie à %.0f s : vies %d, or %d, %d tours, corruptions %d" % [
 			_last_wave, _elapsed, _main.lives, _main.gold, _main.towers().size(), _main.elements.size()])
 	if not _passive:
 		_play()
@@ -144,7 +144,7 @@ func _report() -> void:
 	var levels := 0
 	for t in _main.towers():
 		levels += t.level
-	print("Résultat : %s après %.0f s — %d vagues vaincues sur %d, vies %d/%d, or %d, %d tours (niveaux cumulés %d), %d éléments" % [
+	print("Résultat : %s après %.0f s — %d vagues vaincues sur %d, vies %d/%d, or %d, %d tours (niveaux cumulés %d), %d corruptions" % [
 		result, _elapsed, _main.waves_cleared, _main.waves.size(),
 		_main.lives, _main.rules.start_lives, _main.gold, _main.towers().size(), levels, _main.elements.size()
 	])

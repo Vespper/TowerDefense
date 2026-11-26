@@ -20,7 +20,7 @@ tools/            scripts bash (check, test, run, screenshot)
 ## Scène principale
 
 ```
-Main (Node2D, main.gd)        or, vies, essences, éléments débloqués, état de la partie, pose des tours
+Main (Node2D, main.gd)        or, vies, stigmates, corruptions débloquées, état de la partie, pose des tours
 ├── Board (board.gd)          grille, chemin fixe de la MapData, cases occupées, aperçu de pose
 ├── Towers                    tours posées (Tower)
 ├── Enemies                   ennemis vivants (Enemy, groupe « enemies »)
@@ -32,11 +32,11 @@ Main (Node2D, main.gd)        or, vies, essences, éléments débloqués, état 
 
 ## Principes
 
-- **Données séparées du code** : `GameRules` (`data/rules.tres`) pour l'économie, les essences et les éléments, une `MapData` par carte (taille et coins du chemin), une `TowerData` par tour (avec ses deux `TowerBranch` en sous-ressources ; `Tower` calcule ses stats selon la branche et le niveau), une `EnemyData` par archétype, une `WaveData` par vague. Les listes de tours et de vagues sont des `@export` de `Main` (réglables dans l'inspecteur de `main.tscn`). Équilibrer = éditer un `.tres`.
-- **Élément** : `Element.Type` (enum, 6 éléments + Neutre) avec noms, couleurs et le cycle des forces dans `scripts/data/element.gd` ; les multiplicateurs sont dans `GameRules.element_multiplier()`.
+- **Données séparées du code** : `GameRules` (`data/rules.tres`) pour l'économie, les stigmates et les corruptions, une `MapData` par carte (taille et coins du chemin), une `TowerData` par tour (avec ses deux `TowerBranch` en sous-ressources ; `Tower` calcule ses stats selon la branche et le niveau), une `EnemyData` par archétype, une `WaveData` par vague. Les listes de tours et de vagues sont des `@export` de `Main` (réglables dans l'inspecteur de `main.tscn`). Équilibrer = éditer un `.tres`.
+- **Corruption** : `Element.Type` (enum, 6 corruptions + Neutre) avec noms, couleurs et le cycle des forces dans `scripts/data/element.gd` ; les multiplicateurs sont dans `GameRules.element_multiplier()`.
 - **Signaux vers le haut, appels vers le bas** : `Enemy` émet `died` / `reached_exit`, `WaveSpawner` émet `enemy_spawned`, `Hud` émet `build_requested`, `start_wave_requested`… et `Main` décide.
 - **Pas d'autoload** pour l'instant : tout l'état d'une partie est dans `Main`. En créer un (`Events`, `GameState`) seulement quand plusieurs scènes en auront besoin (menus, plusieurs cartes).
-- **Dessin en code** (`_draw`) tant qu'il n'y a pas d'assets : chaque nœud se dessine lui-même avec les couleurs de son élément.
+- **Dessin en code** (`_draw`) tant qu'il n'y a pas d'assets : chaque nœud se dessine lui-même avec les couleurs de son corruption.
 
 ## Carte et chemin
 
@@ -54,18 +54,18 @@ Main (Node2D, main.gd)        or, vies, essences, éléments débloqués, état 
 ## Vagues
 
 - `Main.next_wave_in` : compte à rebours (`GameRules.first_wave_delay`, puis `wave_gap` après la fin des apparitions). À 0, `_launch_wave()`. `start_next_wave()` lance plus tôt et donne `GameRules.early_call_bonus()`.
-- `WaveSpawner` prépare une file (normaux + élites réparties régulièrement) ; les normaux reçoivent l'élément **et** l'armure de la vague, les élites leur propre élément.
-- Dégâts : `GameRules.damage_multiplier(tour, élément, armure)` = multiplicateur d'élément × multiplicateur d'armure (`TowerData.strong_against` / `weak_against`).
+- `WaveSpawner` prépare une file (normaux + élites réparties régulièrement) ; les normaux reçoivent la corruption **et** l'armure de la vague, les élites leur propre corruption.
+- Dégâts : `GameRules.damage_multiplier(tour, corruption, armure)` = multiplicateur de corruption × multiplicateur d'armure (`TowerData.strong_against` / `weak_against`).
 - Plusieurs vagues peuvent être sur le terrain : chaque ennemi porte son numéro de vague (`meta "wave"`), `Main` compte les vivants par vague et donne les récompenses quand une vague est vaincue (`waves_cleared`). Quand plus aucun ennemi n'est en vie, `next_wave_in` tombe à `GameRules.cleared_wave_delay`.
 
-## Éléments et essences
+## Corruptions et stigmates
 
-- `Main.elements` : éléments débloqués ; `Main.buy_element()` dépense une essence. L'interface les montre sur une roue (`scenes/ui/element_wheel.gd`) : flèche = « bat », clic = débloquer. Une tour d'élément n'est disponible que si son élément est débloqué (`Main.is_unlocked()`).
-- Fin de vague : intérêts (`GameRules.interest`), bonus, et une essence si `GameRules.gives_essence(n)`.
+- `Main.elements` : corruptions débloquées ; `Main.buy_element()` dépense un stigmate. L'interface les montre sur une roue (`scenes/ui/element_wheel.gd`) : flèche = « bat », clic = débloquer. Une tour de corruption n'est disponible que si sa corruption est débloquée (`Main.is_unlocked()`).
+- Fin de vague : intérêts (`GameRules.interest`), bonus, et un stigmate si `GameRules.gives_essence(n)`.
 
 ## Tests
 
-- `tests/test_board.gd` : chemin, cases constructibles, cycle des éléments.
-- `tests/test_input.gd` : souris et clavier simulés (commander une tour, attendre le bâtisseur, améliorer avec chantier et choisir la branche B avec I, vendre, débloquer un élément, déplacer le bâtisseur, lancer une vague en avance).
-- `tests/test_game.gd` : partie complète jouée par un joueur automatique (éléments dans un ordre fixe, tours aux cases qui couvrent le plus de chemin) ; `-- passive` ne construit rien et doit perdre. La ligne « Résultat » sert de repère d'équilibrage.
+- `tests/test_board.gd` : chemin, cases constructibles, cycle des corruptions.
+- `tests/test_input.gd` : souris et clavier simulés (commander une tour, attendre le bâtisseur, améliorer avec chantier et choisir la branche B avec I, vendre, débloquer une corruption, déplacer le bâtisseur, lancer une vague en avance).
+- `tests/test_game.gd` : partie complète jouée par un joueur automatique (corruptions dans un ordre fixe, tours aux cases qui couvrent le plus de chemin) ; `-- passive` ne construit rien et doit perdre. La ligne « Résultat » sert de repère d'équilibrage.
 - `Main` expose `try_build`, `try_upgrade`, `sell`, `buy_element`, `start_next_wave` pour que les tests jouent sans souris.

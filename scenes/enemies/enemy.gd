@@ -60,7 +60,7 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	var col := Element.color(element)
-	if armor == Armor.Type.SPECTRAL:
+	if armor == Armor.Type.SPECTER:
 		col = Color(col, 0.45)
 	if data.flying:
 		# Volant : ombre au sol et triangle (forme différente des ennemis au sol)
@@ -70,15 +70,15 @@ func _draw() -> void:
 		draw_colored_polygon(tri, col)
 		tri.append(tri[0])
 		draw_polyline(tri, col.darkened(0.6), 2.0)
-	elif armor == Armor.Type.HEAVY:
-		# Blindé : carré à plaques épaisses
+	elif armor == Armor.Type.CARAPACE:
+		# Carapace : carré à plaques épaisses
 		var r := data.radius * 0.9
 		draw_rect(Rect2(-r, -r, r * 2, r * 2), col)
 		draw_rect(Rect2(-r, -r, r * 2, r * 2), Color(0.2, 0.2, 0.25), false, 3.5)
 	else:
 		draw_circle(Vector2.ZERO, data.radius, col)
 		draw_arc(Vector2.ZERO, data.radius, 0, TAU, 24, col.darkened(0.6), 2.0)
-	if armor == Armor.Type.SPECTRAL:
+	if armor == Armor.Type.SPECTER:
 		draw_arc(Vector2.ZERO, data.radius + 2, 0, TAU, 24, Color(0.85, 0.8, 1.0, 0.9), 1.5)
 	if data.elite:
 		# Couronne dorée

@@ -1,6 +1,6 @@
 # TowerDefense — mémo pour Claude
 
-Tower defense **classique** en **Godot 4.7 / GDScript**, qui reprend le fonctionnement d'Element TD (mod Warcraft 3) : chemin fixe par carte, tours de base (Flèche, Mortier, Magie) et tours des 6 éléments débloqués avec des essences, chaque vague a un élément. Deuxième projet de Vespper : on fait d'abord un tower defense solide, il sera intégré plus tard au roguelike (`Vespper/Gameproject`, en pause).
+Tower defense **classique** en **Godot 4.7 / GDScript**, qui reprend le fonctionnement d'Element TD (mod Warcraft 3) : chemin fixe par carte, tours de base (Arbalète, Trébuchet, Encensoir) et tours des 6 corruptions débloquées avec des stigmates, chaque vague a une corruption. Deuxième projet de Vespper : on fait d'abord un tower defense solide, il sera intégré plus tard au roguelike (`Vespper/Gameproject`, en pause).
 
 Réponds et documente **en français**, en tutoyant Vespper. Code (identifiants) en anglais, commentaires en français.
 
@@ -11,8 +11,8 @@ Ne lis pas tout `docs/` d'office. Ouvre le fichier utile à la tâche :
 | Besoin | Fichier |
 |---|---|
 | Où on en est, tâche suivante | `docs/roadmap.md` |
-| Règles du jeu, boucle, éléments, économie | `docs/design/gdd.md` |
-| Catalogue du contenu (tours, ennemis, vagues, éléments, cartes) et ses stats | `docs/wiki/` (commencer par `README.md`) |
+| Règles du jeu, boucle, corruptions, économie | `docs/design/gdd.md` |
+| Catalogue du contenu (tours, ennemis, vagues, corruptions, cartes) et ses stats | `docs/wiki/` (commencer par `README.md`) |
 | Organisation du code, scènes, données | `docs/architecture.md` |
 | Style GDScript, nommage, git, PR | `docs/conventions.md` |
 | Poste de travail, commandes | `docs/setup.md` (chemins de la machine : `docs/setup.local.md`, non versionné) |
@@ -22,7 +22,7 @@ Ne lis pas tout `docs/` d'office. Ouvre le fichier utile à la tâche :
 
 - Itérer pas à pas : une petite étape jouable à la fois, une PR par étape.
 - Données de jeu dans `data/*.tres` (Resources), pas en dur dans le code.
-- Quand on ajoute ou change du contenu (tour, ennemi, vague, élément, carte, bâtisseur), mettre à jour sa ligne dans `docs/wiki/` dans la même PR.
+- Quand on ajoute ou change du contenu (tour, ennemi, vague, corruption, carte, bâtisseur), mettre à jour sa ligne dans `docs/wiki/` dans la même PR.
 - Une scène et son script dans le même dossier, fichiers en `snake_case`.
 - Ne jamais committer `.godot/` ni éditer `project.godot` à la main sans raison (les touches se règlent dans l'éditeur : Projet > Paramètres > Contrôles).
 - Après un changement d'équilibrage, lancer `tools/test.sh` et noter la ligne « Résultat » de `test_game.gd` dans la PR.

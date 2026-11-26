@@ -4,8 +4,8 @@ Mise à jour à chaque fin de session (skill `fin-de-session`). Garder ce fichie
 
 ## Jalons
 
-1. ✱ **Prototype jouable** (en cours) — question : choisir ses éléments et placer ses tours le long du chemin est-il amusant ?
-2. ⬜ Profondeur Element TD : niveaux d'élément, tours doubles puis triples, tours de soutien, ennemis mécaniques / morts-vivants / immunisés
+1. ✱ **Prototype jouable** (en cours) — question : choisir ses corruptions et placer ses tours le long du chemin est-il amusant ?
+2. ⬜ Profondeur : fusions de corruptions (15 tours doubles, débloquées par défis), opposés (Schisme, fusions hérétiques), L'Indicible, niveaux de corruption, tours de soutien, ennemis mécaniques / morts-vivants / immunisés
 3. ⬜ Contenu : 40 à 60 vagues, 3 à 5 cartes, équilibrage
 4. ⬜ Habillage : style visuel, sons, menus, choix de la carte, meilleurs scores
 5. ⬜ Mode cartes libres (labyrinthe construit avec les tours)
@@ -24,14 +24,16 @@ Mise à jour à chaque fin de session (skill `fin-de-session`). Garder ce fichie
 - [x] Deuxième session de test : victoire avec 10 vies
 - [x] Vagues neutres à armure (Flèche / Mortier / Magie), élites à élément, compte à rebours à 3 s quand le terrain est vide
 - [x] Arbre d'améliorations : 2 branches par tour, choisies au niveau 2 (U / I)
+- [x] Habillage grimdark du vocabulaire : les Six Corruptions, stigmates, Arbalète / Trébuchet / Encensoir, Chair / Carapace / Spectre
 - [ ] Équilibrage après la session de test
 
 ## Prochaine étape
 
-Session de test de Vespper sur les armures, les élites et l'arbre d'améliorations, puis équilibrage. Ensuite : tours mixtes (deux éléments).
+Session de test de Vespper (armures, élites, arbre d'améliorations, nouveaux noms), puis équilibrage. Ensuite : Schisme (opposés côte à côte), puis fusions de corruptions (noms et idées dans le GDD).
 
 ## Journal
 
+- 2026-11-26 — Renommage grimdark : les Six Corruptions, nouvelle roue, stigmates, nouveaux noms des tours et armures (PR #7).
 - 2026-11-25 — Arbre d'améliorations : 2 branches par tour, touche I pour la branche B (PR #6).
 - 2026-11-25 — Armures des vagues neutres, élites à élément, 20 vagues refaites, compte à rebours à 3 s (PR #5).
 - 2026-11-25 — Amélioration avec chantier, vagues automatiques, roue des éléments, difficulté relevée (PR #4).

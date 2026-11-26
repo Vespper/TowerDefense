@@ -1,42 +1,45 @@
 class_name Element
 extends RefCounted
-## Les six éléments d'Element TD et leur cycle. Les multiplicateurs (fort / faible) sont dans GameRules.
-## Cycle : Lumière > Ténèbres > Eau > Feu > Nature > Terre > Lumière.
-## Chaque élément fait double dégâts à celui qu'il bat, et moitié à celui qui le bat.
+## Les six corruptions et leur cycle (dans le code, on garde le nom « Element »).
+## Les multiplicateurs (fort / faible) sont dans GameRules.
+## Cycle : Ferveur > Démence > Abîme > Cendre > Os > Pourriture > Ferveur.
+## Chaque corruption fait double dégâts à celle qu'elle bat, et moitié à celle qui la bat.
+## Les valeurs de l'enum sont enregistrées dans les .tres : ne pas changer leur ordre.
 
-enum Type { NONE, LIGHT, DARKNESS, WATER, FIRE, NATURE, EARTH }
+enum Type { NONE, FERVOR, MADNESS, ABYSS, ASH, ROT, BONE }
 
-## Les éléments jouables, dans l'ordre du cycle (pour l'interface).
-const ALL: Array[Type] = [Type.LIGHT, Type.DARKNESS, Type.WATER, Type.FIRE, Type.NATURE, Type.EARTH]
+## Les corruptions jouables, dans l'ordre du cycle (pour l'interface).
+const ALL: Array[Type] = [Type.FERVOR, Type.MADNESS, Type.ABYSS, Type.ASH, Type.BONE, Type.ROT]
 
 const NAMES := {
 	Type.NONE: "Neutre",
-	Type.LIGHT: "Lumière",
-	Type.DARKNESS: "Ténèbres",
-	Type.WATER: "Eau",
-	Type.FIRE: "Feu",
-	Type.NATURE: "Nature",
-	Type.EARTH: "Terre",
+	Type.FERVOR: "Ferveur",
+	Type.MADNESS: "Démence",
+	Type.ABYSS: "Abîme",
+	Type.ASH: "Cendre",
+	Type.ROT: "Pourriture",
+	Type.BONE: "Os",
 }
 
+## Palette sombre : or terni, violet maladif, bleu-noir, braise, vert bile, ivoire sale.
 const COLORS := {
-	Type.NONE: Color(0.78, 0.78, 0.82),
-	Type.LIGHT: Color(1.0, 0.95, 0.55),
-	Type.DARKNESS: Color(0.65, 0.35, 0.9),
-	Type.WATER: Color(0.3, 0.6, 1.0),
-	Type.FIRE: Color(0.95, 0.35, 0.2),
-	Type.NATURE: Color(0.35, 0.85, 0.35),
-	Type.EARTH: Color(0.8, 0.6, 0.3),
+	Type.NONE: Color(0.72, 0.7, 0.66),
+	Type.FERVOR: Color(0.86, 0.68, 0.25),
+	Type.MADNESS: Color(0.66, 0.4, 0.82),
+	Type.ABYSS: Color(0.3, 0.55, 0.78),
+	Type.ASH: Color(0.86, 0.37, 0.18),
+	Type.ROT: Color(0.55, 0.7, 0.22),
+	Type.BONE: Color(0.86, 0.82, 0.7),
 }
 
-## Élément battu par chaque élément (attaque forte).
+## Corruption battue par chaque corruption (attaque forte).
 const BEATS := {
-	Type.LIGHT: Type.DARKNESS,
-	Type.DARKNESS: Type.WATER,
-	Type.WATER: Type.FIRE,
-	Type.FIRE: Type.NATURE,
-	Type.NATURE: Type.EARTH,
-	Type.EARTH: Type.LIGHT,
+	Type.FERVOR: Type.MADNESS,
+	Type.MADNESS: Type.ABYSS,
+	Type.ABYSS: Type.ASH,
+	Type.ASH: Type.BONE,
+	Type.BONE: Type.ROT,
+	Type.ROT: Type.FERVOR,
 }
 
 

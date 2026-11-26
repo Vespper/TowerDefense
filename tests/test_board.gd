@@ -43,22 +43,22 @@ func _process(_delta: float) -> bool:
 		var b: Element.Type = all[(i + 1) % all.size()]
 		_check(rules.element_multiplier(a, b) == rules.strong_multiplier, "%s fort contre %s" % [Element.display_name(a), Element.display_name(b)])
 		_check(rules.element_multiplier(b, a) == rules.weak_multiplier, "%s faible contre %s" % [Element.display_name(b), Element.display_name(a)])
-	_check(rules.element_multiplier(Element.Type.LIGHT, Element.Type.FIRE) == 1.0, "Lumière neutre contre Feu")
-	_check(rules.element_multiplier(Element.Type.NONE, Element.Type.FIRE) == 1.0, "Neutre sans bonus")
-	_check(rules.gives_essence(4) and not rules.gives_essence(5), "essence toutes les 4 vagues")
+	_check(rules.element_multiplier(Element.Type.FERVOR, Element.Type.ASH) == 1.0, "Ferveur neutre contre Cendre (opposés)")
+	_check(rules.element_multiplier(Element.Type.NONE, Element.Type.ASH) == 1.0, "Neutre sans bonus")
+	_check(rules.gives_essence(4) and not rules.gives_essence(5), "stigmate toutes les 4 vagues")
 
 	# Pierre-feuille-ciseaux des tours de base contre les armures
-	var arrow: TowerData = load("res://data/towers/arrow.tres")
-	var mortar: TowerData = load("res://data/towers/mortar.tres")
-	var magic: TowerData = load("res://data/towers/magic.tres")
-	var fire: TowerData = load("res://data/towers/fire.tres")
-	var trio: Array[TowerData] = [arrow, mortar, magic]
-	var armors: Array[Armor.Type] = [Armor.Type.LIGHT, Armor.Type.HEAVY, Armor.Type.SPECTRAL]
+	var crossbow: TowerData = load("res://data/towers/crossbow.tres")
+	var trebuchet: TowerData = load("res://data/towers/trebuchet.tres")
+	var censer: TowerData = load("res://data/towers/censer.tres")
+	var ash: TowerData = load("res://data/towers/ash.tres")
+	var trio: Array[TowerData] = [crossbow, trebuchet, censer]
+	var armors: Array[Armor.Type] = [Armor.Type.FLESH, Armor.Type.CARAPACE, Armor.Type.SPECTER]
 	for i in 3:
 		_check(rules.armor_multiplier(trio[i], armors[i]) == rules.armor_strong_multiplier, "%s fort contre %s" % [trio[i].display_name, Armor.display_name(armors[i])])
 		_check(rules.armor_multiplier(trio[i], armors[(i + 1) % 3]) == rules.armor_weak_multiplier, "%s faible contre %s" % [trio[i].display_name, Armor.display_name(armors[(i + 1) % 3])])
-	_check(rules.armor_multiplier(fire, Armor.Type.HEAVY) == 1.0, "les tours d'élément ignorent les armures")
-	_check(rules.damage_multiplier(arrow, Element.Type.FIRE, Armor.Type.NONE) == 1.0, "Flèche neutre contre un élément")
+	_check(rules.armor_multiplier(ash, Armor.Type.CARAPACE) == 1.0, "les tours de corruption ignorent les armures")
+	_check(rules.damage_multiplier(crossbow, Element.Type.ASH, Armor.Type.NONE) == 1.0, "Arbalète neutre contre une corruption")
 
 	print("Résultat : %s — %d/%d vérifications" % ["OK" if _failures == 0 else "ÉCHEC", _checks - _failures, _checks])
 	quit(1 if _failures > 0 else 0)

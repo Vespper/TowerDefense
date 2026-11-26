@@ -5,29 +5,28 @@
 
 [sub_resource type="Resource" id="branch_0"]
 script = ExtResource("2")
-display_name = "Séisme"
-description = "Zone d'impact plus large."
-splash_bonus = 20.0
-damage_mult = 1.35
+display_name = "Spores"
+description = "Poison bien plus fort."
+poison_mult = 1.9
+damage_mult = 1.2
 
 [sub_resource type="Resource" id="branch_1"]
 script = ExtResource("2")
-display_name = "Rocher"
-description = "Énormes dégâts, un peu plus de portée."
-damage_mult = 1.75
-range_mult = 1.1
+display_name = "Vermine"
+description = "Dégâts directs et cadence accrus."
+damage_mult = 1.5
+fire_rate_mult = 1.2
 
 [resource]
 script = ExtResource("1")
-display_name = "Terre"
-element = 6
-description = "Rochers lourds qui touchent une zone. Ne vise pas les volants."
-cost = 45
+display_name = "Pourriture"
+element = 5
+description = "Spores et vermine : tir régulier qui empoisonne, 8 dégâts par seconde pendant 3 s."
+cost = 40
 build_time = 2.5
-damage = 20.0
-fire_rate = 0.8
-attack_range = 130.0
-splash_radius = 60.0
-projectile_speed = 300.0
-hits_air = false
+damage = 6.0
+fire_rate = 1.5
+attack_range = 150.0
+poison_dps = 8.0
+poison_duration = 3.0
 branches = Array[ExtResource("2")]([SubResource("branch_0"), SubResource("branch_1")])

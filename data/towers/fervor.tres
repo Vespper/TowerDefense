@@ -5,23 +5,23 @@
 
 [sub_resource type="Resource" id="branch_0"]
 script = ExtResource("2")
-display_name = "Rayon"
+display_name = "Sermon"
 description = "Dégâts et portée accrus."
 damage_mult = 1.5
 range_mult = 1.15
 
 [sub_resource type="Resource" id="branch_1"]
 script = ExtResource("2")
-display_name = "Éclat"
+display_name = "Litanie"
 description = "Tire plus vite."
 fire_rate_mult = 1.45
 damage_mult = 1.15
 
 [resource]
 script = ExtResource("1")
-display_name = "Lumière"
+display_name = "Ferveur"
 element = 1
-description = "Très longue portée, une cible."
+description = "Cierges et reliques : très longue portée, une cible."
 cost = 40
 build_time = 2.5
 damage = 14.0
