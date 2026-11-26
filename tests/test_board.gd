@@ -47,6 +47,12 @@ func _process(_delta: float) -> bool:
 	_check(rules.element_multiplier(Element.Type.NONE, Element.Type.ASH) == 1.0, "Neutre sans bonus")
 	_check(rules.gives_essence(4) and not rules.gives_essence(5), "stigmate toutes les 4 vagues")
 
+	# Opposés et terres corrompues
+	_check(Element.opposite(Element.Type.FERVOR) == Element.Type.ASH and Element.opposite(Element.Type.MADNESS) == Element.Type.BONE and Element.opposite(Element.Type.ABYSS) == Element.Type.ROT, "opposés : Ferveur/Cendre, Démence/Os, Abîme/Pourriture")
+	_check(rules.terrain_multiplier(Element.Type.ROT, Element.Type.ROT) == rules.terrain_bonus, "terre de sa corruption : bonus")
+	_check(rules.terrain_multiplier(Element.Type.ROT, Element.Type.ABYSS) == rules.terrain_malus, "terre opposée : malus")
+	_check(rules.terrain_multiplier(Element.Type.NONE, Element.Type.ROT) == 1.0 and rules.terrain_multiplier(Element.Type.ROT, Element.Type.ASH) == 1.0, "tour neutre ou autre terre : sans effet")
+
 	# Pierre-feuille-ciseaux des tours de base contre les armures
 	var crossbow: TowerData = load("res://data/towers/crossbow.tres")
 	var trebuchet: TowerData = load("res://data/towers/trebuchet.tres")

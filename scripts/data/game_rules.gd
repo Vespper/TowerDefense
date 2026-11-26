@@ -42,11 +42,32 @@ extends Resource
 ## Quand toutes les vagues lancées sont vaincues, le compte à rebours de la suivante tombe à cette valeur.
 @export var cleared_wave_delay: float = 3.0
 
+@export_group("Carte")
+## Dégâts d'une tour posée sur une terre de sa corruption (1.25 = +25 %).
+@export var terrain_bonus: float = 1.25
+## Dégâts d'une tour posée sur une terre de la corruption opposée (0.75 = -25 %).
+@export var terrain_malus: float = 0.75
+## Or et secondes de travail du bâtisseur pour démolir une ruine.
+@export var ruin_clear_cost: int = 20
+@export var ruin_clear_time: float = 4.0
+
 @export_group("Corruptions")
 ## Multiplicateur de dégâts d'une attaque forte (ex. Eau contre Feu).
 @export var strong_multiplier: float = 2.0
 ## Multiplicateur de dégâts d'une attaque faible (ex. Feu contre Eau).
 @export var weak_multiplier: float = 0.5
+
+
+## Multiplicateur de dégâts d'une tour de corruption `tower_element` posée sur une terre `terrain`.
+## Les tours neutres et les cases sans corruption ne changent rien.
+func terrain_multiplier(tower_element: Element.Type, terrain: Element.Type) -> float:
+	if tower_element == Element.Type.NONE or terrain == Element.Type.NONE:
+		return 1.0
+	if tower_element == terrain:
+		return terrain_bonus
+	if Element.opposite(tower_element) == terrain:
+		return terrain_malus
+	return 1.0
 
 
 func element_multiplier(attack: Element.Type, defense: Element.Type) -> float:

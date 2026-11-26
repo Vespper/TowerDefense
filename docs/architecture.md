@@ -21,7 +21,8 @@ tools/            scripts bash (check, test, run, screenshot)
 
 ```
 Main (Node2D, main.gd)        or, vies, stigmates, corruptions débloquées, état de la partie, pose des tours
-├── Board (board.gd)          grille, chemin fixe de la MapData, cases occupées, aperçu de pose
+├── Board (board.gd)          grille, chemin fixe de la MapData, terres corrompues, cases occupées ou bloquées, aperçu de pose
+├── Ruins                     ruines encore debout (Ruin, scenes/ruins/ruin.gd)
 ├── Towers                    tours posées (Tower)
 ├── Enemies                   ennemis vivants (Enemy, groupe « enemies »)
 ├── Projectiles               projectiles et effets de zone
@@ -47,8 +48,10 @@ Main (Node2D, main.gd)        or, vies, stigmates, corruptions débloquées, ét
 ## Bâtisseur et chantiers
 
 - `Main.try_build` paie la tour et crée une `Tower` en chantier (`build_progress` à 0, elle ne tire pas), puis la donne au bâtisseur (`Builder.order`).
-- `Builder` traite sa file : il marche jusqu'à `build_reach` du premier chantier, appelle `Tower.work(delta)` jusqu'à 1, puis passe au suivant. Les touches de déplacement ont la priorité sur la file.
+- `Builder` traite sa file de `Worksite` (classe de base de `Tower` et `Ruin`, `scenes/builder/worksite.gd`) : il marche jusqu'à `build_reach` du premier chantier, appelle `work(delta)` jusqu'à ce que `is_built()` soit vrai, puis passe au suivant. Les touches de déplacement ont la priorité sur la file.
 - `Main.try_upgrade` paie et rouvre le chantier (`Tower.upgrade()`, `is_upgrading()`), puis le donne aussi au bâtisseur. Durée = `build_time` × niveau visé.
+- Ruines : `MapData.ruins`, créées par `Main._spawn_ruins()` ; `Main.toggle_demolition(ruin)` paie `GameRules.ruin_clear_cost` et donne la ruine au bâtisseur (ou annule et rembourse). À la fin, `Board.set_blocked(cell, false)`.
+- Terres corrompues : `MapData.corrupted_cells` (case -> `Element.Type`), lues par `Board.terrain_at()` ; `Tower.terrain` est fixé à la pose et `Tower.damage()` / `poison_dps()` appliquent `GameRules.terrain_multiplier()` (bonus si même corruption, malus si opposée, `Element.opposite()`).
 - Vitesse et portée dans `data/builder.tres` ; temps de construction dans chaque `TowerData.build_time`.
 
 ## Vagues
@@ -65,7 +68,7 @@ Main (Node2D, main.gd)        or, vies, stigmates, corruptions débloquées, ét
 
 ## Tests
 
-- `tests/test_board.gd` : chemin, cases constructibles, cycle des corruptions.
-- `tests/test_input.gd` : souris et clavier simulés (commander une tour, attendre le bâtisseur, améliorer avec chantier et choisir la branche B avec I, vendre, débloquer une corruption, déplacer le bâtisseur, lancer une vague en avance).
+- `tests/test_board.gd` : chemin, cases constructibles, cycle des corruptions, opposés, terres corrompues.
+- `tests/test_input.gd` : souris et clavier simulés (commander une tour, attendre le bâtisseur, améliorer avec chantier et choisir la branche B avec I, vendre, débloquer une corruption, bonus et malus des terres, démolir une ruine, déplacer le bâtisseur, lancer une vague en avance).
 - `tests/test_game.gd` : partie complète jouée par un joueur automatique (corruptions dans un ordre fixe, tours aux cases qui couvrent le plus de chemin) ; `-- passive` ne construit rien et doit perdre. La ligne « Résultat » sert de repère d'équilibrage.
 - `Main` expose `try_build`, `try_upgrade`, `sell`, `buy_element`, `start_next_wave` pour que les tests jouent sans souris.

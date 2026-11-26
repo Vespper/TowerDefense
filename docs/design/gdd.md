@@ -25,8 +25,10 @@ Ce projet est aussi un banc d'essai : ce qui marche ici sera repris dans le rogu
 
 ## Cartes
 
-- Grille de 24 × 15 cases, **chemin fixe** défini dans une `MapData` (`data/maps/`) par ses coins. Toutes les cases hors du chemin sont constructibles.
+- Grille de 24 × 15 cases, **chemin fixe** défini dans une `MapData` (`data/maps/`) par ses coins. Les cases hors du chemin sont constructibles, sauf les ruines.
 - Première carte : « Serpent », un chemin de 93 cases qui serpente quatre fois à travers la carte (comme Flash Element TD).
+- **Terres corrompues** : quelques cases portent une corruption. Une tour de cette corruption y fait +25 % de dégâts, une tour de la corruption opposée −25 %. La roue compte aussi pour le placement. Plus tard, le **biome** de la carte décidera quelles corruptions dominent.
+- **Ruines** : des obstacles bloquent les meilleures cases. Un clic paie 20 or et le bâtisseur va les démolir (4 s). Chaque ruine pose une question : démolir tôt pour une bonne case, ou garder l'or ?
 - On ajoutera d'autres cartes au fur et à mesure. Les **cartes libres** (labyrinthe construit avec les tours, façon Element TD original ou Wintermaul) viendront plus tard sous forme de mode.
 
 ## Bâtisseur
@@ -35,6 +37,7 @@ Un personnage, comme le builder des TD Warcraft 3, garde un pied vers le futur j
 - Il se déplace au clavier (ZQSD / WASD / flèches) et marche partout, chemin compris. Il ne peut pas être blessé.
 - Cliquer une case **commande** une tour : l'or est payé tout de suite, un chantier apparaît, et le bâtisseur y marche puis la construit (1,5 s pour une tour de base, 2,5 s pour une tour de corruption). Les commandes s'enchaînent dans une file.
 - Une tour en chantier ne tire pas. Annuler un chantier rembourse tout.
+- Il **démolit les ruines** commandées, dans la même file que les tours.
 - **Améliorer** est aussi un chantier : l'or est payé, la tour est **hors service** jusqu'à ce que le bâtisseur vienne la finir (temps de construction × niveau visé). On améliore donc plutôt entre les vagues.
 - Ce que ça apporte : poser loin coûte du temps, il faut anticiper avant la vague. À venir : objets ou talents qui accélèrent la construction.
 
@@ -155,6 +158,16 @@ Noms et idées d'effet des 15 fusions de deux corruptions, à débloquer d'une p
 À trouver : la place des trois tours de base dans la roue.
 
 Côté roguelike (plus tard) : avant une run, on connaît le **biome**, qui donne la probabilité de chaque type d'ennemi.
+
+### Carte et chemin (2026-11-26)
+
+Ce qui existe dans les TD et qu'on garde pour plus tard (terres corrompues et ruines sont faites) :
+- **Portes qui s'ouvrent** (Kingdom Rush) : une deuxième entrée se réveille vers la vague 8, puis une troisième ; chaque vague annonce par où elle arrive. Demande une carte pensée pour.
+- **Aiguillages** (Dungeon Warfare) : un levier que le bâtisseur actionne pour envoyer les ennemis sur un détour plus long. Premier pas vers le mode labyrinthe.
+- **Chemin qui grandit** (Rogue Tower) : toutes les quelques vagues, le chemin s'allonge ou une entrée apparaît, tiré au hasard. Plutôt pour le côté roguelike.
+- **Hauteurs** (Rogue Tower) : cases qui donnent de la portée.
+- **Événements de carte** : marée d'Abîme qui ralentit un tronçon, nuit qui réduit la portée, pluie de cendres…
+- **Biomes** : avant une run, on connaît le biome, qui donne les corruptions dominantes (terres) et la probabilité de chaque type d'ennemi.
 
 ### Autres pistes (2026-11-25)
 

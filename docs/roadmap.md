@@ -25,14 +25,16 @@ Mise à jour à chaque fin de session (skill `fin-de-session`). Garder ce fichie
 - [x] Vagues neutres à armure (Flèche / Mortier / Magie), élites à élément, compte à rebours à 3 s quand le terrain est vide
 - [x] Arbre d'améliorations : 2 branches par tour, choisies au niveau 2 (U / I)
 - [x] Habillage grimdark du vocabulaire : les Six Corruptions, stigmates, Arbalète / Trébuchet / Encensoir, Chair / Carapace / Spectre
+- [x] Terres corrompues et ruines à démolir sur la carte Serpent
 - [ ] Équilibrage après la session de test
 
 ## Prochaine étape
 
-Session de test de Vespper (armures, élites, arbre d'améliorations, nouveaux noms), puis équilibrage. Ensuite : Schisme (opposés côte à côte), puis fusions de corruptions (noms et idées dans le GDD).
+Session de test de Vespper (armures, élites, arbre d'améliorations, nouveaux noms), puis équilibrage. Ensuite : Schisme (opposés côte à côte), puis fusions de corruptions (noms et idées dans le GDD), puis portes qui s'ouvrent.
 
 ## Journal
 
+- 2026-11-26 — Terres corrompues et ruines à démolir (PR #8).
 - 2026-11-26 — Renommage grimdark : les Six Corruptions, nouvelle roue, stigmates, nouveaux noms des tours et armures (PR #7).
 - 2026-11-25 — Arbre d'améliorations : 2 branches par tour, touche I pour la branche B (PR #6).
 - 2026-11-25 — Armures des vagues neutres, élites à élément, 20 vagues refaites, compte à rebours à 3 s (PR #5).

@@ -1,5 +1,5 @@
 class_name Tower
-extends Node2D
+extends Worksite
 ## Tour posée sur une case. Elle est d'abord un chantier que le bâtisseur doit construire ;
 ## une fois construite, elle vise l'ennemi le plus avancé à portée et tire un projectile.
 ## Une amélioration est aussi un chantier : la tour est hors service jusqu'à ce que le bâtisseur l'ait finie.
@@ -12,6 +12,8 @@ var data: TowerData
 var rules: GameRules
 var cell: Vector2i
 var level: int = 1
+## Corruption de la terre sous la tour (NONE si case normale).
+var terrain: Element.Type = Element.Type.NONE
 ## Branche d'amélioration choisie au niveau 2 (-1 = pas encore choisie).
 var branch: int = -1
 ## Or dépensé sur cette tour (pose + améliorations), pour la revente.
@@ -128,9 +130,14 @@ func _branch_steps() -> int:
 	return level - 1 if chosen_branch() != null else 0
 
 
+## Multiplicateur de la terre corrompue sous la tour (1 si sans effet).
+func terrain_multiplier() -> float:
+	return rules.terrain_multiplier(data.element, terrain)
+
+
 func damage() -> float:
 	var b := chosen_branch()
-	return data.damage * (pow(b.damage_mult, _branch_steps()) if b else 1.0)
+	return data.damage * (pow(b.damage_mult, _branch_steps()) if b else 1.0) * terrain_multiplier()
 
 
 func fire_rate() -> float:
@@ -145,7 +152,7 @@ func attack_range() -> float:
 
 func poison_dps() -> float:
 	var b := chosen_branch()
-	return data.poison_dps * (pow(b.poison_mult, _branch_steps()) if b else 1.0)
+	return data.poison_dps * (pow(b.poison_mult, _branch_steps()) if b else 1.0) * terrain_multiplier()
 
 
 func splash_radius() -> float:

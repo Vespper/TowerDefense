@@ -4,7 +4,7 @@ extends SceneTree
 ## Lancer : tools/test.sh tests/test_input.gd
 
 const MAIN_SCENE := preload("res://scenes/main/main.tscn")
-const MAX_FRAMES := 1200
+const MAX_FRAMES := 3000
 
 var _main: Main
 var _frame: int = 0
@@ -15,6 +15,7 @@ var _cell := Vector2i(6, 3)
 var _builder_start: Vector2
 var _gold_before_call: int = 0
 var _bonus_expected: int = 0
+var _ruin_cell: Vector2i
 
 
 func _initialize() -> void:
@@ -92,7 +93,28 @@ func _process(_delta: float) -> bool:
 		6:
 			_check(_main.wave_index == 1 and _main.spawner.is_spawning(), "Espace : vague lancée en avance")
 			_check(_bonus_expected > 0 and _main.gold == _gold_before_call + _bonus_expected, "bonus d'or pour l'avance (+%d)" % _bonus_expected)
-			return _finish()
+			# Terres corrompues : la Ferveur (débloquée plus haut) sur une terre de Ferveur, puis de Cendre (opposée)
+			_main.gold += 500
+			var fervor := _main.tower_types.find(load("res://data/towers/fervor.tres"))
+			var on_own := _main.try_build(fervor, Vector2i(9, 3))
+			_check(on_own != null and is_equal_approx(on_own.terrain_multiplier(), _main.rules.terrain_bonus), "Ferveur sur terre de Ferveur : bonus")
+			var on_opposite := _main.try_build(fervor, Vector2i(22, 2))
+			_check(on_opposite != null and is_equal_approx(on_opposite.terrain_multiplier(), _main.rules.terrain_malus), "Ferveur sur terre de Cendre : malus")
+			_check(is_equal_approx(on_opposite.damage(), on_opposite.data.damage * _main.rules.terrain_malus), "le malus réduit les dégâts")
+			_main.sell(on_own)
+			_main.sell(on_opposite)
+			# Ruines : case bloquée, clic = démolition payée, le bâtisseur la démolit
+			var ruin := _main.ruins()[0]
+			_ruin_cell = ruin.cell
+			_check(not _main.board.can_build(_ruin_cell), "une ruine bloque sa case")
+			var gold := _main.gold
+			_click(_main.board.cell_to_world(_ruin_cell))
+			_check(ruin.ordered and _main.gold == gold - _main.rules.ruin_clear_cost, "clic sur une ruine : démolition payée")
+			_step = 7
+		7:
+			if _main.board.can_build(_ruin_cell):
+				_check(_main.ruins().size() == _main.board.map.ruins.size() - 1, "ruine démolie, case libérée")
+				return _finish()
 	return false
 
 

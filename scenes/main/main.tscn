@@ -48,6 +48,8 @@ position = Vector2(20, 80)
 script = ExtResource("board")
 map = ExtResource("map")
 
+[node name="Ruins" type="Node2D" parent="."]
+
 [node name="Towers" type="Node2D" parent="."]
 
 [node name="Enemies" type="Node2D" parent="."]

@@ -43,6 +43,14 @@ const BEATS := {
 }
 
 
+## Corruption opposée sur la roue (trois cases plus loin), ou NONE.
+static func opposite(element: Type) -> Type:
+	var i := ALL.find(element)
+	if i < 0:
+		return Type.NONE
+	return ALL[(i + 3) % ALL.size()]
+
+
 static func display_name(element: Type) -> String:
 	return NAMES[element]
 
