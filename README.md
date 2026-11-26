@@ -17,7 +17,7 @@ Les ennemis suivent un chemin fixe ; on pose des tours de base (Arbalète, Tréb
 | ZQSD / WASD / flèches | Déplacer le bâtisseur |
 | 1 à 9 | Choisir une tour à commander (reste active pour en commander plusieurs) |
 | Roue « Corruptions » | Clic sur une corruption : dépenser un stigmate pour la débloquer |
-| Clic gauche | Commander la tour (le bâtisseur va la construire), ou choisir une tour posée |
+| Clic gauche | Commander la tour (le bâtisseur va la construire), ou choisir une tour posée. Sur une ruine : la faire démolir (20 or, re-clic pour annuler) |
 | Clic droit, Échap | Annuler |
 | U / I | Améliorer la tour choisie : au niveau 1, U prend la branche A et I la branche B |
 | V (ou Suppr) | Vendre la tour choisie (annuler un chantier rembourse tout) |

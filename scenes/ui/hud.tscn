@@ -135,7 +135,7 @@ offset_right = 1265.0
 offset_bottom = 712.0
 theme_override_colors/font_color = Color(0.7, 0.7, 0.75, 1)
 theme_override_font_sizes/font_size = 13
-text = "ZQSD / flèches : bâtisseur · 1-9 : tour · Clic : commander / choisir · Échap : annuler · U / I : améliorer · V : vendre · Espace : vague · F : vitesse    Arbalète > Chair · Trébuchet > Carapace · Encensoir > Spectre"
+text = "ZQSD / flèches : bâtisseur · 1-9 : tour · Clic : commander / choisir / démolir une ruine · Échap : annuler · U / I : améliorer · V : vendre · Espace : vague · F : vitesse    Arbalète > Chair · Trébuchet > Carapace · Encensoir > Spectre"
 
 [node name="MessageLabel" type="Label" parent="."]
 unique_name_in_owner = true

@@ -124,6 +124,10 @@ func show_selection(tower: Tower) -> void:
 		"Dégâts : %.0f  ·  %.1f tirs/s" % [tower.damage(), tower.fire_rate()],
 		"Portée : %.1f cases" % (tower.attack_range() / 40.0),
 	]
+	if tower.terrain != Element.Type.NONE:
+		var m := tower.terrain_multiplier()
+		var effect := "sans effet" if is_equal_approx(m, 1.0) else "dégâts %+d %%" % roundi((m - 1.0) * 100.0)
+		lines.append("Terre de %s : %s" % [Element.display_name(tower.terrain), effect])
 	if tower.splash_radius() > 0.0:
 		lines.append("Zone : %.0f px" % tower.splash_radius())
 	if tower.chain_count() > 0:

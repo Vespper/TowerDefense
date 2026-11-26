@@ -1,7 +1,7 @@
 class_name Builder
 extends Node2D
-## Le bâtisseur. Se déplace au clavier (ZQSD / WASD / flèches) ; les tours commandées forment une file
-## de chantiers : il marche jusqu'au premier, le construit, puis passe au suivant.
+## Le bâtisseur. Se déplace au clavier (ZQSD / WASD / flèches) ; les tours commandées et les ruines à démolir
+## forment une file de chantiers (Worksite) : il marche jusqu'au premier, le termine, puis passe au suivant.
 ## Il marche partout (chemin compris) et ne peut pas être blessé.
 
 signal queue_changed
@@ -10,7 +10,7 @@ signal queue_changed
 ## Zone où il peut marcher (coordonnées monde). Réglée par Main d'après le terrain.
 var bounds: Rect2 = Rect2(0, 0, 1280, 720)
 
-var _queue: Array[Tower] = []
+var _queue: Array[Worksite] = []
 var _facing: Vector2 = Vector2.RIGHT
 var _working: bool = false
 var _time: float = 0.0
@@ -59,9 +59,16 @@ func _draw() -> void:
 
 
 ## Ajoute un chantier à la file.
-func order(site: Tower) -> void:
+func order(site: Worksite) -> void:
 	_queue.append(site)
 	queue_changed.emit()
+
+
+## Retire un chantier de la file (démolition annulée).
+func cancel(site: Worksite) -> void:
+	if _queue.has(site):
+		_queue.erase(site)
+		queue_changed.emit()
 
 
 func pending_orders() -> int:
@@ -81,7 +88,7 @@ func _move(step: Vector2) -> void:
 
 ## Retire les chantiers vendus ou terminés.
 func _clean_queue() -> void:
-	var kept: Array[Tower] = []
+	var kept: Array[Worksite] = []
 	for t in _queue:
 		if is_instance_valid(t) and not t.is_queued_for_deletion() and not t.is_built():
 			kept.append(t)

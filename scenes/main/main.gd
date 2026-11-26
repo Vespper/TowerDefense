@@ -35,12 +35,15 @@ var _spawn_done: Dictionary = {}
 var _build_index: int = -1
 var _selected: Tower
 var _towers_by_cell: Dictionary = {}
+## Ruines encore debout (case -> Ruin).
+var _ruins_by_cell: Dictionary = {}
 var _speed_index: int = 0
 ## Dernière position de la souris dans le monde (lue dans les événements, pas dans le système).
 var _mouse_world: Vector2 = Vector2(-1000, -1000)
 
 @onready var board: Board = $Board
 @onready var towers_root: Node2D = $Towers
+@onready var ruins_root: Node2D = $Ruins
 @onready var enemies_root: Node2D = $Enemies
 @onready var projectiles_root: Node2D = $Projectiles
 @onready var spawner: WaveSpawner = $WaveSpawner
@@ -57,6 +60,7 @@ func _ready() -> void:
 	builder.bounds = board_rect.grow(-12)
 	builder.global_position = board.cell_to_world(Vector2i(board.columns / 2, board.rows / 2))
 	next_wave_in = rules.first_wave_delay
+	_spawn_ruins()
 	spawner.enemy_spawned.connect(_on_enemy_spawned)
 	spawner.spawning_finished.connect(_on_spawning_finished)
 	hud.build_requested.connect(select_build)
@@ -111,7 +115,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		_update_ghost()
 	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var cell := board.world_to_cell(_mouse_world)
-		if _build_index >= 0:
+		if _ruins_by_cell.has(cell):
+			toggle_demolition(_ruins_by_cell[cell])
+		elif _build_index >= 0:
 			try_build(_build_index, cell)
 		else:
 			_select_tower(_towers_by_cell.get(cell))
@@ -160,6 +166,7 @@ func try_build(index: int, cell: Vector2i) -> Tower:
 	gold -= data.cost
 	var tower: Tower = TOWER_SCENE.instantiate()
 	tower.setup(data, rules, cell, board.cell_size, projectiles_root)
+	tower.terrain = board.terrain_at(cell)
 	towers_root.add_child(tower)
 	tower.global_position = board.cell_to_world(cell)
 	_towers_by_cell[cell] = tower
@@ -181,6 +188,53 @@ func try_upgrade(tower: Tower, branch_index: int = 0) -> bool:
 	builder.order(tower)
 	_refresh_hud()
 	return true
+
+
+## Ruines encore debout.
+func ruins() -> Array[Ruin]:
+	var list: Array[Ruin] = []
+	for r in _ruins_by_cell.values():
+		list.append(r)
+	return list
+
+
+## Commande la démolition d'une ruine (or payé tout de suite), ou l'annule et rembourse si elle était commandée.
+func toggle_demolition(ruin: Ruin) -> bool:
+	if ruin == null or is_finished() or ruin.is_built():
+		return false
+	if ruin.ordered:
+		gold += rules.ruin_clear_cost
+		ruin.set_ordered(false)
+		builder.cancel(ruin)
+	else:
+		if gold < rules.ruin_clear_cost:
+			return false
+		gold -= rules.ruin_clear_cost
+		ruin.set_ordered(true)
+		builder.order(ruin)
+	_refresh_hud()
+	return true
+
+
+func _spawn_ruins() -> void:
+	for cell in board.map.ruins:
+		if not board.is_inside(cell) or board.is_path(cell):
+			continue
+		var ruin := Ruin.new()
+		ruin.setup(cell, board.cell_size, rules.ruin_clear_time)
+		ruins_root.add_child(ruin)
+		ruin.global_position = board.cell_to_world(cell)
+		ruin.cleared.connect(_on_ruin_cleared)
+		_ruins_by_cell[cell] = ruin
+		board.set_blocked(cell, true)
+
+
+func _on_ruin_cleared(ruin: Ruin) -> void:
+	_ruins_by_cell.erase(ruin.cell)
+	board.set_blocked(ruin.cell, false)
+	ruin.queue_free()
+	_update_ghost()
+	_refresh_hud()
 
 
 func sell(tower: Tower) -> void:
@@ -313,7 +367,8 @@ func _update_ghost() -> void:
 		board.clear_ghost()
 		return
 	var cell := board.world_to_cell(_mouse_world)
-	board.set_ghost(cell, can_build(_build_index, cell), tower_types[_build_index].attack_range)
+	var mult := rules.terrain_multiplier(tower_types[_build_index].element, board.terrain_at(cell))
+	board.set_ghost(cell, can_build(_build_index, cell), tower_types[_build_index].attack_range, mult)
 
 
 func _wave_preview(index: int) -> String:
