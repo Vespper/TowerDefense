@@ -79,6 +79,13 @@ func _play() -> void:
 	while _main.essences > 0 and _element_turn < ELEMENT_ORDER.size():
 		_main.buy_element(ELEMENT_ORDER[_element_turn])
 		_element_turn += 1
+	# Élites : appeler la prochaine corruption de l'ordre pas encore débloquée
+	for i in range(_main.wave_index, mini(_main.wave_index + 3, _main.waves.size())):
+		if _main.has_elites(i) and not _main.elite_choices.has(i):
+			for e in ELEMENT_ORDER:
+				if not _main.has_element(e) and not _main.elite_choices.values().has(e):
+					_main.choose_elite(i, e)
+					break
 	var count := _main.towers().size()
 	# Améliorer met la tour hors service : seulement entre deux vagues, une à la fois
 	var can_upgrade_now := not _main.spawner.is_spawning() and _main.builder.pending_orders() == 0

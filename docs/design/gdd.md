@@ -20,7 +20,7 @@ Ce projet est aussi un banc d'essai : ce qui marche ici sera repris dans le rogu
 1. Préparation : on voit la prochaine vague et un compte à rebours ; on commande des tours au bâtisseur, on améliore ou vend, on dépense ses stigmates.
 2. La vague part toute seule à la fin du compte à rebours (30 s avant la première, puis 30 s après la fin des apparitions de la précédente ; si plus aucun ennemi n'est sur le terrain, le compte à rebours tombe à 3 s). On peut la lancer plus tôt : 0,5 or par seconde gagnée. Les vagues peuvent donc se chevaucher.
 3. Chaque ennemi tué rapporte de l'or ; chaque ennemi qui sort coûte des vies.
-4. Quand tous les ennemis d'une vague sont morts ou sortis : intérêts sur l'or gardé, bonus de fin de vague, parfois un stigmate.
+4. Quand tous les ennemis d'une vague sont morts ou sortis : intérêts sur l'or gardé, bonus de fin de vague, et un stigmate si tous ses élites ont été tués.
 5. Victoire après la dernière vague ; défaite à 0 vie.
 
 ## Cartes
@@ -57,7 +57,7 @@ Chaque flèche se raconte : la foi exorcise la folie, le fou regarde l'abîme sa
 
 - Attaque forte (contre la corruption suivante) : dégâts × 2. Attaque faible (contre la corruption précédente) : × 0,5. Sinon × 1. Le Neutre n'a ni bonus ni malus.
 - Chaque vague a une corruption (la couleur des ennemis). Le poison suit aussi le multiplicateur.
-- **Stigmates** : on en a 1 au départ, puis 1 de plus toutes les 4 vagues (5 sur une partie de 20 vagues pour 6 corruptions, 3 sur la partie courte de 10 vagues). Un stigmate débloque une corruption et sa tour. La liste des prochaines vagues marque celles qui donnent un stigmate (« +1 stigmate »), une annonce s'affiche quand on le gagne, et la roue pulse tant qu'un stigmate attend d'être dépensé.
+- **Stigmates** : 1 stigmate libre au départ (on choisit sa première corruption sur la roue). Ensuite, ils viennent des **élites** : avant chaque vague d'élites, on choisit leur corruption avec les pastilles de la ligne de la vague, dans la colonne « Prochaines vagues » (au hasard si on ne choisit pas). Tuer **tous** les élites de la vague donne un stigmate de cette corruption : elle est débloquée, ou, si on l'a déjà, ses tours gagnent +15 % de dégâts (cumulable). Si un élite atteint la sortie, le stigmate est perdu. C'est un pari : un élite de Cendre résiste à la Cendre (×0,5 de la corruption qu'il bat) et ne craint que celle qui le bat. Sur la partie de 10 vagues, il y a 3 vagues d'élites (5, 7, 9), donc 4 corruptions au plus. Une annonce s'affiche quand on gagne ou perd un stigmate, et la roue pulse tant que le stigmate libre n'est pas dépensé. (`GameRules.essence_every_waves` peut remettre un stigmate libre toutes les N vagues.)
 
 ## Armures (vagues neutres)
 

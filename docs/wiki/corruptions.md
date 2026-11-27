@@ -17,6 +17,6 @@ Dans le code, une corruption est un `Element.Type` (`scripts/data/element.gd`) e
 
 « Faible contre X » veut dire : les attaques de cette corruption font × 0,5 aux ennemis X.
 
-**Stigmates** : 1 au départ, +1 à la fin des vagues 4, 8, 12, 16 et 20. Un stigmate débloque une corruption (clic sur la roue du panneau « Corruptions »).
+**Stigmates** : 1 stigmate libre au départ (on choisit sa première corruption sur la roue). Ensuite, ils viennent des **élites** : avant chaque vague d'élites, on choisit leur corruption avec les pastilles de la ligne de la vague, dans la colonne « Prochaines vagues » (au hasard si on ne choisit pas). Tuer **tous** les élites de la vague donne un stigmate de cette corruption : elle est débloquée, ou, si on l'a déjà, ses tours gagnent +15 % de dégâts (cumulable). Si un élite atteint la sortie, le stigmate est perdu. C'est un pari : un élite de Cendre résiste à la Cendre (×0,5 de la corruption qu'il bat) et ne craint que celle qui le bat.
 
 **L'Indicible** (à venir) : la corruption ultime, hors de la roue, les six à la fois.

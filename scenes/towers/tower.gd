@@ -14,6 +14,8 @@ var cell: Vector2i
 var level: int = 1
 ## Corruption de la terre sous la tour (NONE si case normale).
 var terrain: Element.Type = Element.Type.NONE
+## Bonus de dégâts des stigmates d'élite de sa corruption (1 = aucun).
+var corruption_boost: float = 1.0
 ## Branche d'amélioration choisie au niveau 2 (-1 = pas encore choisie).
 var branch: int = -1
 ## Or dépensé sur cette tour (pose + améliorations), pour la revente.
@@ -132,7 +134,7 @@ func _branch_steps() -> int:
 
 ## Multiplicateur de la terre corrompue sous la tour (1 si sans effet).
 func terrain_multiplier() -> float:
-	return rules.terrain_multiplier(data.element, terrain)
+	return rules.terrain_multiplier(data.element, terrain) * corruption_boost
 
 
 func damage() -> float:
