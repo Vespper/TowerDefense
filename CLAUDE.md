@@ -12,6 +12,7 @@ Ne lis pas tout `docs/` d'office. Ouvre le fichier utile à la tâche :
 |---|---|
 | Où on en est, tâche suivante | `docs/roadmap.md` |
 | Règles du jeu, boucle, corruptions, économie | `docs/design/gdd.md` |
+| Style visuel, palette, planches de style | `docs/design/art-direction.md` |
 | Catalogue du contenu (tours, ennemis, vagues, corruptions, cartes) et ses stats | `docs/wiki/` (commencer par `README.md`) |
 | Organisation du code, scènes, données | `docs/architecture.md` |
 | Style GDScript, nommage, git, PR | `docs/conventions.md` |
@@ -46,6 +47,7 @@ S'il y a des modifications locales non commitées dans son clone, ne rien écras
 - `tools/test.sh` : tests headless `tests/test_*.gd`, n'affiche que les résultats (dont une partie complète jouée automatiquement).
 - `tools/screenshot.sh [secondes] [fichier]` : partie automatique et capture d'écran, pour vérifier un changement visuel sans ouvrir l'éditeur.
 - `tools/run.sh` : lance le jeu.
+- `tools/style/build.sh` : régénère les planches de style (`docs/design/img/style/`).
 
 Une commande répétée plusieurs fois ou à la sortie trop longue mérite un script dans `tools/` : l'ajouter et le lister ici.
 

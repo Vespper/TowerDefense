@@ -119,7 +119,7 @@ Clavier + souris. Voir le tableau du `README.md`.
 
 ## Direction artistique (prototype)
 
-Formes simples dessinées en code, fond sombre, chemin en terre. Ton grimdark (inspiration Vermis). Couleurs : Ferveur or terni, Démence violet maladif, Abîme bleu-noir, Cendre braise, Os ivoire sale, Pourriture vert bile, Neutre gris.
+Formes simples dessinées en code, fond sombre, chemin en terre. Ton grimdark (inspiration Vermis). Couleurs : Ferveur or terni, Démence violet maladif, Abîme bleu-noir, Cendre braise, Os ivoire sale, Pourriture vert bile, Neutre gris. Style à venir : voir [art-direction.md](art-direction.md).
 
 ## Questions ouvertes
 
