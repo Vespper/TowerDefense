@@ -268,6 +268,134 @@ def scene_c():
     return "\n".join(o)
 
 
+# ------------------------------- D : silhouettes et lueurs + gravure (Vermis x Isaac)
+# Décor sombre et gravé (faible contraste) ; éléments de jeu gros, contours noirs épais,
+# valeurs moyennes lisibles ; la couleur vive est réservée aux corruptions.
+def scene_d():
+    rnd = random.Random(11)
+    INK = "#08080a"
+    OL = 'stroke="#08080a" stroke-width="2.6" stroke-linejoin="round"'
+    o = []
+    o.append(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="1024" height="640">')
+    o.append(f"""<defs>
+<pattern id="gh" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><line x1="0" y1="0" x2="0" y2="5" stroke="#2b2c33" stroke-width="1.6"/></pattern>
+<pattern id="gx" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(-40)"><line x1="0" y1="0" x2="0" y2="4" stroke="#0e0e11" stroke-width="1.5"/></pattern>
+<pattern id="ph" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(8)"><line x1="0" y1="0" x2="0" y2="6" stroke="#3b332b" stroke-width="1"/></pattern>
+<pattern id="sh" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="3" stroke="#08080a" stroke-width="1.3"/></pattern>
+<filter id="rough" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.2"/></filter>
+<filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="1" seed="3"/><feColorMatrix values="0 0 0 0 .85  0 0 0 0 .8  0 0 0 0 .7  0 0 0 .14 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+<filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="2.5" result="b"/><feGaussianBlur stdDeviation="7" result="c"/><feMerge><feMergeNode in="c"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="soft"><feGaussianBlur stdDeviation="3"/></filter>
+<radialGradient id="lr" r="50%"><stop offset="0" stop-color="{ROT}" stop-opacity=".4"/><stop offset="1" stop-color="{ROT}" stop-opacity="0"/></radialGradient>
+<radialGradient id="la" r="50%"><stop offset="0" stop-color="{ASH}" stop-opacity=".35"/><stop offset="1" stop-color="{ASH}" stop-opacity="0"/></radialGradient>
+<radialGradient id="vig" cx="50%" cy="50%" r="70%"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".8"/></radialGradient>
+</defs>""")
+    # décor gravé, contraste faible
+    o.append('<g filter="url(#rough)">')
+    o.append(f'<rect x="-20" y="-20" width="{W+40}" height="{H+40}" fill="#18191d"/>')
+    o.append(f'<rect x="-20" y="-20" width="{W+40}" height="{H+40}" fill="url(#gh)"/>')
+    for _ in range(22):
+        x, y = rnd.uniform(0, W), rnd.uniform(0, H)
+        o.append(f'<ellipse cx="{x:.0f}" cy="{y:.0f}" rx="{rnd.uniform(25,70):.0f}" ry="{rnd.uniform(12,30):.0f}" fill="url(#gx)"/>')
+    for _ in range(70):
+        x, y = rnd.uniform(0, W), rnd.uniform(0, H)
+        for k in range(3):
+            dx = (k - 1) * 2.2
+            o.append(f'<path d="M{x+dx:.1f},{y:.1f} q{dx*.6:.1f},-4 {dx*1.4:.1f},-{rnd.uniform(5,8):.1f}" stroke="#34353c" stroke-width=".9" fill="none"/>')
+    dpath = "M" + " L".join(f"{x},{y}" for x, y in PATH)
+    o.append(f'<path d="{dpath}" stroke="{INK}" stroke-width="46" fill="none"/>')
+    o.append(f'<path d="{dpath}" stroke="#5a4c3d" stroke-width="38" fill="none"/>')
+    o.append(f'<path d="{dpath}" stroke="url(#ph)" stroke-width="38" fill="none" opacity=".8"/>')
+    for _ in range(110):
+        seg = rnd.choice([(0, 460, 100, 'h'), (100, 300, 460, 'v'), (460, 640, 300, 'h')])
+        if seg[3] == 'h':
+            x, y = rnd.uniform(seg[0], seg[1]), seg[2] + rnd.uniform(-16, 16)
+        else:
+            x, y = seg[2] + rnd.uniform(-16, 16), rnd.uniform(seg[0], seg[1])
+        o.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{rnd.uniform(.6,1.4):.1f}" fill="#2c251e"/>')
+    o.append('</g>')
+    # lumières
+    o.append(f'<circle cx="{ROTT[0]}" cy="{ROTT[1]-6}" r="72" fill="url(#lr)"/>')
+    for e in (ENEMY, ENEMY2):
+        o.append(f'<circle cx="{e[0]}" cy="{e[1]}" r="34" fill="url(#la)"/>')
+
+    def shadow(cx, cy, rx, ry):
+        o.append(f'<ellipse cx="{cx}" cy="{cy}" rx="{rx}" ry="{ry}" fill="#000" opacity=".7"/>')
+
+    def block(cx, cy):
+        shadow(cx + 3, cy + 17, 19, 5)
+        o.append(f'<rect x="{cx-16}" y="{cy-14}" width="32" height="31" rx="3" fill="#5d5a58" {OL}/>')
+        o.append(f'<rect x="{cx-14.7}" y="{cy+2}" width="29.4" height="13.7" fill="url(#sh)" opacity=".55"/>')
+        o.append(f'<line x1="{cx-15}" y1="{cy+2}" x2="{cx+15}" y2="{cy+2}" stroke="{INK}" stroke-width="1.8"/>')
+        o.append(f'<line x1="{cx-12}" y1="{cy-11}" x2="{cx+10}" y2="{cy-11}" stroke="#8d8984" stroke-width="1.4"/>')
+
+    # Arbalète (neutre : bois et fer, pas de couleur vive)
+    cx, cy = CROSS
+    block(cx, cy)
+    a = ang((cx, cy - 6), ENEMY)
+    o.append(f'<g transform="translate({cx},{cy-6}) rotate({a:.1f})">')
+    o.append(f'<rect x="-10" y="-3.5" width="24" height="7" rx="1.5" fill="#7a5a3e" {OL}/>')
+    o.append(f'<path d="M10,-15 Q19,0 10,15" stroke="{INK}" stroke-width="6.5" fill="none" stroke-linecap="round"/>')
+    o.append('<path d="M10,-15 Q19,0 10,15" stroke="#a8a39a" stroke-width="2.6" fill="none" stroke-linecap="round"/>')
+    o.append('<path d="M10,-14 L3,0 L10,14" stroke="#d8cfb8" stroke-width="1" fill="none"/>')
+    o.append('</g>')
+    bx, by = 300, 138
+    o.append(f'<g transform="translate({bx},{by}) rotate({a:.1f})"><line x1="-9" y1="0" x2="6" y2="0" stroke="{INK}" stroke-width="4.5" stroke-linecap="round"/><line x1="-9" y1="0" x2="6" y2="0" stroke="#d8cfb8" stroke-width="1.8" stroke-linecap="round"/></g>')
+
+    # Pourriture
+    cx, cy = ROTT
+    block(cx, cy)
+    o.append(f'<path d="M{cx-14},{cy-11} L{cx-12},{cy+4} Q{cx},{cy+9} {cx+12},{cy+4} L{cx+14},{cy-11}Z" fill="#3b3a35" {OL}/>')
+    o.append(f'<path d="M{cx-12.5},{cy-6} L{cx-11},{cy+4} Q{cx-6},{cy+7} {cx-3},{cy+7.5} L{cx-5},{cy-6}Z" fill="url(#sh)" opacity=".6"/>')
+    o.append(f'<g filter="url(#glow)"><ellipse cx="{cx}" cy="{cy-11}" rx="13" ry="5.5" fill="{ROT}" stroke="{INK}" stroke-width="2"/>')
+    o.append(f'<circle cx="{cx-4}" cy="{cy-12}" r="2.3" fill="{ROT_L}"/><circle cx="{cx+5}" cy="{cy-10}" r="1.5" fill="{ROT_L}"/>')
+    o.append(f'<path d="M{cx+9},{cy-8} q2,6 0,11 q-1,2 1,4" stroke="{ROT}" stroke-width="2.6" fill="none" stroke-linecap="round"/></g>')
+    ex, ey = ENEMY
+    o.append('<g filter="url(#glow)">')
+    for i in range(6):
+        t = (i + 1) / 7
+        x = cx + (ex - cx) * t + math.sin(i * 1.7) * 4
+        y = cy - 17 + (ey - (cy - 17)) * t - math.sin(t * math.pi) * 16
+        o.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{1.6+t*1.4:.1f}" fill="{ROT}" stroke="{INK}" stroke-width="1"/>')
+    o.append('</g>')
+
+    # ennemi : grosse tête, contour épais, braises de Cendre bien visibles
+    def enemy(ex, ey, s=1.0):
+        shadow(ex + 2, ey + 12 * s, 11 * s, 3.2 * s)
+        o.append(f'<g transform="translate({ex},{ey}) scale({s})">')
+        o.append(f'<path d="M-10,12 L-8,0 Q-9,-16 1,-18 Q12,-16 10,-1 L12,12 L7,9 L3,12 L-1,9 L-5,12Z" fill="#2a2326" {OL}/>')
+        o.append(f'<path d="M-8,2 L-8,0 Q-9,-12 -3,-16 Q-6,-4 -2,11 L-5,12 L-10,12Z" fill="url(#sh)" opacity=".6"/>')
+        o.append(f'<ellipse cx="2.5" cy="-8" rx="6.5" ry="5" fill="{INK}"/>')
+        o.append(f'<g filter="url(#glow)"><circle cx="0" cy="-8" r="2" fill="{ASH_L}"/><circle cx="5.5" cy="-8" r="1.8" fill="{ASH_L}"/>')
+        o.append(f'<path d="M-3,1 l3,3.5 l-1,4 M5,-1 l1.5,4.5 l-2,3" stroke="{ASH}" stroke-width="1.8" fill="none" stroke-linecap="round"/></g>')
+        o.append(f'<path d="M10,0 L17,2 L15,4.5 M17,2 L18,-1.5" stroke="{INK}" stroke-width="3.2" fill="none" stroke-linecap="round"/>')
+        o.append(f'<path d="M10,0 L17,2 L15,4.5 M17,2 L18,-1.5" stroke="#6b5d58" stroke-width="1.2" fill="none" stroke-linecap="round"/>')
+        o.append('</g>')
+    enemy(*ENEMY2, s=.9)
+    enemy(*ENEMY)
+    o.append('<g filter="url(#glow)">')
+    for dx, dy, r in ((-12, -6, 2.4), (11, -16, 1.8), (13, 5, 1.7), (-7, 9, 1.5)):
+        o.append(f'<circle cx="{ex+dx}" cy="{ey+dy}" r="{r}" fill="{ROT}" stroke="{INK}" stroke-width=".9"/>')
+    o.append('</g>')
+
+    # ruines : pierre grise moins contrastée que les tours, mais contour net (elles bloquent)
+    def ruin(cx, cy):
+        shadow(cx + 3, cy + 14, 21, 5)
+        for dpts in ([(-15,12),(-15,-16),(-10,-21),(-7,-14),(-4,-18),(-4,12)], [(3,12),(3,-4),(8,-1),(12,-7),(12,12)]):
+            o.append(f'<path d="M' + " L".join(f"{cx+x},{cy+y}" for x, y in dpts) + f'Z" fill="#4a4846" {OL}/>')
+        o.append(f'<rect x="{cx-9}" y="{cy-13}" width="4" height="24" fill="url(#sh)" opacity=".7"/><rect x="{cx+8.5}" y="{cy-3}" width="3" height="14" fill="url(#sh)" opacity=".7"/>')
+        for dx, dy, r in ((-17, 12, 3), (15, 13, 2.6), (8, 16, 2.2)):
+            o.append(f'<circle cx="{cx+dx}" cy="{cy+dy}" r="{r}" fill="#4a4846" stroke="{INK}" stroke-width="1.6"/>')
+        o.append(f'<circle cx="{cx-1}" cy="{cy+8}" r="4.5" fill="#b9ae94" stroke="{INK}" stroke-width="1.8"/><circle cx="{cx-2.7}" cy="{cy+8}" r="1.2" fill="{INK}"/><circle cx="{cx+.9}" cy="{cy+8}" r="1.2" fill="{INK}"/>')
+    for r in RUINS:
+        ruin(*r)
+    o.append(f'<rect width="{W}" height="{H}" fill="#fff" filter="url(#grain)"/>')
+    o.append(f'<rect width="{W}" height="{H}" fill="url(#vig)"/>')
+    o.append('</svg>')
+    return "\n".join(o)
+
+
 open(os.path.join(OUT, "scene_a.svg"), "w").write(scene_a())
 open(os.path.join(OUT, "scene_c.svg"), "w").write(scene_c())
 print("ok")
+open(os.path.join(OUT, "scene_d.svg"), "w").write(scene_d())

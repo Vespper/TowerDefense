@@ -18,6 +18,12 @@ D = {
    pour=["Le plus proche de ce qu'on a déjà : formes simples, on garde le code de dessin.","Ambiance immédiate : brouillard, halos, les tours de corruption « éclairent » la carte.","La lumière dit tout : on voit la corruption d'une vague de loin."],
    contre=["Risque de manquer de détail : il faut soigner les silhouettes.","Les halos coûtent un peu (Light2D ou shader de lueur), à surveiller avec 200 ennemis.","Moins « gravure » que Vermis, plus « lanterne dans la nuit »."],
    godot="Formes en code ou sprites sombres + WorldEnvironment glow, PointLight2D sur les tours de corruption, brouillard en shader."),
+"d": dict(letter="D", name="Lueurs gravées", sub="Base C, décor gravé façon Vermis, éléments de jeu lisibles façon Isaac",
+   bg="#101114", fg="#ddd8cc", acc="#86a832",
+   pal=[("#18191d","Sol"),("#2b2c33","Hachures"),("#5a4c3d","Chemin"),("#5d5a58","Pierre des tours"),("#08080a","Contour"),("#86a832","Pourriture"),("#d4582b","Cendre")],
+   pour=["Décor gravé, sombre et peu contrasté : l'ambiance Vermis reste en fond.","Tout ce qui compte en jeu a un contour noir épais et une valeur moyenne : on le voit d'un coup d'œil, comme dans Isaac.","Les corruptions restent les seules couleurs vives, avec leur halo."],
+   contre=["Deux couches de style à tenir (décor gravé, objets à contour) : il faut des règles claires.","Les contours épais rendent les objets un peu plus « cartoon » que Vermis pur."],
+   godot="Décor : une texture de sol gravée + shader de grain. Objets : sprites à contour (dessinés ou rendus depuis Blender avec un contour). Halos : glow + PointLight2D sur les tours de corruption."),
 }
 zones=[("Arbalète",416,280),("Pourriture",608,280),("Ennemi",534,158),("Ruine",864,345)]
 for k,d in D.items():
