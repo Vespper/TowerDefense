@@ -18,18 +18,27 @@ const NODE_RADIUS := 17.0
 var _owned: Dictionary = {}
 var _can_buy: bool = false
 var _hovered: int = -1
+var _pulse: float = 0.0
 
 
 func _ready() -> void:
 	# Un texte non vide est nécessaire pour que Godot appelle _get_tooltip
 	tooltip_text = " "
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	set_process(_can_buy)
 
 
 ## `owned` : éléments débloqués (Element.Type -> true) ; `can_buy` : il reste une essence à dépenser.
 func set_state(owned: Dictionary, can_buy: bool) -> void:
 	_owned = owned.duplicate()
 	_can_buy = can_buy
+	set_process(can_buy)
+	queue_redraw()
+
+
+## Un stigmate attend : les corruptions à débloquer pulsent.
+func _process(delta: float) -> void:
+	_pulse = fmod(_pulse + delta * 3.0, TAU)
 	queue_redraw()
 
 
@@ -55,6 +64,9 @@ func _draw() -> void:
 		draw_circle(c, NODE_RADIUS, col if owned else col.darkened(0.65))
 		var ring := Color.WHITE if owned else (col if (_can_buy and i == _hovered) else col.darkened(0.2))
 		draw_arc(c, NODE_RADIUS, 0, TAU, 32, ring, 2.5 if owned or i == _hovered else 1.5, true)
+		if _can_buy and not owned:
+			var glow := 0.5 + 0.5 * sin(_pulse)
+			draw_arc(c, NODE_RADIUS + 3.0 + glow * 2.0, 0, TAU, 32, Color(col, 0.35 + 0.5 * glow), 2.0, true)
 		var text: String = SHORT_NAMES[element]
 		var text_col := Color(0.1, 0.1, 0.12) if owned else col
 		var w := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x

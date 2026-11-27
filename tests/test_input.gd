@@ -40,6 +40,7 @@ func _process(_delta: float) -> bool:
 			_click(_main.board.cell_to_world(_cell))
 			_step = 1
 		1:
+			_check(_main.waves.size() == _main.rules.wave_limit, "partie raccourcie à %d vagues" % _main.rules.wave_limit)
 			_check(_main.towers().size() == 1, "clic gauche : chantier d'Arbalète posé")
 			_check(_main.gold == _main.rules.start_gold - _main.tower_types[0].cost, "coût de l'Arbalète dépensé")
 			var site: Tower = _main.towers()[0]
@@ -122,6 +123,8 @@ func _process(_delta: float) -> bool:
 				_step = 8
 		8:
 			_check(_main.is_paused(), "P : pause")
+			_main.hud.announce("+1 stigmate")
+			_check(_main.hud.announcement() == "+1 stigmate", "annonce affichée")
 			_paused_enemy = _main.enemies_root.get_child(0) if _main.enemies_root.get_child_count() > 0 else null
 			_paused_pos = _paused_enemy.global_position if _paused_enemy else Vector2.ZERO
 			_paused_site = _main.try_build(0, Vector2i(2, 7))
