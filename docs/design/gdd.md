@@ -57,7 +57,7 @@ Chaque flèche se raconte : la foi exorcise la folie, le fou regarde l'abîme sa
 
 - Attaque forte (contre la corruption suivante) : dégâts × 2. Attaque faible (contre la corruption précédente) : × 0,5. Sinon × 1. Le Neutre n'a ni bonus ni malus.
 - Chaque vague a une corruption (la couleur des ennemis). Le poison suit aussi le multiplicateur.
-- **Stigmates** : on en a 1 au départ, puis 1 de plus toutes les 4 vagues (5 sur une partie de 20 vagues pour 6 corruptions). Un stigmate débloque une corruption et sa tour.
+- **Stigmates** : on en a 1 au départ, puis 1 de plus toutes les 4 vagues (5 sur une partie de 20 vagues pour 6 corruptions, 3 sur la partie courte de 10 vagues). Un stigmate débloque une corruption et sa tour. La liste des prochaines vagues marque celles qui donnent un stigmate (« +1 stigmate »), une annonce s'affiche quand on le gagne, et la roue pulse tant qu'un stigmate attend d'être dépensé.
 
 ## Armures (vagues neutres)
 
@@ -104,7 +104,8 @@ Le rôle vient de l'**archétype**, la corruption vient de la **vague**.
 
 ## Vagues
 
-- 20 vagues dans `data/waves/` : archétype, corruption **ou** armure, nombre, intervalle, multiplicateur de PV, élites éventuelles.
+- 20 vagues dans `data/waves/` ; pour l'instant la partie s'arrête après les 10 premières (`GameRules.wave_limit`, 0 = toutes) pour raccourcir les tests.
+- Chaque vague : archétype, corruption **ou** armure, nombre, intervalle, multiplicateur de PV, élites éventuelles.
 - Progression : vagues neutres à armure au début (on apprend Arbalète / Trébuchet / Encensoir), élites à corruption à partir de la vague 5, vagues entièrement corrompues surtout en fin de partie (12, 14, 15, 17 à 20). Volants aux vagues 4, 9, 14, 18.
 - La prochaine vague est annoncée dans la barre du haut.
 - Lancement automatique avec compte à rebours ; Espace (ou le bouton) lance la suivante en avance contre de l'or.

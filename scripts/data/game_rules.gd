@@ -17,6 +17,8 @@ extends Resource
 
 @export_group("Vagues")
 ## Secondes avant la première vague.
+## Nombre de vagues jouées (les premières de la liste). 0 = toutes.
+@export var wave_limit: int = 10
 @export var first_wave_delay: float = 30.0
 ## Secondes entre la fin des apparitions d'une vague et le début de la suivante.
 @export var wave_gap: float = 30.0

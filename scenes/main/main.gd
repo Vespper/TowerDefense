@@ -58,6 +58,9 @@ func _ready() -> void:
 	gold = rules.start_gold
 	lives = rules.start_lives
 	essences = rules.start_essences
+	# Partie raccourcie : seulement les premières vagues
+	if rules.wave_limit > 0 and waves.size() > rules.wave_limit:
+		waves = waves.slice(0, rules.wave_limit)
 	var board_rect := Rect2(board.global_position, Vector2(board.columns, board.rows) * board.cell_size)
 	builder.bounds = board_rect.grow(-12)
 	builder.global_position = board.cell_to_world(Vector2i(board.columns / 2, board.rows / 2))
@@ -355,6 +358,7 @@ func _check_wave_cleared(w: int) -> void:
 	gold += rules.interest(gold) + rules.wave_bonus(number)
 	if rules.gives_essence(number):
 		essences += 1
+		hud.announce("+1 stigmate ! Clique sur la roue pour débloquer une corruption")
 	if waves_cleared >= waves.size():
 		_end_game(true)
 		return
@@ -459,7 +463,7 @@ func _upcoming_waves() -> Array:
 	for i in range(maxi(first, 0), mini(first + 3, waves.size())):
 		var w := waves[i]
 		var color := Element.color(w.element) if w.element != Element.Type.NONE else Color(0.45, 0.44, 0.42)
-		list.append({"number": i + 1, "text": _wave_preview(i), "color": color})
+		list.append({"number": i + 1, "text": _wave_preview(i), "color": color, "stigma": rules.gives_essence(i + 1)})
 	return list
 
 

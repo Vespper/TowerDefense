@@ -51,6 +51,8 @@ Terre de sa corruption : +25 % · terre de la corruption opposée : −25 %"""
 var _gold_label: Label
 var _lives_label: Label
 var _stigma_label: Label
+var _announce_label: Label
+var _announce_tween: Tween
 var _wave_label: Label
 var _start_button: Button
 var _speed_button: Button
@@ -203,6 +205,16 @@ func _build_layout() -> void:
 	_message_panel.resized.connect(func() -> void:
 		_message_panel.position = area.get_center() - _message_panel.size / 2.0)
 
+	# Annonce temporaire en haut de la zone de jeu (stigmate gagné…)
+	_announce_label = _label(root, "", 18, COLOR_STIGMA)
+	_announce_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	_announce_label.add_theme_constant_override("outline_size", 6)
+	_announce_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_announce_label.position = Vector2(area.position.x, area.position.y + 16)
+	_announce_label.size = Vector2(area.size.x, 30)
+	_announce_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_announce_label.visible = false
+
 	# Fenêtre d'aide (H)
 	_help_panel = PanelContainer.new()
 	_help_panel.add_theme_stylebox_override("panel", _style(Color(0.05, 0.05, 0.045, 0.95), COLOR_LINE.lightened(0.2), 8))
@@ -324,7 +336,7 @@ func set_gold(gold: int, towers: Array[TowerData], unlocked: Array[bool]) -> voi
 
 ## Stigmates restants et corruptions débloquées (Element.Type -> true).
 func set_elements(essences: int, owned: Dictionary, can_buy: bool) -> void:
-	_stigma_label.text = "Stigmates %d" % essences
+	_stigma_label.text = "Stigmates %d" % essences + (" · clique sur la roue" if essences > 0 and can_buy and owned.size() < Element.ALL.size() else "")
 	_element_wheel.set_state(owned, essences > 0 and can_buy)
 
 
@@ -372,6 +384,10 @@ func set_upcoming(waves: Array) -> void:
 		var text := _label(line, w.text, 12, COLOR_TEXT)
 		text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if w.get("stigma", false):
+			var stigma := _label(line, "+1 stigmate", 11, COLOR_STIGMA)
+			stigma.tooltip_text = "Vaincre cette vague donne un stigmate"
+			stigma.mouse_filter = Control.MOUSE_FILTER_PASS
 		_upcoming_box.add_child(row)
 
 
@@ -478,6 +494,23 @@ func set_upgrade_affordable(affordable: bool) -> void:
 	if _upgrade_button.text != "Niveau max" and _upgrade_button.text != "En chantier":
 		_upgrade_button.disabled = not affordable
 		_upgrade_button_alt.disabled = not affordable
+
+
+## Texte qui s'affiche quelques secondes en haut de la zone de jeu, puis s'efface.
+func announce(text: String, seconds: float = 5.0) -> void:
+	_announce_label.text = text
+	_announce_label.visible = true
+	_announce_label.modulate.a = 1.0
+	if _announce_tween:
+		_announce_tween.kill()
+	_announce_tween = create_tween()
+	_announce_tween.tween_interval(seconds)
+	_announce_tween.tween_property(_announce_label, "modulate:a", 0.0, 1.0)
+	_announce_tween.tween_callback(func() -> void: _announce_label.visible = false)
+
+
+func announcement() -> String:
+	return _announce_label.text if _announce_label.visible else ""
 
 
 func show_message(text: String) -> void:
