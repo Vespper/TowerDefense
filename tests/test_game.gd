@@ -17,6 +17,8 @@ const BUILD_CYCLE := ["crossbow", "trebuchet", "element", "censer", "element", "
 ## Au-delà de ce nombre de tours, on améliore une fois sur deux.
 const BUILD_ONLY_UNTIL := 10
 const MAX_TOWERS := 30
+## Points de score perdus par case d'éloignement de la meilleure case.
+const SPREAD_PENALTY := 0.2
 
 var _main: Main
 var _passive: bool = false
@@ -135,6 +137,12 @@ func _rank_spots() -> void:
 			score[cell] = n
 			_spots.append(cell)
 	_spots.sort_custom(func(a: Vector2i, b: Vector2i) -> bool: return score[a] > score[b])
+	# Sur une grande carte, regrouper les tours autour de la meilleure case (comme un joueur)
+	var anchor := _spots[0]
+	var value := {}
+	for c in _spots:
+		value[c] = score[c] - SPREAD_PENALTY * Vector2(c - anchor).length()
+	_spots.sort_custom(func(a: Vector2i, b: Vector2i) -> bool: return value[a] > value[b])
 
 
 func _report() -> void:

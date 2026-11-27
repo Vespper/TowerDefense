@@ -49,16 +49,22 @@ var _mouse_world: Vector2 = Vector2(-1000, -1000)
 @onready var spawner: WaveSpawner = $WaveSpawner
 @onready var hud: Hud = $Hud
 @onready var builder: Builder = $Builder
+@onready var camera: GameCamera = $Camera
 
 
 func _ready() -> void:
 	Engine.time_scale = 1.0
+	get_tree().paused = false
 	gold = rules.start_gold
 	lives = rules.start_lives
 	essences = rules.start_essences
 	var board_rect := Rect2(board.global_position, Vector2(board.columns, board.rows) * board.cell_size)
 	builder.bounds = board_rect.grow(-12)
 	builder.global_position = board.cell_to_world(Vector2i(board.columns / 2, board.rows / 2))
+	# La caméra suit le bâtisseur ; marges pour l'interface (barre du haut, panneau de droite)
+	camera.target = builder
+	camera.global_position = builder.global_position
+	camera.set_bounds(board_rect, 20, 80, 300, 50)
 	next_wave_in = rules.first_wave_delay
 	_spawn_ruins()
 	spawner.enemy_spawned.connect(_on_enemy_spawned)
@@ -74,7 +80,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if is_finished():
+	if is_finished() or is_paused():
 		return
 	if not spawner.is_spawning() and wave_index < waves.size():
 		next_wave_in -= delta
@@ -93,6 +99,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_tree().reload_current_scene()
 		return
 	if is_finished():
+		return
+	if event.is_action_pressed("pause_game"):
+		toggle_pause()
 		return
 	for i in tower_types.size():
 		if event.is_action_pressed("select_tower_%d" % (i + 1)):
@@ -121,6 +130,19 @@ func _unhandled_input(event: InputEvent) -> void:
 			try_build(_build_index, cell)
 		else:
 			_select_tower(_towers_by_cell.get(cell))
+
+
+## Pause : le temps s'arrête (ennemis, tours, bâtisseur, compte à rebours), mais on peut lire,
+## regarder la carte et donner des ordres, qui s'exécuteront à la reprise.
+func toggle_pause() -> void:
+	if is_finished():
+		return
+	get_tree().paused = not get_tree().paused
+	hud.show_message("Pause\nP pour reprendre" if is_paused() else "")
+
+
+func is_paused() -> bool:
+	return get_tree().paused
 
 
 func is_finished() -> bool:

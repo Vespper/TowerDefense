@@ -11,11 +11,15 @@ var _frame: int = 0
 var _step: int = 0
 var _failures: int = 0
 var _checks: int = 0
-var _cell := Vector2i(6, 3)
+var _cell := Vector2i(2, 6)
 var _builder_start: Vector2
 var _gold_before_call: int = 0
 var _bonus_expected: int = 0
 var _ruin_cell: Vector2i
+var _paused_enemy: Node2D
+var _paused_pos: Vector2
+var _paused_site: Tower
+var _paused_frames: int = 0
 
 
 func _initialize() -> void:
@@ -96,9 +100,9 @@ func _process(_delta: float) -> bool:
 			# Terres corrompues : la Ferveur (débloquée plus haut) sur une terre de Ferveur, puis de Cendre (opposée)
 			_main.gold += 500
 			var fervor := _main.tower_types.find(load("res://data/towers/fervor.tres"))
-			var on_own := _main.try_build(fervor, Vector2i(9, 3))
+			var on_own := _main.try_build(fervor, _terrain_cell(Element.Type.FERVOR))
 			_check(on_own != null and is_equal_approx(on_own.terrain_multiplier(), _main.rules.terrain_bonus), "Ferveur sur terre de Ferveur : bonus")
-			var on_opposite := _main.try_build(fervor, Vector2i(22, 2))
+			var on_opposite := _main.try_build(fervor, _terrain_cell(Element.Type.ASH))
 			_check(on_opposite != null and is_equal_approx(on_opposite.terrain_multiplier(), _main.rules.terrain_malus), "Ferveur sur terre de Cendre : malus")
 			_check(is_equal_approx(on_opposite.damage(), on_opposite.data.damage * _main.rules.terrain_malus), "le malus réduit les dégâts")
 			_main.sell(on_own)
@@ -114,7 +118,26 @@ func _process(_delta: float) -> bool:
 		7:
 			if _main.board.can_build(_ruin_cell):
 				_check(_main.ruins().size() == _main.board.map.ruins.size() - 1, "ruine démolie, case libérée")
-				return _finish()
+				_key(KEY_P)
+				_step = 8
+		8:
+			_check(_main.is_paused(), "P : pause")
+			_paused_enemy = _main.enemies_root.get_child(0) if _main.enemies_root.get_child_count() > 0 else null
+			_paused_pos = _paused_enemy.global_position if _paused_enemy else Vector2.ZERO
+			_paused_site = _main.try_build(0, Vector2i(2, 7))
+			_check(_paused_site != null, "en pause, on peut encore commander une tour")
+			_paused_frames = 0
+			_step = 9
+		9:
+			_paused_frames += 1
+			if _paused_frames >= 30:
+				_check(_paused_enemy == null or _paused_enemy.global_position == _paused_pos, "en pause, les ennemis ne bougent pas")
+				_check(_paused_site.build_progress == 0.0, "en pause, le chantier n'avance pas")
+				_key(KEY_P)
+				_step = 10
+		10:
+			_check(not _main.is_paused(), "P : reprise")
+			return _finish()
 	return false
 
 
@@ -133,9 +156,17 @@ func _key(code: Key) -> void:
 		root.push_input(e)
 
 
+## Première case de terre de cette corruption sur la carte, sans ruine.
+func _terrain_cell(element: Element.Type) -> Vector2i:
+	for c in _main.board.map.corrupted_cells:
+		if _main.board.map.corrupted_cells[c] == element and _main.board.can_build(c):
+			return c
+	return Vector2i(-1, -1)
+
+
 func _click(world: Vector2) -> void:
 	# Coordonnées de la fenêtre (en headless elle est minuscule et l'image est mise à l'échelle)
-	var pos: Vector2 = root.get_final_transform() * world
+	var pos: Vector2 = root.get_final_transform() * (root.get_canvas_transform() * world)
 	var move := InputEventMouseMotion.new()
 	move.position = pos
 	root.push_input(move)

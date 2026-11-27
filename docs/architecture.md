@@ -28,6 +28,7 @@ Main (Node2D, main.gd)        or, vies, stigmates, corruptions débloquées, ét
 ├── Projectiles               projectiles et effets de zone
 ├── WaveSpawner               fait apparaître les ennemis d'une WaveData
 ├── Builder (builder.tscn)    bâtisseur : déplacement au clavier, file de chantiers
+├── Camera (game_camera.gd)   suit le bâtisseur, zoom molette, clic molette glissé, C pour recentrer
 └── Hud (hud.tscn)            interface ; renvoie les clics à Main par signaux
 ```
 
@@ -53,6 +54,11 @@ Main (Node2D, main.gd)        or, vies, stigmates, corruptions débloquées, ét
 - Ruines : `MapData.ruins`, créées par `Main._spawn_ruins()` ; `Main.toggle_demolition(ruin)` paie `GameRules.ruin_clear_cost` et donne la ruine au bâtisseur (ou annule et rembourse). À la fin, `Board.set_blocked(cell, false)`.
 - Terres corrompues : `MapData.corrupted_cells` (case -> `Element.Type`), lues par `Board.terrain_at()` ; `Tower.terrain` est fixé à la pose et `Tower.damage()` / `poison_dps()` appliquent `GameRules.terrain_multiplier()` (bonus si même corruption, malus si opposée, `Element.opposite()`).
 - Vitesse et portée dans `data/builder.tres` ; temps de construction dans chaque `TowerData.build_time`.
+
+## Pause et caméra
+
+- `Main` est en `PROCESS_MODE_ALWAYS`, ses enfants de jeu (Board, Ruins, Towers, Enemies, Projectiles, WaveSpawner, Builder) en `PAUSABLE`. `Main.toggle_pause()` (action `pause_game`, P) met `get_tree().paused` ; l'interface, la caméra et les ordres restent actifs, `Main._process` ne fait plus avancer le compte à rebours.
+- `GameCamera` (`scenes/main/game_camera.gd`) suit `target` (le bâtisseur), limitée à la carte plus des marges pour l'interface (`set_bounds`). La souris est convertie en coordonnées du monde avec `get_canvas_transform()` (les tests font l'inverse pour cliquer).
 
 ## Vagues
 

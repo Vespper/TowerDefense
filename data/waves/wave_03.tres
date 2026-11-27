@@ -10,4 +10,4 @@ element = 0
 armor = 2
 count = 10
 spawn_interval = 0.9
-health_multiplier = 1.8
+health_multiplier = 1.59

@@ -23,4 +23,8 @@ Les ennemis suivent un chemin fixe ; on pose des tours de base (Arbalète, Tréb
 | V (ou Suppr) | Vendre la tour choisie (annuler un chantier rembourse tout) |
 | Espace, Entrée | Lancer la vague suivante en avance (les vagues partent seules sinon), contre de l'or |
 | F | Vitesse x1, x2, x3 |
+| P (ou Pause) | Pause : le temps s'arrête, on peut lire et donner des ordres |
+| Molette | Zoomer / dézoomer |
+| Clic molette glissé | Déplacer la vue (la caméra suit le bâtisseur dès qu'il bouge) |
+| C | Recentrer la vue sur le bâtisseur |
 | R | Rejouer après la fin |
