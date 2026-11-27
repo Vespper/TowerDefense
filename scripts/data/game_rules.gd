@@ -28,8 +28,11 @@ extends Resource
 @export_group("Stigmates")
 ## Une essence (« stigmate » en jeu) débloque une corruption (et ses tours). On en a au départ, puis on en gagne avec les vagues.
 @export var start_essences: int = 1
-## Une essence de plus à la fin de chaque vague multiple de ce nombre.
-@export var essence_every_waves: int = 4
+## Une essence libre de plus à la fin de chaque vague multiple de ce nombre (0 = jamais :
+## les stigmates viennent alors des élites, voir `elite_stigma_boost`).
+@export var essence_every_waves: int = 0
+## Stigmate d'élite d'une corruption déjà débloquée : bonus de dégâts de ses tours (cumulable).
+@export var elite_stigma_boost: float = 0.15
 
 @export_group("Tours")
 @export var max_tower_level: int = 3

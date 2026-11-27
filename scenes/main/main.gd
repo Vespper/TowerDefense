@@ -27,6 +27,12 @@ var state: State = State.PLAYING
 var essences: int = 0
 ## Éléments débloqués (Element.Type -> true).
 var elements: Dictionary = {}
+## Corruption des élites choisie par le joueur (index de vague -> Element.Type), fixée au lancement.
+var elite_choices: Dictionary = {}
+## Stigmates d'élite reçus pour une corruption déjà débloquée (Element.Type -> nombre).
+var element_boosts: Dictionary = {}
+## Vagues dont un élite a atteint la sortie (stigmate perdu).
+var _elite_escaped: Dictionary = {}
 
 ## Ennemis encore en vie par vague (index de vague -> nombre).
 var _alive_by_wave: Dictionary = {}
@@ -78,6 +84,7 @@ func _ready() -> void:
 	hud.sell_requested.connect(func() -> void: sell(_selected))
 	hud.speed_toggled.connect(_toggle_speed)
 	hud.element_requested.connect(buy_element)
+	hud.elite_chosen.connect(choose_elite)
 	hud.set_tower_types(tower_types)
 	hud.setup_minimap(board, camera, self)
 	hud.view_requested.connect(func(world: Vector2) -> void:
@@ -183,6 +190,39 @@ func can_build(index: int, cell: Vector2i) -> bool:
 
 
 ## Dépense une essence pour débloquer un élément.
+## Vrai si cette vague (index) contient des élites.
+func has_elites(index: int) -> bool:
+	return index >= 0 and index < waves.size() and waves[index].elite != null and waves[index].elite_count > 0
+
+
+## Choisit la corruption des élites d'une vague pas encore lancée.
+func choose_elite(index: int, element: Element.Type) -> bool:
+	if is_finished() or index < wave_index or not has_elites(index):
+		return false
+	elite_choices[index] = element
+	_refresh_hud()
+	return true
+
+
+## Multiplicateur de dégâts des tours de cette corruption (stigmates d'élite en plus).
+func element_boost(element: Element.Type) -> float:
+	return 1.0 + rules.elite_stigma_boost * element_boosts.get(element, 0)
+
+
+## Stigmate d'une corruption gagné sur les élites : la débloque, ou la renforce si on l'a déjà.
+func _grant_elite_stigma(element: Element.Type) -> void:
+	var name := Element.display_name(element)
+	if not has_element(element):
+		elements[element] = true
+		hud.announce("Stigmate de %s : corruption débloquée !" % name)
+	else:
+		element_boosts[element] = element_boosts.get(element, 0) + 1
+		for t in towers():
+			if t.data.element == element:
+				t.corruption_boost = element_boost(element)
+		hud.announce("Stigmate de %s : ses tours font +%d %% de dégâts" % [name, roundi((element_boost(element) - 1.0) * 100.0)])
+
+
 func buy_element(element: Element.Type) -> bool:
 	if is_finished() or essences <= 0 or has_element(element):
 		return false
@@ -200,6 +240,7 @@ func try_build(index: int, cell: Vector2i) -> Tower:
 	var tower: Tower = TOWER_SCENE.instantiate()
 	tower.setup(data, rules, cell, board.cell_size, projectiles_root)
 	tower.terrain = board.terrain_at(cell)
+	tower.corruption_boost = element_boost(data.element)
 	towers_root.add_child(tower)
 	tower.global_position = board.cell_to_world(cell)
 	_towers_by_cell[cell] = tower
@@ -298,7 +339,10 @@ func can_call_wave() -> bool:
 
 func _launch_wave() -> void:
 	_alive_by_wave[wave_index] = 0
-	spawner.start(waves[wave_index])
+	# Élites : la corruption choisie, sinon tirée au hasard
+	if has_elites(wave_index) and not elite_choices.has(wave_index):
+		elite_choices[wave_index] = Element.ALL[randi() % Element.ALL.size()]
+	spawner.start(waves[wave_index], elite_choices.get(wave_index, Element.Type.NONE))
 	wave_index += 1
 	_refresh_hud()
 
@@ -324,6 +368,8 @@ func _on_enemy_died(enemy: Enemy) -> void:
 
 
 func _on_enemy_reached_exit(enemy: Enemy) -> void:
+	if enemy.has_meta("elite"):
+		_elite_escaped[enemy.get_meta("wave")] = true
 	lives = maxi(lives - enemy.data.lives_cost, 0)
 	if lives == 0 and state != State.LOST:
 		_end_game(false)
@@ -359,6 +405,11 @@ func _check_wave_cleared(w: int) -> void:
 	if rules.gives_essence(number):
 		essences += 1
 		hud.announce("+1 stigmate ! Clique sur la roue pour débloquer une corruption")
+	if has_elites(w):
+		if _elite_escaped.has(w):
+			hud.announce("Un élite est passé : stigmate de %s perdu" % Element.display_name(elite_choices[w]))
+		else:
+			_grant_elite_stigma(elite_choices[w])
 	if waves_cleared >= waves.size():
 		_end_game(true)
 		return
@@ -415,7 +466,9 @@ func _wave_preview(index: int) -> String:
 	if w.enemy.flying:
 		text += ", volants"
 	if w.elite != null and w.elite_count > 0:
-		text += " + %d élite%s %s" % [w.elite_count, "s" if w.elite_count > 1 else "", Element.display_name(w.elite_element)]
+		var chosen: Element.Type = elite_choices.get(index, Element.Type.NONE)
+		text += " + %d élite%s %s" % [w.elite_count, "s" if w.elite_count > 1 else "",
+				Element.display_name(chosen) if chosen != Element.Type.NONE else "(à choisir)"]
 	return text
 
 
@@ -463,7 +516,9 @@ func _upcoming_waves() -> Array:
 	for i in range(maxi(first, 0), mini(first + 3, waves.size())):
 		var w := waves[i]
 		var color := Element.color(w.element) if w.element != Element.Type.NONE else Color(0.45, 0.44, 0.42)
-		list.append({"number": i + 1, "text": _wave_preview(i), "color": color, "stigma": rules.gives_essence(i + 1)})
+		list.append({"number": i + 1, "index": i, "text": _wave_preview(i), "color": color,
+				"stigma": rules.gives_essence(i + 1), "elite": has_elites(i),
+				"elite_choice": elite_choices.get(i, Element.Type.NONE), "choosable": i >= wave_index})
 	return list
 
 

@@ -106,6 +106,15 @@ func _process(_delta: float) -> bool:
 			var on_opposite := _main.try_build(fervor, _terrain_cell(Element.Type.ASH))
 			_check(on_opposite != null and is_equal_approx(on_opposite.terrain_multiplier(), _main.rules.terrain_malus), "Ferveur sur terre de Cendre : malus")
 			_check(is_equal_approx(on_opposite.damage(), on_opposite.data.damage * _main.rules.terrain_malus), "le malus réduit les dégâts")
+			# Élites : choix de leur corruption, stigmate qui renforce une corruption déjà débloquée
+			var elite_wave := _main.waves.find_custom(func(w: WaveData) -> bool: return w.elite != null and w.elite_count > 0)
+			_check(not _main.choose_elite(0, Element.Type.ABYSS), "pas de choix d'élite sur une vague sans élite")
+			_check(_main.choose_elite(elite_wave, Element.Type.ABYSS) and _main.elite_choices[elite_wave] == Element.Type.ABYSS, "élites d'Abîme appelés")
+			var before := on_own.damage()
+			_main._grant_elite_stigma(Element.Type.FERVOR)
+			_check(is_equal_approx(on_own.damage(), before * (1.0 + _main.rules.elite_stigma_boost)), "stigmate d'élite d'une corruption déjà débloquée : +dégâts")
+			_main._grant_elite_stigma(Element.Type.BONE)
+			_check(_main.has_element(Element.Type.BONE), "stigmate d'élite d'une nouvelle corruption : débloquée")
 			_main.sell(on_own)
 			_main.sell(on_opposite)
 			# Ruines : case bloquée, clic = démolition payée, le bâtisseur la démolit

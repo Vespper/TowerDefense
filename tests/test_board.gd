@@ -45,7 +45,7 @@ func _process(_delta: float) -> bool:
 		_check(rules.element_multiplier(b, a) == rules.weak_multiplier, "%s faible contre %s" % [Element.display_name(b), Element.display_name(a)])
 	_check(rules.element_multiplier(Element.Type.FERVOR, Element.Type.ASH) == 1.0, "Ferveur neutre contre Cendre (opposés)")
 	_check(rules.element_multiplier(Element.Type.NONE, Element.Type.ASH) == 1.0, "Neutre sans bonus")
-	_check(rules.gives_essence(4) and not rules.gives_essence(5), "stigmate toutes les 4 vagues")
+	_check(not rules.gives_essence(4), "plus de stigmate libre automatique (ils viennent des élites)")
 
 	# Opposés et terres corrompues
 	_check(Element.opposite(Element.Type.FERVOR) == Element.Type.ASH and Element.opposite(Element.Type.MADNESS) == Element.Type.BONE and Element.opposite(Element.Type.ABYSS) == Element.Type.ROT, "opposés : Ferveur/Cendre, Démence/Os, Abîme/Pourriture")

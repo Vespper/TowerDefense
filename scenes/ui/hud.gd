@@ -13,6 +13,7 @@ signal upgrade_requested(branch_index: int)
 signal sell_requested
 signal speed_toggled
 signal element_requested(element: Element.Type)
+signal elite_chosen(wave_index: int, element: Element.Type)
 signal view_requested(world_position: Vector2)
 
 ## Taille des zones (px, écran de 1280 × 720). La zone de jeu visible est le reste.
@@ -45,6 +46,7 @@ Clic sur la minicarte : y regarder · H : cette aide
 [b]Rappels[/b]
 
 Roue : chaque corruption fait ×2 à la suivante, ×0,5 à la précédente.
+Élites : choisis leur corruption dans « Prochaines vagues » ; tue-les tous pour un stigmate de cette corruption.
 Arbalète > Chair · Trébuchet > Carapace · Encensoir > Spectre
 Terre de sa corruption : +25 % · terre de la corruption opposée : −25 %"""
 
@@ -372,9 +374,12 @@ func set_upcoming(waves: Array) -> void:
 	for w in waves:
 		var row := PanelContainer.new()
 		row.add_theme_stylebox_override("panel", _style(Color(0.11, 0.105, 0.1), Color(0, 0, 0, 0), 4))
+		var rows := VBoxContainer.new()
+		rows.add_theme_constant_override("separation", 3)
+		_margin(row, rows, 6, 3)
 		var line := HBoxContainer.new()
 		line.add_theme_constant_override("separation", 6)
-		_margin(row, line, 6, 3)
+		rows.add_child(line)
 		_label(line, str(w.number), 12, COLOR_DIM)
 		var dot := ColorRect.new()
 		dot.color = w.color
@@ -388,7 +393,36 @@ func set_upcoming(waves: Array) -> void:
 			var stigma := _label(line, "+1 stigmate", 11, COLOR_STIGMA)
 			stigma.tooltip_text = "Vaincre cette vague donne un stigmate"
 			stigma.mouse_filter = Control.MOUSE_FILTER_PASS
+		if w.get("elite", false):
+			_add_elite_choice(rows, w)
 		_upcoming_box.add_child(row)
+
+
+## Ligne « Élites » d'une vague : 6 pastilles pour choisir leur corruption (avant le lancement),
+## et le stigmate promis si on les tue tous.
+func _add_elite_choice(parent: Control, w: Dictionary) -> void:
+	var chosen: Element.Type = w.elite_choice
+	var line := HBoxContainer.new()
+	line.add_theme_constant_override("separation", 3)
+	parent.add_child(line)
+	if w.choosable:
+		_label(line, "Élites :", 11, COLOR_DIM)
+		for element in Element.ALL:
+			var b := Button.new()
+			b.focus_mode = Control.FOCUS_NONE
+			b.custom_minimum_size = Vector2(18, 16)
+			var col := Element.color(element)
+			var selected: bool = element == chosen
+			b.add_theme_stylebox_override("normal", _style(col if selected else col.darkened(0.55), Color.WHITE if selected else col.darkened(0.2), 3))
+			b.add_theme_stylebox_override("hover", _style(col, Color.WHITE, 3))
+			b.add_theme_stylebox_override("pressed", _style(col, Color.WHITE, 3))
+			b.tooltip_text = "Appeler des élites de %s : les tuer tous donne un stigmate de %s" % [Element.display_name(element), Element.display_name(element)]
+			var index: int = w.index
+			b.pressed.connect(func() -> void: elite_chosen.emit(index, element))
+			line.add_child(b)
+	var hint := "stigmate de %s" % Element.display_name(chosen) if chosen != Element.Type.NONE else "à choisir (sinon hasard)"
+	_label(line if not w.choosable else parent, ("Élites : " if not w.choosable else "→ ") + hint, 11,
+			Element.color(chosen) if chosen != Element.Type.NONE else COLOR_DIM)
 
 
 func set_speed(multiplier: float) -> void:

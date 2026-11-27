@@ -15,10 +15,13 @@ var _wave: WaveData
 ## File d'apparition : true = élite, false = ennemi normal.
 var _queue: Array[bool] = []
 var _timer: float = 0.0
+var _elite_element: Element.Type = Element.Type.NONE
 
 
-func start(wave: WaveData) -> void:
+## `elite_element` : corruption des élites de cette vague (choisie par le joueur ou tirée au hasard).
+func start(wave: WaveData, elite_element: Element.Type = Element.Type.NONE) -> void:
 	_wave = wave
+	_elite_element = elite_element if elite_element != Element.Type.NONE else wave.elite_element
 	_timer = 0.0
 	_queue.clear()
 	var elites := wave.elite_count if wave.elite != null else 0
@@ -58,7 +61,8 @@ func _process(delta: float) -> void:
 	var enemy: Enemy = ENEMY_SCENE.instantiate()
 	enemies_root.add_child(enemy)
 	if is_elite:
-		enemy.setup(_wave.elite, _wave.elite_element, _wave.health_multiplier, board)
+		enemy.setup(_wave.elite, _elite_element, _wave.health_multiplier, board)
+		enemy.set_meta("elite", true)
 	else:
 		enemy.setup(_wave.enemy, _wave.element, _wave.health_multiplier, board, _wave.armor)
 	enemy_spawned.emit(enemy)

@@ -1,6 +1,6 @@
 # Vagues
 
-Les vagues partent seules : 30 s avant la première, puis 30 s après la fin des apparitions de la précédente, ou 3 s dès que le terrain est vide. On peut les lancer plus tôt contre 0,5 or par seconde gagnée. PV d'un ennemi = PV de l'archétype × multiplicateur. Quand une vague n est vaincue : intérêts 3 % + bonus 10 + 2 × n ; un stigmate après les vagues 4, 8, 12, 16, 20.
+Les vagues partent seules : 30 s avant la première, puis 30 s après la fin des apparitions de la précédente, ou 3 s dès que le terrain est vide. On peut les lancer plus tôt contre 0,5 or par seconde gagnée. PV d'un ennemi = PV de l'archétype × multiplicateur. Quand une vague n est vaincue : intérêts 3 % + bonus 10 + 2 × n . Élites : le joueur choisit leur corruption avant la vague (hasard sinon), la colonne « Élites » donne la corruption par défaut des données, qui n'est plus utilisée en jeu ; les tuer tous donne un stigmate de leur corruption.
 
 « Type » : la corruption de la vague, ou son armure pour une vague neutre. Les fichiers sont `data/waves/wave_NN.tres`.
 
