@@ -36,7 +36,7 @@ Session de test de Vespper (armures, élites, arbre d'améliorations, nouveaux n
 
 ## Journal
 
-- 2026-11-27 — Carte Charnier plus grande, caméra, pause (PR #9).
+- 2026-11-27 — Carte Charnier plus grande, caméra, pause (PR #10).
 - 2026-11-26 — Terres corrompues et ruines à démolir (PR #8).
 - 2026-11-26 — Renommage grimdark : les Six Corruptions, nouvelle roue, stigmates, nouveaux noms des tours et armures (PR #7).
 - 2026-11-25 — Arbre d'améliorations : 2 branches par tour, touche I pour la branche B (PR #6).
