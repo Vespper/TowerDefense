@@ -27,4 +27,7 @@ Les ennemis suivent un chemin fixe ; on pose des tours de base (Arbalète, Tréb
 | Molette | Zoomer / dézoomer |
 | Clic molette glissé | Déplacer la vue (la caméra suit le bâtisseur dès qu'il bouge) |
 | C | Recentrer la vue sur le bâtisseur |
+| Clic sur la minicarte | Regarder à cet endroit |
+| H | Afficher / cacher l'aide (commandes et rappels) |
+| Survol | Le détail d'une tour, d'une ruine ou d'une terre s'affiche en bas à droite |
 | R | Rejouer après la fin |
