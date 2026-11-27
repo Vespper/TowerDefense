@@ -2,7 +2,7 @@
 
 | Stat | Valeur | Fichier |
 |---|---|---|
-| Vitesse | 220 px/s (5,5 cases/s) | `data/builder.tres` |
+| Vitesse | 320 px/s (8 cases/s) | `data/builder.tres` |
 | Vitesse de construction | × 1 | `data/builder.tres` |
 | Portée de construction | 34 px du centre de la case | `data/builder.tres` |
 

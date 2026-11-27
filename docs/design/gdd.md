@@ -25,8 +25,10 @@ Ce projet est aussi un banc d'essai : ce qui marche ici sera repris dans le rogu
 
 ## Cartes
 
-- Grille de 24 × 15 cases, **chemin fixe** défini dans une `MapData` (`data/maps/`) par ses coins. Les cases hors du chemin sont constructibles, sauf les ruines.
-- Première carte : « Serpent », un chemin de 93 cases qui serpente quatre fois à travers la carte (comme Flash Element TD).
+- Grille de 40 × 24 cases, plus grande que l'écran, **chemin fixe** défini dans une `MapData` (`data/maps/`) par ses coins. Les cases hors du chemin sont constructibles, sauf les ruines.
+- Carte jouée : « Charnier », un chemin de 146 cases en deux boucles (serpentin à gauche, grand tour à droite), 7 ruines et 12 terres corrompues. La première carte, « Serpent » (24 × 15, 93 cases), reste dans `data/maps/`.
+- **Caméra** : elle suit le bâtisseur ; molette pour zoomer, clic molette glissé pour regarder ailleurs, C pour recentrer.
+- **Pause** (P) : le temps s'arrête, mais on peut lire, regarder la carte et donner des ordres (pose, amélioration, démolition), qui s'exécutent à la reprise. Pour laisser aux débutants le temps de lire.
 - **Terres corrompues** : quelques cases portent une corruption. Une tour de cette corruption y fait +25 % de dégâts, une tour de la corruption opposée −25 %. La roue compte aussi pour le placement. Plus tard, le **biome** de la carte décidera quelles corruptions dominent.
 - **Ruines** : des obstacles bloquent les meilleures cases. Un clic paie 20 or et le bâtisseur va les démolir (4 s). Chaque ruine pose une question : démolir tôt pour une bonne case, ou garder l'or ?
 - On ajoutera d'autres cartes au fur et à mesure. Les **cartes libres** (labyrinthe construit avec les tours, façon Element TD original ou Wintermaul) viendront plus tard sous forme de mode.

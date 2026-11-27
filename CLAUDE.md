@@ -45,6 +45,7 @@ S'il y a des modifications locales non commitées dans son clone, ne rien écras
 - `tools/check.sh` : erreurs de script (fichier et ligne), sinon « OK ». À lancer après chaque modification de `.gd`, `.tscn` ou `.tres`.
 - `tools/test.sh` : tests headless `tests/test_*.gd`, n'affiche que les résultats (dont une partie complète jouée automatiquement).
 - `tools/screenshot.sh [secondes] [fichier]` : partie automatique et capture d'écran, pour vérifier un changement visuel sans ouvrir l'éditeur.
+- `tools/wave_table.py` : régénère le tableau de `docs/wiki/vagues.md` depuis `data/waves/*.tres`. À lancer après chaque changement de vague.
 - `tools/run.sh` : lance le jeu.
 
 Une commande répétée plusieurs fois ou à la sortie trop longue mérite un script dans `tools/` : l'ajouter et le lister ici.

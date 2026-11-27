@@ -1,12 +1,13 @@
-[gd_scene load_steps=37 format=3]
+[gd_scene load_steps=38 format=3]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="main"]
 [ext_resource type="Script" path="res://scenes/board/board.gd" id="board"]
 [ext_resource type="Script" path="res://scenes/main/wave_spawner.gd" id="spawner"]
+[ext_resource type="Script" path="res://scenes/main/game_camera.gd" id="camera"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="hud"]
 [ext_resource type="PackedScene" path="res://scenes/builder/builder.tscn" id="builder"]
 [ext_resource type="Resource" path="res://data/rules.tres" id="rules"]
-[ext_resource type="Resource" path="res://data/maps/serpent.tres" id="map"]
+[ext_resource type="Resource" path="res://data/maps/charnier.tres" id="map"]
 [ext_resource type="Resource" path="res://data/towers/crossbow.tres" id="t_crossbow"]
 [ext_resource type="Resource" path="res://data/towers/trebuchet.tres" id="t_trebuchet"]
 [ext_resource type="Resource" path="res://data/towers/censer.tres" id="t_censer"]
@@ -38,29 +39,40 @@
 [ext_resource type="Resource" path="res://data/waves/wave_20.tres" id="w20"]
 
 [node name="Main" type="Node2D"]
+process_mode = 3
 script = ExtResource("main")
 rules = ExtResource("rules")
 tower_types = Array[Resource]([ExtResource("t_crossbow"), ExtResource("t_trebuchet"), ExtResource("t_censer"), ExtResource("t_fervor"), ExtResource("t_madness"), ExtResource("t_abyss"), ExtResource("t_ash"), ExtResource("t_bone"), ExtResource("t_rot")])
 waves = Array[Resource]([ExtResource("w1"), ExtResource("w2"), ExtResource("w3"), ExtResource("w4"), ExtResource("w5"), ExtResource("w6"), ExtResource("w7"), ExtResource("w8"), ExtResource("w9"), ExtResource("w10"), ExtResource("w11"), ExtResource("w12"), ExtResource("w13"), ExtResource("w14"), ExtResource("w15"), ExtResource("w16"), ExtResource("w17"), ExtResource("w18"), ExtResource("w19"), ExtResource("w20")])
 
 [node name="Board" type="Node2D" parent="."]
+process_mode = 1
 position = Vector2(20, 80)
 script = ExtResource("board")
 map = ExtResource("map")
 
 [node name="Ruins" type="Node2D" parent="."]
+process_mode = 1
 
 [node name="Towers" type="Node2D" parent="."]
+process_mode = 1
 
 [node name="Enemies" type="Node2D" parent="."]
+process_mode = 1
 
 [node name="Projectiles" type="Node2D" parent="."]
+process_mode = 1
 
 [node name="WaveSpawner" type="Node" parent="." node_paths=PackedStringArray("board", "enemies_root")]
+process_mode = 1
 script = ExtResource("spawner")
 board = NodePath("../Board")
 enemies_root = NodePath("../Enemies")
 
 [node name="Builder" parent="." instance=ExtResource("builder")]
+process_mode = 1
+
+[node name="Camera" type="Camera2D" parent="."]
+script = ExtResource("camera")
 
 [node name="Hud" parent="." instance=ExtResource("hud")]
