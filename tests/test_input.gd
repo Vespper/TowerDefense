@@ -137,6 +137,12 @@ func _process(_delta: float) -> bool:
 				_step = 10
 		10:
 			_check(not _main.is_paused(), "P : reprise")
+			_key(KEY_H)
+			_step = 11
+		11:
+			_check(_main.hud.is_help_visible(), "H : aide affichée")
+			_check(_main.hud.play_area().size.x > 900, "la zone de jeu garde l'essentiel de l'écran")
+			_key(KEY_H)
 			return _finish()
 	return false
 

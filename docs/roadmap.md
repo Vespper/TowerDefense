@@ -27,7 +27,7 @@ Mise à jour à chaque fin de session (skill `fin-de-session`). Garder ce fichie
 - [x] Habillage grimdark du vocabulaire : les Six Corruptions, stigmates, Arbalète / Trébuchet / Encensoir, Chair / Carapace / Spectre
 - [x] Terres corrompues et ruines à démolir sur la carte Serpent
 - [x] Carte Charnier 40 × 24 (146 cases), caméra qui suit le bâtisseur, pause (P)
-- [ ] Nouvelle interface selon la maquette (barre du haut, colonne droite, barre du bas)
+- [x] Nouvelle interface selon la maquette (barre du haut, colonne droite, barre du bas, minicarte, aide H)
 - [ ] Équilibrage après la session de test
 
 ## Prochaine étape
@@ -36,6 +36,7 @@ Session de test de Vespper (armures, élites, arbre d'améliorations, nouveaux n
 
 ## Journal
 
+- 2026-11-27 — Nouvelle interface : barres, prochaines vagues, minicarte, infos au survol, aide (H).
 - 2026-11-27 — Carte Charnier plus grande, caméra, pause (PR #10).
 - 2026-11-26 — Terres corrompues et ruines à démolir (PR #8).
 - 2026-11-26 — Renommage grimdark : les Six Corruptions, nouvelle roue, stigmates, nouveaux noms des tours et armures (PR #7).

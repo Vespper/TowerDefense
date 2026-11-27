@@ -64,7 +64,7 @@ func _ready() -> void:
 	# La caméra suit le bâtisseur ; marges pour l'interface (barre du haut, panneau de droite)
 	camera.target = builder
 	camera.global_position = builder.global_position
-	camera.set_bounds(board_rect, 20, 80, 300, 50)
+	camera.set_bounds(board_rect, 10, Hud.TOP_HEIGHT + 10, Hud.SIDE_WIDTH + 10, Hud.BOTTOM_HEIGHT + 10)
 	next_wave_in = rules.first_wave_delay
 	_spawn_ruins()
 	spawner.enemy_spawned.connect(_on_enemy_spawned)
@@ -76,6 +76,10 @@ func _ready() -> void:
 	hud.speed_toggled.connect(_toggle_speed)
 	hud.element_requested.connect(buy_element)
 	hud.set_tower_types(tower_types)
+	hud.setup_minimap(board, camera, self)
+	hud.view_requested.connect(func(world: Vector2) -> void:
+		camera.following = false
+		camera.global_position = world)
 	_refresh_hud()
 
 
@@ -103,6 +107,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause_game"):
 		toggle_pause()
 		return
+	if event.is_action_pressed("toggle_help"):
+		hud.toggle_help()
+		return
 	for i in tower_types.size():
 		if event.is_action_pressed("select_tower_%d" % (i + 1)):
 			select_build(i)
@@ -122,6 +129,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_toggle_speed()
 	elif event is InputEventMouseMotion:
 		_update_ghost()
+		hud.set_info(_info_at(board.world_to_cell(_mouse_world)))
 	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var cell := board.world_to_cell(_mouse_world)
 		if _ruins_by_cell.has(cell):
@@ -325,6 +333,7 @@ func _on_spawning_finished() -> void:
 	_spawn_done[w] = true
 	next_wave_in = rules.wave_gap
 	_check_wave_cleared(w)
+	_refresh_hud()
 
 
 func _on_enemy_removed(enemy: Enemy) -> void:
@@ -413,10 +422,45 @@ func _refresh_hud() -> void:
 	hud.set_gold(gold, tower_types, unlocked)
 	hud.set_elements(essences, elements, not is_finished())
 	hud.set_lives(lives)
+	hud.set_upcoming(_upcoming_waves())
 	_refresh_wave_hud()
 	hud.show_selection(_selected)
 	if _selected != null:
 		hud.set_upgrade_affordable(_selected.upgrade_cost() <= gold)
+
+
+## Infos (BBCode) de ce qui est sous la souris : tour, ruine, terre corrompue, ou rien.
+func _info_at(cell: Vector2i) -> String:
+	if _towers_by_cell.has(cell):
+		var t: Tower = _towers_by_cell[cell]
+		var text := Hud.tower_info(t.data)
+		text += "\nNiveau %d%s · revente %d or" % [t.level, " · " + t.chosen_branch().display_name if t.chosen_branch() else "", t.sell_value()]
+		return text
+	if _ruins_by_cell.has(cell):
+		var r: Ruin = _ruins_by_cell[cell]
+		if r.ordered:
+			return "[b]Ruine[/b] · démolition commandée (%d %%)\nClic : annuler (remboursé)" % roundi(r.progress * 100.0)
+		return "[b]Ruine[/b]\nBloque cette case. Clic : la faire démolir (%d or, %.0f s de travail du bâtisseur)." % [rules.ruin_clear_cost, rules.ruin_clear_time]
+	var terrain := board.terrain_at(cell)
+	if terrain != Element.Type.NONE:
+		return "[b][color=#%s]Terre de %s[/color][/b]\nTour de %s : dégâts %+d %%\nTour de %s (opposée) : %+d %%" % [
+			Element.color(terrain).to_html(false), Element.display_name(terrain),
+			Element.display_name(terrain), roundi((rules.terrain_bonus - 1.0) * 100.0),
+			Element.display_name(Element.opposite(terrain)), roundi((rules.terrain_malus - 1.0) * 100.0)]
+	if _build_index >= 0:
+		return Hud.tower_info(tower_types[_build_index])
+	return ""
+
+
+## Les 3 prochaines vagues pour la colonne de droite (celle en cours comprise).
+func _upcoming_waves() -> Array:
+	var list := []
+	var first := wave_index - 1 if spawner.is_spawning() else wave_index
+	for i in range(maxi(first, 0), mini(first + 3, waves.size())):
+		var w := waves[i]
+		var color := Element.color(w.element) if w.element != Element.Type.NONE else Color(0.45, 0.44, 0.42)
+		list.append({"number": i + 1, "text": _wave_preview(i), "color": color})
+	return list
 
 
 func _refresh_wave_hud() -> void:

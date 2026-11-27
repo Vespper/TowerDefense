@@ -119,6 +119,8 @@ Le rôle vient de l'**archétype**, la corruption vient de la **vague**.
 
 Clavier + souris. Voir le tableau du `README.md`.
 
+Interface : en haut les ressources et la vague, à droite les 3 prochaines vagues, la roue et la minicarte, en bas la tour choisie, les boutons de construction et le détail de ce qu'on survole. La pause (P) et l'aide (H) laissent le temps de tout lire.
+
 ## Direction artistique (prototype)
 
 Formes simples dessinées en code, fond sombre, chemin en terre. Ton grimdark (inspiration Vermis). Couleurs : Ferveur or terni, Démence violet maladif, Abîme bleu-noir, Cendre braise, Os ivoire sale, Pourriture vert bile, Neutre gris. Style à venir : voir [art-direction.md](art-direction.md).

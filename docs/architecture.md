@@ -60,6 +60,13 @@ Main (Node2D, main.gd)        or, vies, stigmates, corruptions débloquées, ét
 - `Main` est en `PROCESS_MODE_ALWAYS`, ses enfants de jeu (Board, Ruins, Towers, Enemies, Projectiles, WaveSpawner, Builder) en `PAUSABLE`. `Main.toggle_pause()` (action `pause_game`, P) met `get_tree().paused` ; l'interface, la caméra et les ordres restent actifs, `Main._process` ne fait plus avancer le compte à rebours.
 - `GameCamera` (`scenes/main/game_camera.gd`) suit `target` (le bâtisseur), limitée à la carte plus des marges pour l'interface (`set_bounds`). La souris est convertie en coordonnées du monde avec `get_canvas_transform()` (les tests font l'inverse pour cliquer).
 
+## Interface
+
+- `Hud` (`scenes/ui/hud.gd`) construit sa mise en page dans le code (`_build_layout`) : barre du haut (or, vies, stigmates, vague, Lancer / vitesse / Aide), colonne droite (prochaines vagues, roue, `Minimap`), barre du bas (tour choisie, boutons de construction, infos au survol), message central et panneau d'aide (H).
+- Tailles en constantes (`TOP_HEIGHT`, `SIDE_WIDTH`, `BOTTOM_HEIGHT`) ; `Hud.play_area()` donne la zone de jeu restante, et `Main` règle les limites de la caméra avec ces marges.
+- `Main` pousse l'état (`set_gold`, `set_upcoming`, `set_info`…) ; le texte au survol vient de `Main._info_at(cell)` (tour, ruine ou terre).
+- `Minimap` (`scenes/ui/minimap.gd`) redessine toutes les 0,1 s chemin, terres, ruines, tours, ennemis, bâtisseur et cadre de la vue ; un clic émet `view_requested`, et `Main` y déplace la caméra.
+
 ## Vagues
 
 - `Main.next_wave_in` : compte à rebours (`GameRules.first_wave_delay`, puis `wave_gap` après la fin des apparitions). À 0, `_launch_wave()`. `start_next_wave()` lance plus tôt et donne `GameRules.early_call_bonus()`.
